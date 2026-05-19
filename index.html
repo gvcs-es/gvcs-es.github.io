@@ -3,52 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GVCS-ES Official</title>
+    <title>GVCS 글로벌선진학교 음성캠퍼스</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        body {
+        :root {
+            --gvcs-red: #9a1e23;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+
+        section {
+            width: 100%;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            font-family: 'Helvetica Neue', sans-serif;
-            transition: background-color 0.5s ease; 
+            position: relative;
         }
 
-        .card {
-            background: white;
+        #hero {
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
+                        url('http://googleusercontent.com/image_collection/image_retrieval/2871938273547090744');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        #hero h1 {
+            font-size: clamp(40px, 8vw, 100px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #identity {
+            background-color: white;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; 
-            cursor: pointer;
-        }
-        .card:hover {
-            transform: translateY(-10px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        /* 1. 노트북 / 큰 화면 (기본 상태 - 블루) */
-        body { background-color: #0077b6; }
-        h1 { color: #0077b6; }
-        h1::after { content: " 💻 (노트북 버전)"; }
+        #identity .logo-box {
+            max-width: 600px;
+            margin-bottom: 50px;
+        }
 
-        /* 2. 모바일 / 작은 화면 (너비 768px 이하일 때 - 다크 모드) */
+        #identity .logo-box img {
+            width: 100%;
+            height: auto;
+        }
+
+        #identity .slogan {
+            font-size: clamp(24px, 4vw, 42px);
+            font-weight: 400;
+            color: var(--text-dark);
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        #identity .slogan strong {
+            color: var(--gvcs-red);
+            font-weight: 700;
+        }
+
+        #results-cta {
+            background-color: var(--gvcs-red);
+            color: white;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .cta-content {
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(36px, 6vw, 72px);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 30px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            width: fit-content;
+            padding: 20px 40px;
+            background-color: white;
+            color: var(--gvcs-red);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 20px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .cta-image {
+            background: rgba(0,0,0,0.1) url('http://googleusercontent.com/image_collection/image_retrieval/13405138261494377418') center/cover;
+            min-height: 500px;
+        }
+
+        #contact {
+            min-height: 60vh;
+            background-color: #1a1a1a;
+            color: white;
+            padding: 80px;
+            align-items: flex-start;
+        }
+
+        #contact h3 {
+            font-size: 32px;
+            color: var(--gvcs-red);
+            margin-bottom: 40px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+        }
+
+        .contact-item h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        .contact-item p {
+            font-size: 16px;
+            color: #999;
+        }
+
         @media (max-width: 768px) {
-            body { background-color: #1a1a1a; }
-            h1 { color: #1a1a1a; }
-            h1::after { content: " 📱 (모바일 버전)"; }
-            .card { width: 80%; padding: 30px; }
+            #results-cta { grid-template-columns: 1fr; }
+            .cta-content { padding: 40px; text-align: center; }
+            .cta-btn { margin: 0 auto; }
+            .cta-image { min-height: 300px; order: -1; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>GVCS-ES 사이트 가동!</h1>
-        <p>노트북에서는 창 크기를 줄여보시고, 모바일에서는 QR이나 링크로 접속해 보세요.</p>
-    </div>
+    <section id="hero">
+        <h1>GVCS EUMSEONG</h1>
+    </section>
+
+    <section id="identity">
+        <div class="logo-box">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/10754496744208248365" alt="글로벌선진학교 로고">
+        </div>
+        <p class="slogan">
+            "글로벌선진학교는 <strong>100억명</strong>을 섬기는<br>
+            글로벌 인재가 될 수 있는 교육을 제공합니다"
+        </p>
+    </section>
+
+    <section id="results-cta">
+        <div class="cta-content">
+            <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
+            <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="cta-image"></div>
+    </section>
+
+    <section id="contact">
+        <h3>CONTACT INFO</h3>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <h4>LOCATION</h4>
+                <p>충청북도 음성군 원남면 원중로 406-9</p>
+            </div>
+            <div class="contact-item">
+                <h4>PHONE</h4>
+                <p>043-871-7000 / 1588-9147</p>
+            </div>
+            <div class="contact-item">
+                <h4>ADMISSION</h4>
+                <p>admissions@gvcs-es.org</p>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>
