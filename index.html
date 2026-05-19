@@ -4,31 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GVCS 글로벌선진학교 음성캠퍼스</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --gvcs-red: #9a1e23; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { width: 100%; height: 100%; background: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
 
+        /* 상단바: 기본 상태(투명) / 스크롤 시 상태(.scrolled) */
         .header-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 80px; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 90px; 
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; z-index: 9999;
-            background: transparent;
+            padding: 0 50px; z-index: 9999;
+            /* 📌 로고 가독성을 위한 상단 고정 그라데이션 */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
             transition: background 0.4s ease;
         }
-        .header-bar.scrolled { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); }
+        .header-bar.scrolled { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
         
-        /* 📌 로고와 버튼이 눈에 띄도록 그림자 추가 */
-        .header-logo { height: 50px; display: flex; align-items: center; z-index: 10000; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+        .header-logo { height: 50px; display: flex; align-items: center; }
         .header-logo img { height: 50px; width: auto; }
         
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; z-index: 10000; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-        .menu-btn span { display: block; width: 30px; height: 3px; background: white; border-radius: 2px; }
+        /* 햄버거 메뉴 */
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+        .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
+        /* 메인 이미지 */
         #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; }
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); display: flex; align-items: center; padding: 100px; color: white; }
     </style>
@@ -66,6 +68,7 @@
 
         function update() {
             sections[1].style.transform = currentIdx === 1 ? 'translateY(0)' : 'translateY(100vh)';
+            // 스크롤 시 그라데이션에서 블러 배경으로 전환
             if(currentIdx > 0) navbar.classList.add('scrolled');
             else navbar.classList.remove('scrolled');
         }
