@@ -28,7 +28,7 @@
             height: 100%;
             background-color: #000;
             font-family: 'Noto Sans KR', sans-serif;
-            overflow: hidden; /* 강제 스냅 스크롤 제어를 위해 기본 스크롤바 숨김 */
+            overflow: hidden; /* 강제 제어를 위해 브라우저 기본 스크롤바 숨김 */
         }
 
         /* --------------------------------------------------
@@ -83,7 +83,7 @@
         }
 
         /* --------------------------------------------------
-           🍏 애플 스타일 스무스 트랜지션 레이아웃 (Contact 제거)
+           🍏 애플 스타일 스무스 트랜지션 레이아웃
         -------------------------------------------------- */
         .main-wrapper {
             width: 100%;
@@ -93,11 +93,10 @@
 
         .page-section {
             width: 100%;
-            height: 100vh;
+            height: 100vh; /* 📌 각 섹션이 무조건 화면의 100%를 차지하도록 확실하게 고정 */
             position: absolute;
             top: 0;
             left: 0;
-            /* ⏳ 0.8초 -> 1.4초로 대폭 늘려 묵직하고 고급스럽게 연출 (애플 감성 큐빅 베지에) */
             transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
         }
@@ -128,7 +127,7 @@
             color: white;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            transform: translateY(100vh); /* 처음에 하단 대기 */
+            transform: translateY(100vh); /* 최초 상태에서는 화면 아래 대기 */
             box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.5);
         }
 
@@ -170,7 +169,7 @@
 
         .cta-image {
             background: linear-gradient(rgba(154, 30, 35, 0.2), rgba(154, 30, 35, 0.2)),
-                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
+                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
         }
 
         @media (max-width: 1024px) {
@@ -222,7 +221,7 @@
 
             if (isScrolling) return;
 
-            // 마우스 휠 감도(임계값) 체크
+            // 확실하게 휠을 밀었을 때 감지 (임계값 35)
             if (Math.abs(e.deltaY) > 35) {
                 if (e.deltaY > 0) {
                     if (currentIdx < totalSections - 1) {
@@ -242,18 +241,18 @@
             isScrolling = true;
 
             if (currentIdx === 0) {
-                // 1번 홈 화면으로 복귀 연출
+                // 1번 홈 화면 복귀 연출
                 sections[0].style.opacity = '1';
                 sections[0].style.transform = 'scale(1)';
                 sections[1].style.transform = 'translateY(100vh)';
             } else if (currentIdx === 1) {
-                // 2번 빨간 창이 묵직하게 위로 오버랩 연출
+                // 2번 빨간 창 오버랩 슬라이드 업 연출
                 sections[0].style.opacity = '0';
-                sections[0].style.transform = 'scale(0.96)'; /* 은은하게 뒤로 멀어지는 시각 연출 */
+                sections[0].style.transform = 'scale(0.96)';
                 sections[1].style.transform = 'translateY(0)';
             }
 
-            // 늘어난 트랜지션 타임(1.4초)에 맞추어 휠 인터럽트 중복 방지 타임락 세팅 (1400ms)
+            // 속도감(1.4초)에 맞추어 휠 인터럽트 잠금 설정
             setTimeout(() => {
                 isScrolling = false;
             }, 1400);
