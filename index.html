@@ -11,8 +11,7 @@
     
     <style>
         :root {
-            --gvcs-red: #9a1e23; /* 시그니처 레드 */
-            --bg-light: #f8fafc;
+            --gvcs-red: #9a1e23; /* 보내주신 시그니처 레드 */
             --text-dark: #1e293b;
         }
 
@@ -22,47 +21,36 @@
             padding: 0;
         }
 
-        body {
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #000; /* 페이드아웃 될 때 아래 깔릴 암전 배경 */
             font-family: 'Noto Sans KR', sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            background-color: #000; /* 페이드아웃 배경을 위한 베이스 블랙 */
             overflow-x: hidden;
         }
 
-        /* --------------------------------------------------
-           애플 스타일 스크롤 오버랩 & 페이드아웃 핵심 CSS
-        -------------------------------------------------- */
-        
-        /* 1번 메인 스크롤 컨테이너 (스크롤할 공간 확보) */
-        .hero-container {
-            height: 150vh; /* 조금만 내려도 다음 화면이 반응하도록 스크롤 영역 설정 */
+        /* 스크롤 감지를 위한 전체 컨테이너 세팅 (애플식 스냅 스크롤 구현) */
+        .scroll-container {
+            width: 100%;
             position: relative;
-            view-timeline-name: --hero-timeline; /* 스크롤 애니메이션 기준 설정 */
         }
 
-        /* 고정되어 서서히 투명해지는 메인 전경 화면 */
+        /* 1번 메인 전경 (고정 섹션) */
         #hero {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
+                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), 
-                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
             z-index: 1;
-            transform: translateZ(0); /* 모바일/사파리 렌더링 최적화 */
-            
-            /* 최신 CSS 스크롤 구동 애니메이션 연결 (내려갈 때 투명도 변경) */
-            animation: fade-out linear both;
-            animation-timeline: --hero-timeline;
-            animation-range: exit 0% exit 100%;
-        }
-
-        @keyframes fade-out {
-            to { opacity: 0; transform: scale(0.98); } /* 서서히 흐려지면서 살짝 멀어지는 효과 */
+            will-change: opacity, transform;
+            transition: opacity 0.1s linear, transform 0.1s linear;
         }
 
         #hero h1 {
@@ -74,19 +62,26 @@
             text-align: center;
         }
 
-        /* 2번 아래에서 위로 덮으며 올라오는 입시 결과 섹션 */
+        /* 2번 아래에서 올라오는 입시 결과 섹션 공간 (스크롤 트리거 역할) */
+        .results-trigger {
+            width: 100%;
+            height: 100vh; /* 첫 스크롤 시 흐려지는 타이밍을 버텨줄 가상 공간 */
+            position: relative;
+            z-index: 2;
+            pointer-events: none; /* 마우스 이벤트 통과 */
+        }
+
+        /* 진짜 위로 덮어쓰며 올라오는 빨간색 판때기 */
         #results-cta {
             position: relative;
-            z-index: 2; /* 1번보다 위에 쌓이게 설정 */
+            z-index: 3;
             background-color: var(--gvcs-red);
             color: white;
             min-height: 100vh;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.3); /* 올라올 때 깊이감을 주는 그림자 */
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.5);
         }
-
-        /* -------------------------------------------------- */
 
         .cta-content {
             padding: 100px 60px 100px 100px;
@@ -114,7 +109,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 22px;
-            border-radius: 0px;
+            border-radius: 0px; /* 완벽한 정사각형 블록 감성 */
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
@@ -125,7 +120,7 @@
         }
 
         .cta-image {
-            background: linear-gradient(rgba(154, 30, 35, 0.1), rgba(154, 30, 35, 0.1)),
+            background: linear-gradient(rgba(154, 30, 35, 0.15), rgba(154, 30, 35, 0.15)),
                         url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
             min-height: 600px;
         }
@@ -133,7 +128,7 @@
         /* 3번 하단 정보 공간 */
         #contact {
             position: relative;
-            z-index: 3;
+            z-index: 4;
             min-height: 50vh;
             background-color: #111827;
             color: white;
@@ -183,37 +178,58 @@
 </head>
 <body>
 
-    <div class="hero-container">
+    <div class="scroll-container">
         <section id="hero">
             <h1>GVCS EUMSEONG</h1>
         </section>
+
+        <div class="results-trigger"></div>
+
+        <section id="results-cta">
+            <div class="cta-content">
+                <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
+                <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+            </div>
+            <div class="cta-image"></div>
+        </section>
+
+        <section id="contact">
+            <h3>CONTACT INFO</h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <h4>LOCATION</h4>
+                    <p>충청북도 음성군 원남면 원중로 406-9</p>
+                </div>
+                <div class="contact-item">
+                    <h4>PHONE</h4>
+                    <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
+                </div>
+                <div class="contact-item">
+                    <h4>ONLINE</h4>
+                    <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <section id="results-cta">
-        <div class="cta-content">
-            <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
-            <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
-        </div>
-        <div class="cta-image"></div>
-    </section>
+    <script>
+        window.addEventListener('scroll', () => {
+            const hero = document.getElementById('hero');
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
 
-    <section id="contact">
-        <h3>CONTACT INFO</h3>
-        <div class="contact-grid">
-            <div class="contact-item">
-                <h4>LOCATION</h4>
-                <p>충청북도 음성군 원남면 원중로 406-9</p>
-            </div>
-            <div class="contact-item">
-                <h4>PHONE</h4>
-                <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
-            </div>
-            <div class="contact-item">
-                <h4>ONLINE</h4>
-                <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
-            </div>
-        </div>
-    </section>
+            // 첫 번째 화면 높이 범위 안에서 스크롤될 때 투명도와 스케일 연출
+            if (scrollY <= viewportHeight) {
+                const progress = scrollY / viewportHeight;
+                hero.style.opacity = 1 - progress; 
+                hero.style.transform = `scale(${1 - (progress * 0.05)})`;
+                hero.style.visibility = 'visible';
+            } else {
+                hero.style.opacity = 0;
+                hero.style.visibility = 'hidden';
+            }
+        });
+    </script>
 
 </body>
 </html>
