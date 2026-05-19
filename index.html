@@ -211,4 +211,60 @@
     </div>
 
     <script>
-        let
+        let currentIdx = 0;
+        const sections = document.querySelectorAll('.page-section');
+        const totalSections = sections.length;
+        let isScrolling = false;
+
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth <= 1024) return; 
+            e.preventDefault();
+
+            if (isScrolling) return;
+
+            // 마우스 휠 감도(임계값) 체크
+            if (Math.abs(e.deltaY) > 35) {
+                if (e.deltaY > 0) {
+                    if (currentIdx < totalSections - 1) {
+                        currentIdx++;
+                        updateSections();
+                    }
+                } else {
+                    if (currentIdx > 0) {
+                        currentIdx--;
+                        updateSections();
+                    }
+                }
+            }
+        }, { passive: false });
+
+        function updateSections() {
+            isScrolling = true;
+
+            if (currentIdx === 0) {
+                // 1번 홈 화면으로 복귀 연출
+                sections[0].style.opacity = '1';
+                sections[0].style.transform = 'scale(1)';
+                sections[1].style.transform = 'translateY(100vh)';
+            } else if (currentIdx === 1) {
+                // 2번 빨간 창이 묵직하게 위로 오버랩 연출
+                sections[0].style.opacity = '0';
+                sections[0].style.transform = 'scale(0.96)'; /* 은은하게 뒤로 멀어지는 시각 연출 */
+                sections[1].style.transform = 'translateY(0)';
+            }
+
+            // 늘어난 트랜지션 타임(1.4초)에 맞추어 휠 인터럽트 중복 방지 타임락 세팅 (1400ms)
+            setTimeout(() => {
+                isScrolling = false;
+            }, 1400);
+        }
+
+        function goToSection(idx) {
+            if (isScrolling) return;
+            currentIdx = idx;
+            updateSections();
+        }
+    </script>
+
+</body>
+</html>
