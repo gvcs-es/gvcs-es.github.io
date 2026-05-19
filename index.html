@@ -12,17 +12,16 @@
 
         .header-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 80px; 
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 40px; z-index: 9999; border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0 40px; z-index: 9999;
         }
         
-        /* 🖼️ 로고 더 키우기 (56px) */
         .header-logo { height: 56px; display: flex; align-items: center; text-decoration: none; }
         .header-logo img { height: 56px; width: auto; display: block; }
         
         .header-menu { display: flex; list-style: none; gap: 30px; }
-        .header-menu a { color: white; text-decoration: none; font-size: 14px; font-weight: 400; }
+        .header-menu a { color: white; text-decoration: none; font-size: 14px; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section {
@@ -30,9 +29,11 @@
             transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* 🖼️ 메인 이미지 적용 (중앙 정렬 및 꽉 채우기) */
         #section-hero { 
             z-index: 1; 
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
+                        url('https://i.imgur.com/BCMjATY.jpg') center/cover no-repeat;
             display: flex; justify-content: center; align-items: center;
         }
         
