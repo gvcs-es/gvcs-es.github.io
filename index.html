@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            --gvcs-red: #9a1e23; /* 보내주신 시그니처 레드 */
+            --gvcs-red: #9a1e23; /* 시그니처 레드 */
             --bg-light: #f8fafc;
             --text-dark: #1e293b;
         }
@@ -26,24 +26,43 @@
             font-family: 'Noto Sans KR', sans-serif;
             line-height: 1.6;
             color: var(--text-dark);
-            background-color: var(--bg-light);
+            background-color: #000; /* 페이드아웃 배경을 위한 베이스 블랙 */
+            overflow-x: hidden;
         }
 
-        section {
+        /* --------------------------------------------------
+           애플 스타일 스크롤 오버랩 & 페이드아웃 핵심 CSS
+        -------------------------------------------------- */
+        
+        /* 1번 메인 스크롤 컨테이너 (스크롤할 공간 확보) */
+        .hero-container {
+            height: 150vh; /* 조금만 내려도 다음 화면이 반응하도록 스크롤 영역 설정 */
+            position: relative;
+            view-timeline-name: --hero-timeline; /* 스크롤 애니메이션 기준 설정 */
+        }
+
+        /* 고정되어 서서히 투명해지는 메인 전경 화면 */
+        #hero {
+            position: sticky;
+            top: 0;
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-        }
-
-        /* 섹션 1: 메인 전경 화면 */
-        #hero {
             background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), 
                         url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
-            background-attachment: fixed;
+            z-index: 1;
+            transform: translateZ(0); /* 모바일/사파리 렌더링 최적화 */
+            
+            /* 최신 CSS 스크롤 구동 애니메이션 연결 (내려갈 때 투명도 변경) */
+            animation: fade-out linear both;
+            animation-timeline: --hero-timeline;
+            animation-range: exit 0% exit 100%;
+        }
+
+        @keyframes fade-out {
+            to { opacity: 0; transform: scale(0.98); } /* 서서히 흐려지면서 살짝 멀어지는 효과 */
         }
 
         #hero h1 {
@@ -55,14 +74,19 @@
             text-align: center;
         }
 
-        /* 섹션 2: 대학 입시 결과 섹션 (#9a1e23 색상 채우기 + 정사각형 느낌) */
+        /* 2번 아래에서 위로 덮으며 올라오는 입시 결과 섹션 */
         #results-cta {
+            position: relative;
+            z-index: 2; /* 1번보다 위에 쌓이게 설정 */
             background-color: var(--gvcs-red);
             color: white;
-            padding: 0;
+            min-height: 100vh;
             display: grid;
             grid-template-columns: 1fr 1fr;
+            box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.3); /* 올라올 때 깊이감을 주는 그림자 */
         }
+
+        /* -------------------------------------------------- */
 
         .cta-content {
             padding: 100px 60px 100px 100px;
@@ -106,8 +130,10 @@
             min-height: 600px;
         }
 
-        /* 섹션 3: 하단 정보 공간 */
+        /* 3번 하단 정보 공간 */
         #contact {
+            position: relative;
+            z-index: 3;
             min-height: 50vh;
             background-color: #111827;
             color: white;
@@ -157,9 +183,11 @@
 </head>
 <body>
 
-    <section id="hero">
-        <h1>GVCS EUMSEONG</h1>
-    </section>
+    <div class="hero-container">
+        <section id="hero">
+            <h1>GVCS EUMSEONG</h1>
+        </section>
+    </div>
 
     <section id="results-cta">
         <div class="cta-content">
