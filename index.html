@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            --gvcs-red: #9a1e23; /* 보내주신 시그니처 레드 색상 */
+            --gvcs-red: #9a1e23;
             --text-dark: #1e293b;
         }
 
@@ -21,23 +21,19 @@
             padding: 0;
         }
 
-        html {
-            /* 🔗 애플식 화면 고정 스냅 스크롤 핵심 속성 */
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
-
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            background-color: #000; /* 전경이 흐려질 때 밑에 깔릴 블랙 베이스 */
+            height: 100%;
+            background-color: #000;
             font-family: 'Noto Sans KR', sans-serif;
-            overflow-x: hidden;
+            /* 자바스크립트로 강제 제어하기 위해 기본 브라우저 스냅은 해제하고 스크롤바 감춤 */
+            overflow: hidden; 
         }
 
         /* --------------------------------------------------
-           🖼️ 1. 보내주신 로고 이미지를 넣은 반투명 상단 바
+           🖼️ 상단 네비게이션 바 (고정)
         -------------------------------------------------- */
         .header-bar {
             position: fixed;
@@ -52,12 +48,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 40px;
-            z-index: 9999; /* 최상단 레이어 고정 */
+            z-index: 9999;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header-logo {
-            height: 40px; /* 로고 크기에 맞춤 */
+            height: 40px;
             display: flex;
             align-items: center;
             text-decoration: none;
@@ -66,7 +62,7 @@
         .header-logo img {
             height: 100%;
             width: auto;
-            filter: brightness(0) invert(1); /* 어두운 바 위에서 잘 보이도록 화이트 필터 적용 */
+            filter: brightness(0) invert(1);
         }
 
         .header-menu {
@@ -88,40 +84,35 @@
         }
 
         /* --------------------------------------------------
-           🍏 2. 애플 스타일 스크롤 오버랩 & 스냅 레이아웃
+           🍏 전체 페이지 가상 휠 컨테이너 (애플식 스무스 트랜지션)
         -------------------------------------------------- */
-        
-        /* 스크롤 섹션 공통 */
-        .snap-section {
+        .main-wrapper {
             width: 100%;
-            height: 100vh;
-            scroll-snap-align: start; /* 스크롤할 때 착 멈추는 기준점 */
-            scroll-snap-stop: always;
+            height: 100%;
             position: relative;
         }
 
-        /* [섹션 1] 고정되어 서서히 투명해지는 메인 전경 화면 */
-        #hero-section {
-            z-index: 1;
-        }
-
-        #hero {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .page-section {
             width: 100%;
             height: 100vh;
-            /* 🔗 보내주신 학교 전경 보정 이미지 적용 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+            will-change: transform, opacity;
+        }
+
+        /* [섹션 1] 메인 전경 화면 */
+        #section-hero {
+            z-index: 1;
             background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
                         url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
-            will-change: opacity, transform;
-            transition: opacity 0.1s linear, transform 0.1s linear;
         }
 
-        #hero h1 {
+        #section-hero h1 {
             font-size: clamp(40px, 8vw, 90px);
             font-weight: 900;
             color: white;
@@ -130,14 +121,15 @@
             text-align: center;
         }
 
-        /* [섹션 2] 아래에서 위로 덮으며 완전히 올라오는 입시 결과 섹션 */
-        #results-cta {
-            z-index: 3; /* 1번 전경을 덮어야 하므로 더 높게 */
+        /* [섹션 2] 아래에서 오버랩되며 치고 올라올 입시 결과 섹션 */
+        #section-results {
+            z-index: 3;
             background-color: var(--gvcs-red);
             color: white;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.4); /* 경계선 깊이감 */
+            transform: translateY(100vh); /* 처음에 대기 상태로 아래 숨겨둠 */
+            box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.5);
         }
 
         .cta-content {
@@ -166,7 +158,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 22px;
-            border-radius: 0px; /* 완전한 정사각형 블록 */
+            border-radius: 0px;
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
@@ -177,13 +169,12 @@
         }
 
         .cta-image {
-            /* 🔗 우측 블록에도 보내주신 전경 보정 이미지를 은은하게 은폐 배합 */
             background: linear-gradient(rgba(154, 30, 35, 0.2), rgba(154, 30, 35, 0.2)),
                         url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
         }
 
-        /* [섹션 3] 하단 정보 공간 (스냅이 걸리도록 100vh로 조정) */
-        #contact {
+        /* [섹션 3] 하단 정보 창 */
+        #section-contact {
             z-index: 4;
             background-color: #111827;
             color: white;
@@ -192,9 +183,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
+            transform: translateY(100vh); /* 마찬가지로 아래 대기 */
         }
 
-        #contact h3 {
+        #section-contact h3 {
             font-size: 28px;
             font-weight: 900;
             color: var(--gvcs-red);
@@ -224,13 +216,12 @@
         }
 
         @media (max-width: 1024px) {
-            html { scroll-snap-type: none; } /* 모바일은 스냅 해제하여 자연스럽게 */
-            .snap-section { height: auto; min-height: 100vh; }
-            #hero { position: relative; }
-            #results-cta { grid-template-columns: 1fr; }
+            html, body { overflow-y: auto; height: auto; }
+            .page-section { position: relative; height: auto; min-height: 100vh; transform: none !important; opacity: 1 !important; }
+            #section-results { grid-template-columns: 1fr; }
             .cta-content { padding: 80px 40px; text-align: center; align-items: center; }
             .cta-image { min-height: 300px; }
-            #contact { padding: 60px 40px; }
+            #section-contact { padding: 60px 40px; }
         }
     </style>
 </head>
@@ -241,62 +232,76 @@
             <img src="https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/KakaoTalk_Image_2026-04-03-14-58-55_003.png" alt="GVCS Logo">
         </a>
         <ul class="header-menu">
-            <li><a href="#hero-section">HOME</a></li>
-            <li><a href="#results-cta">입시결과</a></li>
-            <li><a href="#contact">CONTACT</a></li>
+            <li><a href="javascript:void(0);" onclick="goToSection(0)">HOME</a></li>
+            <li><a href="javascript:void(0);" onclick="goToSection(1)">입시결과</a></li>
+            <li><a href="javascript:void(0);" onclick="goToSection(2)">CONTACT</a></li>
         </ul>
     </header>
 
-    <div id="hero-section" class="snap-section">
-        <div id="hero">
+    <div class="main-wrapper">
+        
+        <div id="section-hero" class="page-section">
             <h1>GVCS EUMSEONG</h1>
         </div>
+
+        <div id="section-results" class="page-section">
+            <div class="cta-content">
+                <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
+                <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
+            </div>
+            <div class="cta-image"></div>
+        </div>
+
+        <div id="section-contact" class="page-section">
+            <h3>CONTACT INFO</h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <h4>LOCATION</h4>
+                    <p>충청북도 음성군 원남면 원중로 406-9</p>
+                </div>
+                <div class="contact-item">
+                    <h4>PHONE</h4>
+                    <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
+                </div>
+                <div class="contact-item">
+                    <h4>ONLINE</h4>
+                    <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <section id="results-cta" class="snap-section">
-        <div class="cta-content">
-            <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
-            <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
-        </div>
-        <div class="cta-image"></div>
-    </section>
-
-    <section id="contact" class="snap-section">
-        <h3>CONTACT INFO</h3>
-        <div class="contact-grid">
-            <div class="contact-item">
-                <h4>LOCATION</h4>
-                <p>충청북도 음성군 원남면 원중로 406-9</p>
-            </div>
-            <div class="contact-item">
-                <h4>PHONE</h4>
-                <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
-            </div>
-            <div class="contact-item">
-                <h4>ONLINE</h4>
-                <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
-            </div>
-        </div>
-    </section>
-
     <script>
-        window.addEventListener('scroll', () => {
-            const hero = document.getElementById('hero');
-            const scrollY = window.scrollY;
-            const viewportHeight = window.innerHeight;
+        let currentIdx = 0;
+        const sections = document.querySelectorAll('.page-section');
+        const totalSections = sections.length;
+        let isScrolling = false;
 
-            if (scrollY <= viewportHeight) {
-                const progress = scrollY / viewportHeight;
-                // 내려갈수록 더 완만하고 자연스럽게 투명해지도록 처리
-                hero.style.opacity = 1 - (progress * 1.3); 
-                hero.style.transform = `scale(${1 - (progress * 0.02)})`;
-                hero.style.visibility = 'visible';
-            } else {
-                hero.style.opacity = 0;
-                hero.style.visibility = 'hidden';
+        // 마우스 휠 이벤트 가로채기
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth <= 1024) return; // 모바일/태블릿 인터셉트 제외
+            e.preventDefault();
+
+            if (isScrolling) return;
+
+            // e.deltaY 값이 클 때(임계값 돌파 시)만 작동하도록 세팅
+            // 살짝 흔들린 미세 스크롤은 무시하고, 확실하게 밀었을 때 다음 칸으로 스냅 연출
+            if (Math.abs(e.deltaY) > 35) {
+                if (e.deltaY > 0) {
+                    // 아래로 스크롤 -> 다음 섹션 이동 (임계값 돌파 성공)
+                    if (currentIdx < totalSections - 1) {
+                        currentIdx++;
+                        updateSections();
+                    }
+                } else {
+                    // 위로 스크롤 -> 이전 섹션 이동
+                    if (currentIdx > 0) {
+                        currentIdx--;
+                        updateSections();
+                    }
+                }
             }
-        });
-    </script>
+        }, { passive: false });
 
-</body>
-</html>
+        // 화면
