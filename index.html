@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            --gvcs-red: #9a1e23;
+            --gvcs-red: #9a1e23; /* 보내주신 시그니처 레드 */
             --bg-light: #f8fafc;
             --text-dark: #1e293b;
         }
@@ -39,30 +39,33 @@
             position: relative;
         }
 
+        /* 섹션 1: 보내주신 전경 사진 배경 */
         #hero {
-            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
-                        url('http://googleusercontent.com/image_collection/image_retrieval/2871938273547090744');
-            background-size: cover;
-            background-position: center;
-            color: white;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
+                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
+            background-attachment: fixed;
         }
 
         #hero h1 {
-            font-size: clamp(40px, 8vw, 100px);
+            font-size: clamp(40px, 8vw, 90px);
             font-weight: 900;
+            color: white;
             letter-spacing: -2px;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
+        /* 섹션 2: 보내주신 로고 및 슬로건 */
         #identity {
             background-color: white;
-            padding: 40px;
+            padding: 60px 20px;
             text-align: center;
         }
 
         #identity .logo-box {
-            max-width: 600px;
-            margin-bottom: 50px;
+            max-width: 550px;
+            width: 100%;
+            margin-bottom: 40px;
         }
 
         #identity .logo-box img {
@@ -71,11 +74,12 @@
         }
 
         #identity .slogan {
-            font-size: clamp(24px, 4vw, 42px);
+            font-size: clamp(20px, 3.5vw, 36px);
             font-weight: 400;
             color: var(--text-dark);
-            line-height: 1.4;
+            line-height: 1.5;
             word-break: keep-all;
+            letter-spacing: -1px;
         }
 
         #identity .slogan strong {
@@ -83,6 +87,7 @@
             font-weight: 700;
         }
 
+        /* 섹션 3: #9a1e23 색상 가득 채운 반반 블록 레이아웃 */
         #results-cta {
             background-color: var(--gvcs-red);
             color: white;
@@ -92,7 +97,7 @@
         }
 
         .cta-content {
-            padding: 80px;
+            padding: 100px 60px 100px 100px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -100,72 +105,87 @@
         }
 
         .cta-content h2 {
-            font-size: clamp(36px, 6vw, 72px);
+            font-size: clamp(36px, 5vw, 64px);
             font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 30px;
+            line-height: 1.25;
+            letter-spacing: -2px;
+            margin-bottom: 40px;
+            word-break: keep-all;
         }
 
         .cta-btn {
             display: inline-block;
             width: fit-content;
-            padding: 20px 40px;
+            padding: 22px 50px;
             background-color: white;
             color: var(--gvcs-red);
             text-decoration: none;
             font-weight: 700;
-            font-size: 20px;
-            border-radius: 4px;
-            transition: all 0.3s;
+            font-size: 22px;
+            border-radius: 0px; /* 정사각형 감성 매칭 */
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .cta-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
+        /* 오른쪽 정사각형 느낌의 서브 비주얼 공간 */
         .cta-image {
-            background: rgba(0,0,0,0.1) url('http://googleusercontent.com/image_collection/image_retrieval/13405138261494377418') center/cover;
-            min-height: 500px;
+            background: linear-gradient(rgba(154, 30, 35, 0.2), rgba(154, 30, 35, 0.2)),
+                        url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
+            min-height: 600px;
         }
 
+        /* 섹션 4: 하단 정보 공간 */
         #contact {
-            min-height: 60vh;
-            background-color: #1a1a1a;
+            min-height: 50vh;
+            background-color: #111827;
             color: white;
-            padding: 80px;
+            padding: 100px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: flex-start;
         }
 
         #contact h3 {
-            font-size: 32px;
+            font-size: 28px;
+            font-weight: 900;
             color: var(--gvcs-red);
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
         }
 
         .contact-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 50px;
             width: 100%;
         }
 
         .contact-item h4 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #ddd;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #f3f4f6;
+            letter-spacing: 1px;
         }
 
         .contact-item p {
             font-size: 16px;
-            color: #999;
+            color: #9ca3af;
+            font-weight: 300;
         }
 
-        @media (max-width: 768px) {
+        /* 모바일 최적화 레이아웃 */
+        @media (max-width: 1024px) {
             #results-cta { grid-template-columns: 1fr; }
-            .cta-content { padding: 40px; text-align: center; }
-            .cta-btn { margin: 0 auto; }
-            .cta-image { min-height: 300px; order: -1; }
+            .cta-content { padding: 60px 40px; text-align: center; align-items: center; }
+            .cta-content h2 { text-align: center; }
+            .cta-image { min-height: 400px; }
         }
     </style>
 </head>
@@ -177,7 +197,7 @@
 
     <section id="identity">
         <div class="logo-box">
-            <img src="http://googleusercontent.com/image_collection/image_retrieval/10754496744208248365" alt="글로벌선진학교 로고">
+            <img src="https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/KakaoTalk_Image_2026-04-03-14-58-55_003.png" alt="GVCS 글로벌선진학교 로고">
         </div>
         <p class="slogan">
             "글로벌선진학교는 <strong>100억명</strong>을 섬기는<br>
@@ -188,7 +208,7 @@
     <section id="results-cta">
         <div class="cta-content">
             <h2>글로벌선진학교<br>대학 입시 결과<br>확인하러 가기</h2>
-            <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="cta-btn">결과 확인하기 <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></a>
         </div>
         <div class="cta-image"></div>
     </section>
@@ -202,11 +222,11 @@
             </div>
             <div class="contact-item">
                 <h4>PHONE</h4>
-                <p>043-871-7000 / 1588-9147</p>
+                <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
             </div>
             <div class="contact-item">
-                <h4>ADMISSION</h4>
-                <p>admissions@gvcs-es.org</p>
+                <h4>ONLINE</h4>
+                <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
             </div>
         </div>
     </section>
