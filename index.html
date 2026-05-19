@@ -9,15 +9,16 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { width: 100%; height: 100%; background: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
 
-        /* 상단바: 기본 상태(투명) / 스크롤 시 상태(.scrolled) */
+        /* 상단바: 기본 상태(투명하지만 로고 가독성을 위한 그라데이션 유지) */
         .header-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 90px; 
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 50px; z-index: 9999;
-            /* 📌 로고 가독성을 위한 상단 고정 그라데이션 */
+            /* 위쪽 검은색 그라데이션 */
             background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
             transition: background 0.4s ease;
         }
+        /* 스크롤 시 블러 처리된 어두운 배경으로 변경 */
         .header-bar.scrolled { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
         
         .header-logo { height: 50px; display: flex; align-items: center; }
@@ -30,7 +31,6 @@
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* 메인 이미지 */
         #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; }
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); display: flex; align-items: center; padding: 100px; color: white; }
     </style>
@@ -68,7 +68,7 @@
 
         function update() {
             sections[1].style.transform = currentIdx === 1 ? 'translateY(0)' : 'translateY(100vh)';
-            // 스크롤 시 그라데이션에서 블러 배경으로 전환
+            // 스크롤 위치에 따라 클래스 토글
             if(currentIdx > 0) navbar.classList.add('scrolled');
             else navbar.classList.remove('scrolled');
         }
