@@ -28,8 +28,7 @@
             height: 100%;
             background-color: #000;
             font-family: 'Noto Sans KR', sans-serif;
-            /* 자바스크립트로 강제 제어하기 위해 기본 브라우저 스냅은 해제하고 스크롤바 감춤 */
-            overflow: hidden; 
+            overflow: hidden; /* 강제 스냅 스크롤 제어를 위해 기본 스크롤바 숨김 */
         }
 
         /* --------------------------------------------------
@@ -84,7 +83,7 @@
         }
 
         /* --------------------------------------------------
-           🍏 전체 페이지 가상 휠 컨테이너 (애플식 스무스 트랜지션)
+           🍏 애플 스타일 스무스 트랜지션 레이아웃 (Contact 제거)
         -------------------------------------------------- */
         .main-wrapper {
             width: 100%;
@@ -98,7 +97,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+            /* ⏳ 0.8초 -> 1.4초로 대폭 늘려 묵직하고 고급스럽게 연출 (애플 감성 큐빅 베지에) */
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
         }
 
@@ -121,14 +121,14 @@
             text-align: center;
         }
 
-        /* [섹션 2] 아래에서 오버랩되며 치고 올라올 입시 결과 섹션 */
+        /* [섹션 2] 아래에서 진중하게 치고 올라올 입시 결과 섹션 */
         #section-results {
             z-index: 3;
             background-color: var(--gvcs-red);
             color: white;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            transform: translateY(100vh); /* 처음에 대기 상태로 아래 숨겨둠 */
+            transform: translateY(100vh); /* 처음에 하단 대기 */
             box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.5);
         }
 
@@ -173,55 +173,12 @@
                         url('https://raw.githubusercontent.com/gvcs-es/gvcs-es.github.io/main/GVCS%20%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC%20%E1%84%87%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%BC.jpg') center/cover no-repeat;
         }
 
-        /* [섹션 3] 하단 정보 창 */
-        #section-contact {
-            z-index: 4;
-            background-color: #111827;
-            color: white;
-            padding: 100px 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            transform: translateY(100vh); /* 마찬가지로 아래 대기 */
-        }
-
-        #section-contact h3 {
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--gvcs-red);
-            margin-bottom: 50px;
-            letter-spacing: 2px;
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 50px;
-            width: 100%;
-        }
-
-        .contact-item h4 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #f3f4f6;
-            letter-spacing: 1px;
-        }
-
-        .contact-item p {
-            font-size: 16px;
-            color: #9ca3af;
-            font-weight: 300;
-        }
-
         @media (max-width: 1024px) {
             html, body { overflow-y: auto; height: auto; }
             .page-section { position: relative; height: auto; min-height: 100vh; transform: none !important; opacity: 1 !important; }
             #section-results { grid-template-columns: 1fr; }
             .cta-content { padding: 80px 40px; text-align: center; align-items: center; }
             .cta-image { min-height: 300px; }
-            #section-contact { padding: 60px 40px; }
         }
     </style>
 </head>
@@ -234,7 +191,6 @@
         <ul class="header-menu">
             <li><a href="javascript:void(0);" onclick="goToSection(0)">HOME</a></li>
             <li><a href="javascript:void(0);" onclick="goToSection(1)">입시결과</a></li>
-            <li><a href="javascript:void(0);" onclick="goToSection(2)">CONTACT</a></li>
         </ul>
     </header>
 
@@ -252,56 +208,7 @@
             <div class="cta-image"></div>
         </div>
 
-        <div id="section-contact" class="page-section">
-            <h3>CONTACT INFO</h3>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <h4>LOCATION</h4>
-                    <p>충청북도 음성군 원남면 원중로 406-9</p>
-                </div>
-                <div class="contact-item">
-                    <h4>PHONE</h4>
-                    <p>대표번호: 043-871-7000<br>입학문의: 1588-9147</p>
-                </div>
-                <div class="contact-item">
-                    <h4>ONLINE</h4>
-                    <p>admissions@gvcs-es.org<br>www.gvcs-es.org</p>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        let currentIdx = 0;
-        const sections = document.querySelectorAll('.page-section');
-        const totalSections = sections.length;
-        let isScrolling = false;
-
-        // 마우스 휠 이벤트 가로채기
-        window.addEventListener('wheel', (e) => {
-            if (window.innerWidth <= 1024) return; // 모바일/태블릿 인터셉트 제외
-            e.preventDefault();
-
-            if (isScrolling) return;
-
-            // e.deltaY 값이 클 때(임계값 돌파 시)만 작동하도록 세팅
-            // 살짝 흔들린 미세 스크롤은 무시하고, 확실하게 밀었을 때 다음 칸으로 스냅 연출
-            if (Math.abs(e.deltaY) > 35) {
-                if (e.deltaY > 0) {
-                    // 아래로 스크롤 -> 다음 섹션 이동 (임계값 돌파 성공)
-                    if (currentIdx < totalSections - 1) {
-                        currentIdx++;
-                        updateSections();
-                    }
-                } else {
-                    // 위로 스크롤 -> 이전 섹션 이동
-                    if (currentIdx > 0) {
-                        currentIdx--;
-                        updateSections();
-                    }
-                }
-            }
-        }, { passive: false });
-
-        // 화면
+        let
