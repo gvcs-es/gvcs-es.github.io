@@ -36,10 +36,12 @@
         
         /* 📌 텍스트 이미지 배치를 위한 컨테이너: 가로 배치로 변경 */
         .hero-text-container {
-            position: absolute; bottom: 80px; left: 40px;
-            display: flex; flex-direction: row; align-items: flex-end; gap: 20px;
+            position: absolute; bottom: 100px; left: 60px; /* 📌 위치를 좀 더 오른쪽과 위로 이동 */
+            display: flex; flex-direction: row; align-items: flex-end; gap: 10px; /* 📌 간격 조정 */
         }
-        .hero-text-container img { width: auto; max-height: 80px; object-fit: contain; }
+        /* 📌 GVCS는 크게, 서브 텍스트는 비율에 맞게 크기 개별 지정 */
+        .img-gvcs { height: 160px; } 
+        .img-sub { height: 50px; padding-bottom: 15px; } /* 📌 GVCS 하단 라인에 맞게 미세 조정 */
 
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); display: flex; align-items: center; padding: 100px; color: white; }
     </style>
@@ -59,8 +61,8 @@
     <div class="main-wrapper">
         <div id="section-hero" class="page-section">
             <div class="hero-text-container">
-                <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" style="height: 120px; width: auto;">
-                <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" style="height: 60px; width: auto;">
+                <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
+                <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" class="img-sub">
             </div>
         </div>
         <div id="section-results" class="page-section">
