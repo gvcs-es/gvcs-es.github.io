@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GVCS-ES Official</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Helvetica Neue', sans-serif;
+            transition: background-color 0.5s ease; 
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* 1. 노트북 / 큰 화면 (기본 상태 - 블루) */
+        body { background-color: #0077b6; }
+        h1 { color: #0077b6; }
+        h1::after { content: " 💻 (노트북 버전)"; }
+
+        /* 2. 모바일 / 작은 화면 (너비 768px 이하일 때 - 다크 모드) */
+        @media (max-width: 768px) {
+            body { background-color: #1a1a1a; }
+            h1 { color: #1a1a1a; }
+            h1::after { content: " 📱 (모바일 버전)"; }
+            .card { width: 80%; padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>GVCS-ES 사이트 가동!</h1>
+        <p>노트북에서는 창 크기를 줄여보시고, 모바일에서는 QR이나 링크로 접속해 보세요.</p>
+    </div>
+
+</body>
+</html>
