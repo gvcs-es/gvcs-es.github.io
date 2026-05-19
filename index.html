@@ -4,46 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GVCS 글로벌선진학교 음성캠퍼스</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --gvcs-red: #9a1e23; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { width: 100%; height: 100%; background: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
 
-        /* 📌 초기 상단바 숨김 및 스크롤 시 등장 애니메이션 */
+        /* 상단바: 기본은 투명(hidden), 스크롤 시 등장 */
         .header-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 80px; 
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 40px; z-index: 9999;
             background: transparent;
-            transition: background 0.4s ease;
+            transition: background 0.4s ease, opacity 0.4s ease;
+            opacity: 0; /* 첫 화면엔 숨김 */
         }
         .header-bar.scrolled {
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+            opacity: 1; /* 스크롤 시 등장 */
         }
         
-        .header-logo { height: 56px; display: flex; align-items: center; text-decoration: none; opacity: 0; transition: opacity 0.5s ease; }
-        .header-bar.scrolled .header-logo { opacity: 1; }
-        .header-logo img { height: 56px; width: auto; }
+        .header-logo { height: 50px; display: flex; align-items: center; }
+        .header-logo img { height: 50px; width: auto; }
         
-        .header-menu { display: flex; list-style: none; gap: 40px; opacity: 0; transition: opacity 0.5s ease; }
-        .header-bar.scrolled .header-menu { opacity: 1; }
-        .header-menu a { color: white; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .header-menu { display: flex; list-style: none; gap: 40px; }
+        .header-menu a { color: white; text-decoration: none; font-size: 15px; font-weight: 500; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        #section-hero { 
-            z-index: 1; 
-            background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat;
-        }
-        
-        #section-results { 
-            z-index: 2; background: var(--gvcs-red); color: white; display: grid; grid-template-columns: 1fr 1fr;
-            transform: translateY(100vh);
-        }
-        .cta-content { padding: 100px; display: flex; flex-direction: column; justify-content: center; }
-        .cta-btn { display: inline-block; width: fit-content; padding: 20px 40px; background: white; color: var(--gvcs-red); text-decoration: none; font-weight: 700; margin-top: 20px; }
+        #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; }
+        #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); display: flex; align-items: center; padding: 100px; color: white; }
     </style>
 </head>
 <body>
@@ -52,7 +42,7 @@
             <img src="https://i.imgur.com/fgXI0Gf.png" alt="Logo">
         </a>
         <ul class="header-menu">
-            <li><a href="#">입시결과</a></li>
+            <li><a href="javascript:goToSection(1)">입시결과</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
     </header>
@@ -60,11 +50,7 @@
     <div class="main-wrapper">
         <div id="section-hero" class="page-section"></div>
         <div id="section-results" class="page-section">
-            <div class="cta-content">
-                <h2>글로벌선진학교<br>대학 입시 결과 확인</h2>
-                <a href="#" class="cta-btn">결과 확인하기</a>
-            </div>
-            <div></div>
+            <h2>글로벌선진학교 대학 입시 결과 확인</h2>
         </div>
     </div>
 
@@ -85,15 +71,15 @@
 
         function update() {
             isScrolling = true;
-            sections[0].style.opacity = currentIdx === 0 ? '1' : '0';
             sections[1].style.transform = currentIdx === 1 ? 'translateY(0)' : 'translateY(100vh)';
             
-            // 상단바 등장 제어
-            if(currentIdx > 0) navbar.classList.add('scrolled');
+            // 상단바 로직: 2번째 섹션일 때만 보이게
+            if(currentIdx === 1) navbar.classList.add('scrolled');
             else navbar.classList.remove('scrolled');
             
             setTimeout(() => isScrolling = false, 1400);
         }
+        function goToSection(idx) { currentIdx = idx; update(); }
     </script>
 </body>
 </html>
