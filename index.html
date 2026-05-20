@@ -154,9 +154,9 @@
             let accumulated = 0;
             window.addEventListener('wheel', (e) => {
                 const now = Date.now();
-                if(now - lastScroll > 1000) accumulated = 0;
+                if(now - lastScroll > 800) accumulated = 0;
                 accumulated += Math.abs(e.deltaY);
-                if(accumulated > 150 && now - lastScroll > 1000) {
+                if(accumulated > 50 && now - lastScroll > 800) {
                     lastScroll = now;
                     accumulated = 0;
                     if(e.deltaY > 0 && currentIdx < maxIdx) currentIdx++;
