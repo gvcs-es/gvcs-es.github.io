@@ -150,8 +150,11 @@
             const sec2026 = document.getElementById('section-results');
             const sec2025 = document.getElementById('section-results-2025');
 
+            let lastScroll = 0;
             window.addEventListener('wheel', (e) => {
-                if(Math.abs(e.deltaY) > 35) {
+                const now = Date.now();
+                if(Math.abs(e.deltaY) > 80 && now - lastScroll > 1000) {
+                    lastScroll = now;
                     if(e.deltaY > 0 && currentIdx < maxIdx) currentIdx++;
                     else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
                     update();
