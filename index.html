@@ -10,16 +10,11 @@
         html, body { width: 100%; height: 100%; background: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
 
         .header-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 150px; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px; 
             display: flex; justify-content: space-between; align-items: center;
-            /* 📌 좌우 여백 20px 유지 */
             padding: 0 20px; z-index: 9999;
-            /* 📌 세로 범위를 길게 늘리기 위해 0~100%까지의 그라데이션 완만하게 조정 */
             background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%);
             transition: background 0.5s ease;
-            /* 로고와 메뉴가 상단에 붙도록 정렬 */
-            align-items: flex-end;
-            padding-top: 20px;
         }
         .header-bar.scrolled { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
         
