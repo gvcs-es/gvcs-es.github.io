@@ -54,7 +54,7 @@
         @media (max-width: 700px) {
             html, body { overflow: auto; height: auto; }
             .main-wrapper { height: auto; position: static; }
-            .page-section { position: static; height: auto; transform: none !important; }
+            .page-section { position: static; height: auto; transform: none !important; transition: none !important; }
 
             #section-hero {
                 display: flex; flex-direction: column;
@@ -68,8 +68,7 @@
                 display: block;
                 width: 90%;
                 margin: 0 auto;
-                aspect-ratio: 9 / 16;
-                max-height: 55vh;
+                aspect-ratio: 16 / 9;
                 background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat;
                 flex-shrink: 0;
                 border: 1.5px solid #000;
@@ -137,7 +136,7 @@
                     <h1>CLASS OF 2026</h1>
                     <h2>대학 입시결과</h2>
                 </div>
-                <a href="admission.html" class="results-btn" onclick="document.body.style.transition='transform 0.5s ease';document.body.style.transform='translateY(-100vh)';setTimeout(()=>window.location.href='admission.html',500);return false;">확인하러 가기</a>
+                <a href="admission.html" class="results-btn">확인하러 가기</a>
             </div>
         </div>
     </div>
