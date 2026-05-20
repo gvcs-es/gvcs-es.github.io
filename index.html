@@ -152,16 +152,19 @@
 
             let lastScroll = 0;
             let accumulated = 0;
+            let scrolling = false;
             window.addEventListener('wheel', (e) => {
+                e.preventDefault();
                 const now = Date.now();
-                if(now - lastScroll > 500) accumulated = 0;
+                if(scrolling) return;
                 accumulated += Math.abs(e.deltaY);
-                if(accumulated > 20 && now - lastScroll > 500) {
-                    lastScroll = now;
+                if(accumulated > 20) {
+                    scrolling = true;
                     accumulated = 0;
                     if(e.deltaY > 0 && currentIdx < maxIdx) currentIdx++;
                     else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
                     update();
+                    setTimeout(() => { scrolling = false; accumulated = 0; }, 900);
                 }
             }, {passive: false});
 
