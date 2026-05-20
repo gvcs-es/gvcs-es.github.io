@@ -34,6 +34,7 @@
 
         #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; position: relative; }
         
+        /* 📌 텍스트 이미지 배치: 기존 구조 유지 */
         .hero-text-container {
             position: absolute; 
             bottom: 30px; 
@@ -41,12 +42,12 @@
             display: flex; 
             flex-direction: row; 
             align-items: flex-end; 
-            gap: 20px;
+            gap: 15px; /* 시각적 밸런스를 위해 간격 미세 조정 */
         }
         
-        /* 📌 기존 비율은 유지하면서 높이만 각각 120px, 45px로 축소 */
-        .img-gvcs { height: 120px; width: auto; } 
-        .img-sub { height: 45px; width: auto; margin-bottom: 8px; }
+        /* 📌 분석된 시각적 비율을 반영하여 동일 높이로 설정 */
+        .img-gvcs { height: 140px; width: auto; } 
+        .img-sub { height: 140px; width: auto; }
 
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); display: flex; align-items: center; padding: 100px; color: white; }
     </style>
