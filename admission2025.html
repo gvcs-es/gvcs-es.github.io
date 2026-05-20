@@ -16,6 +16,19 @@
         .admission-img { width: 100%; max-width: 1000px; height: auto; display: block; }
         .mobile-img { display: none; }
         @media (max-width: 700px) { .pc-img { display: none; } .mobile-img { display: block; max-width: 100%; } }
+        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.side-overlay.open { opacity: 1; pointer-events: all; }
+.side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
+.side-menu.open { right: 0; }
+.side-nav { display: flex; flex-direction: column; gap: 0; }
+.side-nav-item { border-bottom: none; }
+.side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
+.side-nav-item a:hover, .side-nav-item .nav-label:hover { color: rgba(255,255,255,0.5); }
+.nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
+.side-nav-item:hover .nav-sub { display: flex; }
+.nav-sub a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; }
+.nav-sub a:hover { color: white; }
+@media (max-width: 700px) { .side-menu { width: 80%; right: -80%; } .nav-sub { display: none !important; } }
     </style>
 </head>
 <body>
@@ -31,5 +44,6 @@
         <img src="https://i.imgur.com/0osoD6r.png" alt="GVCS 입시결과 2025" class="admission-img pc-img">
         <img src="https://i.imgur.com/C2e8nYj.png" alt="GVCS 입시결과 2025" class="admission-img mobile-img">
     </div>
+    
 </body>
 </html>
