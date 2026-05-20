@@ -44,6 +44,31 @@
         <img src="https://i.imgur.com/0osoD6r.png" alt="GVCS 입시결과 2025" class="admission-img pc-img">
         <img src="https://i.imgur.com/C2e8nYj.png" alt="GVCS 입시결과 2025" class="admission-img mobile-img">
     </div>
-    
+    <div class="side-overlay" id="overlay" onclick="closeSideMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <nav class="side-nav">
+        <div class="side-nav-item">
+            <a href="index.html">Home</a>
+        </div>
+        <div class="side-nav-item">
+            <div class="nav-label">입시결과</div>
+            <div class="nav-sub">
+                <a href="admission.html">2026</a>
+                <a href="admission2025.html">2025</a>
+            </div>
+        </div>
+    </nav>
+</div>
+<script>
+    function toggleSideMenu() {
+        document.getElementById('sideMenu').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('open');
+    }
+    function closeSideMenu() {
+        document.getElementById('sideMenu').classList.remove('open');
+        document.getElementById('overlay').classList.remove('open');
+    }
+    document.querySelector('.menu-btn').addEventListener('click', toggleSideMenu);
+</script>
 </body>
 </html>
