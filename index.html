@@ -10,17 +10,17 @@
         html, body { width: 100%; height: 100%; background: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
 
         .header-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 20px; z-index: 9999;
             background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%);
             transition: background 0.5s ease;
         }
-        .header-bar.scrolled { height: 70px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
-        
+        .header-bar.scrolled { height: 70px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
+
         .header-logo { height: 50px; display: flex; align-items: center; z-index: 10000; }
         .header-logo img { height: 50px; width: auto; }
-        
+
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; z-index: 10000; }
         .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; }
 
@@ -28,43 +28,86 @@
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
 
         #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; position: relative; }
-        
-        /* 📌 텍스트 이미지 배치: 기존 구조 유지 */
+
         .hero-text-container {
-            position: absolute; 
-            bottom: 30px; 
-            left: 30px; 
-            display: flex; 
-            flex-direction: row; 
-            align-items: flex-end; 
-            gap: 15px; /* 시각적 밸런스를 위해 간격 미세 조정 */
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            gap: 15px;
         }
-        
-        /* 📌 분석된 시각적 비율을 반영하여 동일 높이로 설정 */
+
         .img-gvcs { height: 175px; width: auto; flex-shrink: 0; }
-.img-sub { height: 120px; width: auto; flex-shrink: 0; }
+        .img-sub { height: 120px; width: auto; flex-shrink: 0; }
 
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); color: white; }
         .results-content { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 110px 40px 40px; }
-.results-title h1 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
-.results-title h2 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
-.results-btn { align-self: flex-end; border: 2px solid white; color: white; padding: 18px 40px; font-size: 18px; text-decoration: none; transition: all 0.3s ease; }
-.results-btn:hover { background: white; color: var(--gvcs-red); }
-@media (max-width: 700px) {
-    #section-hero { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; background: var(--gvcs-red); padding-top: 90px; }
-    #section-hero::before { content: ''; display: block; width: 90%; margin: 0 auto; height: 35vh; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; flex-shrink: 0; border: 1.5px solid #000; }
-    .hero-text-container { position: static; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 24px; padding-left: 5%; }
-    .img-gvcs { height: 80px; }
-    .img-sub { height: 50px; }
-    .header-bar { background: rgba(0,0,0,0.7) !important; backdrop-filter: blur(10px); }
-    .mobile-divider { display: block; width: 90%; margin: 20px auto 14px; border: none; border-top: 1.5px solid white; }
-    .mobile-scroll-hint { display: block; width: 90%; margin: 0 auto; color: white; font-size: 13px; }
-    .results-content { padding: 110px 24px 24px; }
-    .results-title h1 { font-size: 60px; }
-    .results-title h2 { font-size: 60px; }
-    .results-btn { font-size: 14px; padding: 14px 24px; }
-}
-.mobile-divider, .mobile-scroll-hint { display: none; }
+        .results-title h1 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
+        .results-title h2 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
+        .results-btn { align-self: flex-end; border: 2px solid white; color: white; padding: 18px 40px; font-size: 18px; text-decoration: none; transition: all 0.3s ease; }
+        .results-btn:hover { background: white; color: var(--gvcs-red); }
+
+        .mobile-divider, .mobile-scroll-hint { display: none; }
+
+        @media (max-width: 700px) {
+            html, body { overflow: auto; height: auto; }
+            .main-wrapper { height: auto; position: static; }
+            .page-section { position: static; height: auto; transform: none !important; }
+
+            #section-hero {
+                display: flex; flex-direction: column;
+                justify-content: flex-start; align-items: flex-start;
+                background: var(--gvcs-red);
+                padding-top: 90px; padding-bottom: 40px;
+                min-height: 100vh;
+            }
+            #section-hero::before {
+                content: '';
+                display: block;
+                width: 90%;
+                margin: 0 auto;
+                aspect-ratio: 9 / 16;
+                max-height: 55vh;
+                background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat;
+                flex-shrink: 0;
+                border: 1.5px solid #000;
+            }
+            .hero-text-container {
+                position: static;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                margin-top: 24px;
+                padding-left: 5%;
+            }
+            .img-gvcs { height: 70px; }
+            .img-sub { height: 50px; }
+
+            .mobile-divider {
+                display: block;
+                width: 90%;
+                margin: 24px auto 14px;
+                border: none;
+                border-top: 1.5px solid white;
+            }
+            .mobile-scroll-hint {
+                display: block;
+                width: 90%;
+                margin: 0 auto;
+                color: white;
+                font-size: 13px;
+            }
+
+            .header-bar { background: rgba(0,0,0,0.7) !important; backdrop-filter: blur(10px); }
+
+            #section-results { min-height: 100vh; }
+            .results-content { padding: 80px 24px 40px; }
+            .results-title h1 { font-size: 60px; }
+            .results-title h2 { font-size: 60px; }
+            .results-btn { font-size: 14px; padding: 14px 24px; }
+        }
     </style>
 </head>
 <body>
@@ -85,10 +128,8 @@
                 <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
                 <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" class="img-sub">
             </div>
-            </div>
             <hr class="mobile-divider">
             <span class="mobile-scroll-hint">아래로 스크롤하여 대학 입시 결과 보러가기</span>
-        </div>
         </div>
         <div id="section-results" class="page-section">
             <div class="results-content">
@@ -102,21 +143,24 @@
     </div>
 
     <script>
-        let currentIdx = 0;
-        const sections = document.querySelectorAll('.page-section');
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('wheel', (e) => {
-            if(Math.abs(e.deltaY) > 35) {
-                if(e.deltaY > 0 && currentIdx < 1) currentIdx++;
-                else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
-                update();
-            }
-        }, {passive: false});
+        const isMobile = window.innerWidth <= 700;
+        if (!isMobile) {
+            let currentIdx = 0;
+            const sections = document.querySelectorAll('.page-section');
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('wheel', (e) => {
+                if(Math.abs(e.deltaY) > 35) {
+                    if(e.deltaY > 0 && currentIdx < 1) currentIdx++;
+                    else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
+                    update();
+                }
+            }, {passive: false});
 
-        function update() {
-            sections[1].style.transform = currentIdx === 1 ? 'translateY(0)' : 'translateY(100vh)';
-            if(currentIdx > 0) navbar.classList.add('scrolled');
-            else navbar.classList.remove('scrolled');
+            function update() {
+                sections[1].style.transform = currentIdx === 1 ? 'translateY(0)' : 'translateY(100vh)';
+                if(currentIdx > 0) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
+            }
         }
     </script>
 </body>
