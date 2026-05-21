@@ -141,8 +141,10 @@
         }
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99990; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
 #popup-overlay.open { opacity: 1; pointer-events: all; }
-#popup { position: fixed; top: 50%; left: 50%; transform: translate(-150%, -50%); width: 560px; max-height: 80vh; background: #9a1e23; border-radius: 0; z-index: 99991; padding: 40px; overflow-y: auto; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
-#popup.open { transform: translate(-50%, -50%); }
+#popup-wrap { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; max-height: 80vh; overflow: hidden; z-index: 99991; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
+#popup-wrap.open { width: 560px; }
+#popup { width: 560px; background: #9a1e23; border-radius: 0; padding: 40px; overflow-y: auto; max-height: 80vh; }
+#popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
 #popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
     </style>
 </head>
@@ -291,20 +293,23 @@
             mobileOnlyEls.forEach(el => el.style.display = 'none');
         }
         function closePopup() {
-    document.getElementById('popup').classList.remove('open');
+    document.getElementById('popup-wrap').classList.remove('open');
     document.getElementById('popup-overlay').classList.remove('open');
 }
 setTimeout(() => {
-    document.getElementById('popup').classList.add('open');
+    document.getElementById('popup-wrap').classList.add('open');
     document.getElementById('popup-overlay').classList.add('open');
 }, 300);
     </script>
     <!-- 팝업 -->
 <div id="popup-overlay" onclick="closePopup()"></div>
-<div id="popup">
-    <button id="popup-close" onclick="closePopup()">✕</button>
-    <div id="popup-content">
-        <!-- 내용 여기 -->
+<div id="popup-wrap">
+<div id="popup-wrap">
+    <div id="popup">
+        <button id="popup-close" onclick="closePopup()">✕</button>
+        <div id="popup-content">
+            <!-- 내용 여기 -->
+        </div>
     </div>
 </div>
 </body>
