@@ -17,74 +17,43 @@
             transition: background 0.5s ease;
         }
         .header-bar.scrolled { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
-
         .header-logo { height: 50px; display: flex; align-items: center; z-index: 10000; }
         .header-logo img { height: 50px; width: auto; }
-
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; z-index: 10000; }
         .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s ease; }
 
-        /* 사이드 메뉴 */
-        .side-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 99998;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
+        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .side-overlay.open { opacity: 1; pointer-events: all; }
-
-        .side-menu {
-            position: fixed; top: 0; right: -320px; width: 320px; height: 100vh;
-            background: rgba(10,10,10,0.97); backdrop-filter: blur(20px);
-            z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1);
-            display: flex; flex-direction: column; padding: 100px 50px 50px;
-        }
+        .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
         .side-menu.open { right: 0; }
-
         .side-nav { display: flex; flex-direction: column; gap: 0; }
-
         .side-nav-item { border-bottom: none; }
-
-        .side-nav-item a,
-        .side-nav-item .nav-label {
-            display: block; color: white; text-decoration: none;
-            font-size: 26px; font-weight: 400;
-            padding: 16px 0; cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .side-nav-item a:hover,
-        .side-nav-item .nav-label:hover { color: rgba(255,255,255,0.5); }
-
-        /* PC 드롭다운 */
-        .nav-sub {
-            display: none;
-            flex-direction: column; gap: 4px;
-            padding: 0 0 14px 12px;
-        }
+        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
+        .side-nav-item a:hover, .side-nav-item .nav-label:hover { color: rgba(255,255,255,0.5); }
+        .nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
         .side-nav-item:hover .nav-sub { display: flex; }
-        .nav-sub a {
-            font-size: 17px; font-weight: 400;
-            color: rgba(255,255,255,0.6); padding: 5px 0;
-            border-bottom: none;
-        }
+        .nav-sub a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; border-bottom: none; }
         .nav-sub a:hover { color: white; }
-
-        /* 모바일 토글 */
         .nav-label-wrap { display: flex; align-items: center; justify-content: space-between; }
-        .nav-toggle-arrow { color: white; font-size: 18px; transition: transform 0.3s; }
-        .nav-sub-mobile { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
-        .nav-sub-mobile.open { display: flex; }
-        .nav-sub-mobile a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; text-decoration: none; display: block; }
-        .nav-sub-mobile a:hover { color: white; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
 
-        #section-hero { z-index: 1; background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat; position: relative; }
+        /* 히어로 슬라이드쇼 */
+        #section-hero { z-index: 1; position: relative; overflow: hidden; }
+        .hero-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: opacity 1.2s ease;
+        }
+        .hero-slide.pc-slide { opacity: 0; }
+        .hero-slide.pc-slide.active { opacity: 1; }
+
         #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); color: white; }
         #section-results-2025 { z-index: 3; background: var(--gvcs-blue); transform: translateY(200vh); color: white; }
 
         .hero-text-container {
-            position: absolute; bottom: 30px; left: 30px;
+            position: absolute; bottom: 30px; left: 30px; z-index: 10;
             display: flex; flex-direction: row; align-items: flex-end; gap: 15px;
         }
         .img-gvcs { height: 175px; width: auto; flex-shrink: 0; }
@@ -98,6 +67,14 @@
 
         .mobile-divider, .mobile-scroll-hint { display: none; }
 
+        /* 팝업 */
+        #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99990; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        #popup-overlay.open { opacity: 1; pointer-events: all; }
+        #popup-wrap { position: fixed; top: 50%; left: calc(50% - 280px); transform: translateY(-50%); width: 0; max-height: 80vh; overflow: hidden; z-index: 99991; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
+        #popup-wrap.open { width: 560px; }
+        #popup { width: 560px; background: #9a1e23; border-radius: 0; padding: 40px; overflow-y: auto; max-height: 80vh; position: relative; }
+        #popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
+
         @media (max-width: 700px) {
             html, body { overflow: auto; height: auto; }
             .main-wrapper { height: auto; position: static; }
@@ -108,25 +85,37 @@
                 justify-content: flex-start; align-items: flex-start;
                 background: var(--gvcs-red);
                 padding-top: 90px; padding-bottom: 40px;
-                min-height: 100vh;
+                min-height: 100vh; overflow: hidden;
             }
-            #section-hero::before {
-                content: '';
-                display: block; width: 90%; margin: 0 auto;
+
+            /* 모바일 슬라이드쇼 - 디졸브 */
+            .mobile-bg-wrap {
+                display: block;
+                width: 90%; margin: 0 auto;
                 aspect-ratio: 16 / 9;
-                background: url('https://i.imgur.com/BCMjATY.png') center/cover no-repeat;
-                flex-shrink: 0; border: 1.5px solid #000;
+                position: relative;
+                flex-shrink: 0;
+                border: 1.5px solid #000;
             }
+            .mobile-slide {
+                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                background-size: cover; background-position: center;
+                opacity: 0; transition: opacity 1.2s ease;
+            }
+            .mobile-slide.active { opacity: 1; }
+
+            /* PC 슬라이드 숨기기 */
+            .hero-slide { display: none; }
+
             .hero-text-container {
                 position: static; flex-direction: column; align-items: flex-start;
                 gap: 16px; margin-top: 24px; padding-left: 5%;
             }
             .img-gvcs { height: 70px; }
-            .img-sub { height: 50px; }
+            .img-sub { height: 50px; margin-bottom: 0; }
 
             .mobile-divider { display: block; width: 90%; margin: 24px auto 14px; border: none; border-top: 1.5px solid white; }
             .mobile-scroll-hint { display: block; width: 90%; margin: 0 auto; color: white; font-size: 13px; }
-
             .header-bar { background: rgba(0,0,0,0.7) !important; backdrop-filter: blur(10px); }
 
             #section-results, #section-results-2025 { min-height: auto; padding: 0; }
@@ -135,17 +124,14 @@
             .results-title h2 { font-size: 36px; line-height: 1.1; }
             .results-btn { align-self: flex-start; font-size: 14px; padding: 14px 24px; }
 
-            /* 모바일 사이드메뉴 */
             .side-menu { width: 80%; right: -80%; }
             .nav-sub { display: none !important; }
+
+            /* 모바일 팝업 */
+            #popup-wrap { left: 5%; transform: translateY(-50%); }
+            #popup-wrap.open { width: 90vw; }
+            #popup { width: 90vw; padding: 28px 24px; }
         }
-        #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99990; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
-#popup-overlay.open { opacity: 1; pointer-events: all; }
-#popup-wrap { position: fixed; top: 50%; left: calc(50% - 280px); transform: translateY(-50%); width: 0; max-height: 80vh; overflow: hidden; z-index: 99991; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
-#popup-wrap.open { width: 560px; }
-#popup { width: 560px; background: #9a1e23; border-radius: 0; padding: 40px; overflow-y: auto; max-height: 80vh; }
-#popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
-#popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
     </style>
 </head>
 <body>
@@ -155,14 +141,12 @@
             <div class="side-nav-item">
                 <a href="#" onclick="goHome(); closeSideMenu(); return false;">Home</a>
             </div>
-            <div class="side-nav-item" id="admissionNavItem">
-                <!-- PC: hover 드롭다운 -->
+            <div class="side-nav-item">
                 <div class="nav-label pc-only">입시결과</div>
                 <div class="nav-sub pc-only">
                     <a href="#" onclick="goTo(1); closeSideMenu(); return false;">2026</a>
                     <a href="#" onclick="goTo(2); closeSideMenu(); return false;">2025</a>
                 </div>
-                <!-- 모바일: 클릭 토글 -->
                 <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('results'); closeSideMenu();">
                     <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">입시결과</span>
                 </div>
@@ -175,14 +159,22 @@
             <img src="https://i.imgur.com/fgXI0Gf.png" alt="Logo">
         </a>
         <div class="menu-btn" id="menuBtn" onclick="toggleSideMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </div>
     </header>
 
     <div class="main-wrapper">
         <div id="section-hero" class="page-section">
+            <!-- PC 슬라이드 -->
+            <div class="hero-slide pc-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
+            <div class="hero-slide pc-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
+
+            <!-- 모바일 슬라이드 -->
+            <div class="mobile-bg-wrap" id="mobileBgWrap">
+                <div class="mobile-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
+                <div class="mobile-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
+            </div>
+
             <div class="hero-text-container">
                 <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
                 <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" class="img-sub">
@@ -210,6 +202,16 @@
         </div>
     </div>
 
+    <div id="popup-overlay" onclick="closePopup()"></div>
+    <div id="popup-wrap">
+        <div id="popup">
+            <button id="popup-close" onclick="closePopup()">✕</button>
+            <div id="popup-content">
+                <!-- 내용 여기 -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // 사이드메뉴
         function toggleSideMenu() {
@@ -222,19 +224,30 @@
         }
         document.getElementById('overlay').addEventListener('click', closeSideMenu);
 
-        function toggleMobileSub() {
-            const sub = document.getElementById('mobileSubMenu');
-            const arrow = document.getElementById('arrowIcon');
-            sub.classList.toggle('open');
-            arrow.style.transform = sub.classList.contains('open') ? 'rotate(90deg)' : '';
-        }
-
         function mobileGoTo(id) {
             const el = document.getElementById('section-' + id);
             if(el) el.scrollIntoView({ behavior: 'smooth' });
         }
 
         const isMobile = window.innerWidth <= 700;
+
+        // 슬라이드쇼
+        const pcSlides = document.querySelectorAll('.pc-slide');
+        const mobileSlides = document.querySelectorAll('.mobile-slide');
+        let slideIdx = 0;
+
+        function nextSlide() {
+            if (isMobile) {
+                mobileSlides[slideIdx].classList.remove('active');
+                slideIdx = (slideIdx + 1) % mobileSlides.length;
+                mobileSlides[slideIdx].classList.add('active');
+            } else {
+                pcSlides[slideIdx].classList.remove('active');
+                slideIdx = (slideIdx + 1) % pcSlides.length;
+                pcSlides[slideIdx].classList.add('active');
+            }
+        }
+        setInterval(nextSlide, 10000);
 
         if (!isMobile) {
             let currentIdx = 0;
@@ -253,8 +266,7 @@
                 if(scrolling) return;
                 accumulated += Math.abs(e.deltaY);
                 if(accumulated > 20) {
-                    scrolling = true;
-                    accumulated = 0;
+                    scrolling = true; accumulated = 0;
                     if(e.deltaY > 0 && currentIdx < maxIdx) currentIdx++;
                     else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
                     update();
@@ -273,8 +285,7 @@
                     sec2026.style.transform = 'translateY(-100vh)';
                     sec2025.style.transform = 'translateY(0)';
                 }
-                if(currentIdx > 0) navbar.classList.add('scrolled');
-                else navbar.classList.remove('scrolled');
+                navbar.classList.toggle('scrolled', currentIdx > 0);
             }
         } else {
             function goHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -284,32 +295,20 @@
             }
         }
 
-        // PC에서 .pc-only 표시, 모바일에서 .mobile-only 표시
         const pcOnlyEls = document.querySelectorAll('.pc-only');
         const mobileOnlyEls = document.querySelectorAll('.mobile-only');
-        if(isMobile) {
-            pcOnlyEls.forEach(el => el.style.display = 'none');
-        } else {
-            mobileOnlyEls.forEach(el => el.style.display = 'none');
-        }
+        if(isMobile) { pcOnlyEls.forEach(el => el.style.display = 'none'); }
+        else { mobileOnlyEls.forEach(el => el.style.display = 'none'); }
+
+        // 팝업
         function closePopup() {
-    document.getElementById('popup-wrap').classList.remove('open');
-    document.getElementById('popup-overlay').classList.remove('open');
-}
-setTimeout(() => {
-    document.getElementById('popup-wrap').classList.add('open');
-    document.getElementById('popup-overlay').classList.add('open');
-}, 2800);
+            document.getElementById('popup-wrap').classList.remove('open');
+            document.getElementById('popup-overlay').classList.remove('open');
+        }
+        setTimeout(() => {
+            document.getElementById('popup-wrap').classList.add('open');
+            document.getElementById('popup-overlay').classList.add('open');
+        }, 2800);
     </script>
-    <!-- 팝업 -->
-<div id="popup-overlay" onclick="closePopup()"></div>
-<div id="popup-wrap">
-    <div id="popup">
-        <button id="popup-close" onclick="closePopup()">✕</button>
-        <div id="popup-content">
-            <!-- 내용 여기 -->
-        </div>
-    </div>
-</div>
 </body>
 </html>
