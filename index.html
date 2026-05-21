@@ -44,7 +44,7 @@
         .hero-slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            transition: opacity 1.2s ease;
+            transition: opacity 2s ease;
         }
         .hero-slide.pc-slide { opacity: 0; }
         .hero-slide.pc-slide.active { opacity: 1; }
@@ -237,15 +237,11 @@
         let slideIdx = 0;
 
         function nextSlide() {
-            if (isMobile) {
-                mobileSlides[slideIdx].classList.remove('active');
-                slideIdx = (slideIdx + 1) % mobileSlides.length;
-                mobileSlides[slideIdx].classList.add('active');
-            } else {
-                pcSlides[slideIdx].classList.remove('active');
-                slideIdx = (slideIdx + 1) % pcSlides.length;
-                pcSlides[slideIdx].classList.add('active');
-            }
+            pcSlides[slideIdx].classList.remove('active');
+            mobileSlides[slideIdx].classList.remove('active');
+            slideIdx = (slideIdx + 1) % pcSlides.length;
+            pcSlides[slideIdx].classList.add('active');
+            mobileSlides[slideIdx].classList.add('active');
         }
         setInterval(nextSlide, 10000);
 
