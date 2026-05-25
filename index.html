@@ -294,13 +294,16 @@
                     const container = document.querySelector('.hero-text-container');
                     const hint = document.getElementById('pc-scroll-hint');
                     hint.classList.add('visible');
+                    container.classList.add('bouncing');
                     let bounceInterval = setInterval(() => {
                         if(currentIdx > 0) { clearInterval(bounceInterval); return; }
                         container.classList.remove('bouncing');
-                        void container.offsetWidth;
-                        container.classList.add('bouncing');
-                    }, 1000);
-                    container.classList.add('bouncing');
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                container.classList.add('bouncing');
+                            });
+                        });
+                    }, 2600);
                 }, 2000);
             }
         }
