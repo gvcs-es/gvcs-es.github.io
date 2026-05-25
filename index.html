@@ -72,7 +72,10 @@
         #popup-overlay.open { opacity: 1; pointer-events: all; }
         #popup-wrap { position: fixed; top: 50%; left: calc(50% - 280px); transform: translateY(-50%); width: 0; max-height: 80vh; overflow: hidden; z-index: 99991; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
         #popup-wrap.open { width: 560px; }
-        #popup { width: 560px; background: #9a1e23; border-radius: 0; padding: 40px; overflow-y: auto; max-height: 80vh; position: relative; }
+        #popup { width: 560px; background: #000; border-radius: 0; padding: 0; overflow-y: auto; max-height: 80vh; position: relative; }
+#popup-img { width: 100%; display: block; }
+#popup-footer { padding: 16px 20px; display: flex; justify-content: flex-end; background: #000; }
+#popup-more { border: 1.5px solid white; color: white; background: none; padding: 10px 24px; font-size: 14px; cursor: pointer; }
         #popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
 
         @media (max-width: 700px) {
@@ -208,8 +211,9 @@
     <div id="popup-wrap">
         <div id="popup">
             <button id="popup-close" onclick="closePopup()">✕</button>
-            <div id="popup-content">
-                <!-- 내용 여기 -->
+            <img id="popup-img" src="https://i.imgur.com/uOpa71G.png" alt="팝업">
+            <div id="popup-footer">
+                <button id="popup-more">자세히 알아보기</button>
             </div>
         </div>
     </div>
