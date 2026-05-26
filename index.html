@@ -54,6 +54,12 @@
     100% { transform: translateY(0); }
 }
 .hero-text-container.bouncing { animation: bounce 2s ease-in-out infinite; }
+@keyframes pulse {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+#pc-scroll-hint.visible { opacity: 1; animation: pulse 2s ease-in-out infinite; }
 #pc-scroll-hint.visible { opacity: 1; }
         .img-gvcs { height: 175px; width: auto; flex-shrink: 0; }
         .img-sub { height: 150px; width: auto; flex-shrink: 0; align-self: flex-end; margin-bottom: 8px; }
@@ -104,6 +110,8 @@
             #popup-more { font-size: 12px; padding: 8px 16px; bottom: 12px; right: 12px; }
             #popup-img { border: none; outline: none; }
             #popup-close { top: 10px; right: 10px; }
+            .hero-text-container.bouncing { animation: none !important; }
+#pc-scroll-hint { display: none !important; }
         }
     </style>
 </head>
