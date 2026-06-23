@@ -154,6 +154,16 @@
                     <a href="#" onclick="goTo(1); closeSideMenu(); return false;">2026</a>
                     <a href="#" onclick="goTo(2); closeSideMenu(); return false;">2025</a>
                 </div>
+            </div>
+            <div class="side-nav-item">
+                <div class="nav-label pc-only">장학금</div>
+                <div class="nav-sub pc-only">
+                    <a href="scholarship.html">2026</a>
+                    <a href="scholarship2025.html">2025</a>
+                </div>
+                <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('results'); closeSideMenu();">
+                    <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">장학금</span>
+                </div>
                 <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('results'); closeSideMenu();">
                     <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">입시결과</span>
                 </div>
@@ -197,7 +207,10 @@
                     <h1>CLASS OF 2026</h1>
                     <h2>대학 입시결과</h2>
                 </div>
-                <a href="admission.html" class="results-btn">확인하러 가기</a>
+                <div style="display:flex;gap:16px;align-self:flex-end;">
+                    <a href="scholarship.html" class="results-btn">장학금 확인하러 가기</a>
+                    <a href="admission.html" class="results-btn">확인하러 가기</a>
+                </div>
             </div>
         </div>
         <div id="section-results-2025" class="page-section">
@@ -206,7 +219,10 @@
                     <h1>CLASS OF 2025</h1>
                     <h2>대학 입시결과</h2>
                 </div>
-                <a href="admission2025.html" class="results-btn">확인하러 가기</a>
+                <div style="display:flex;gap:16px;align-self:flex-end;">
+                    <a href="scholarship2025.html" class="results-btn">장학금 확인하러 가기</a>
+                    <a href="admission2025.html" class="results-btn">확인하러 가기</a>
+                </div>
             </div>
         </div>
     </div>
