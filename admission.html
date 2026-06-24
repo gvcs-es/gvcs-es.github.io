@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GVCS 입시결과 2026</title>
+    <title>GVCS 입시결과</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { width: 100%; min-height: 100%; background: #fff; font-family: 'Noto Sans KR', sans-serif; }
@@ -17,49 +17,113 @@
         .mobile-img { display: none; }
         @media (max-width: 700px) { .pc-img { display: none; } .mobile-img { display: block; max-width: 100%; } }
         .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-.side-overlay.open { opacity: 1; pointer-events: all; }
-.side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
-.side-menu.open { right: 0; }
-.side-nav { display: flex; flex-direction: column; gap: 0; }
-.side-nav-item { border-bottom: none; }
-.side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
-.side-nav-item a:hover, .side-nav-item .nav-label:hover { color: rgba(255,255,255,0.5); }
-.nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
-.side-nav-item:hover .nav-sub { display: flex; }
-.nav-sub a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; }
-.nav-sub a:hover { color: white; }
-@media (max-width: 700px) { .side-menu { width: 80%; right: -80%; } .nav-sub { display: none !important; } }
+        .side-overlay.open { opacity: 1; pointer-events: all; }
+        .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
+        .side-menu.open { right: 0; }
+        .side-nav { display: flex; flex-direction: column; gap: 0; }
+        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
+        .side-nav-item a:hover { color: rgba(255,255,255,0.5); }
+        .nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
+        .side-nav-item:hover .nav-sub { display: flex; }
+        .nav-sub a { font-size: 17px; color: rgba(255,255,255,0.6); padding: 5px 0; text-decoration: none; display: block; }
+        .nav-sub a:hover { color: white; }
+        @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
+        #loading { text-align: center; padding: 200px 20px; color: #666; font-size: 16px; }
     </style>
 </head>
 <body>
+    <div class="side-overlay" id="overlay" onclick="closeSideMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <nav class="side-nav">
+            <div class="side-nav-item">
+                <a href="index.html">Home</a>
+            </div>
+            <div class="side-nav-item">
+                <div class="nav-label">입시결과</div>
+                <div class="nav-sub" id="admission-nav"></div>
+            </div>
+            <div class="side-nav-item">
+                <div class="nav-label">장학금</div>
+                <div class="nav-sub" id="scholarship-nav"></div>
+            </div>
+        </nav>
+    </div>
+
     <header class="header-bar">
         <a href="index.html" class="header-logo">
             <img src="https://i.imgur.com/fgXI0Gf.png" alt="Logo">
         </a>
-        <div class="menu-btn">
+        <div class="menu-btn" onclick="toggleSideMenu()">
             <span></span><span></span><span></span>
         </div>
     </header>
-    <div class="content">
-        <img src="https://i.imgur.com/qR5KIhr.png" alt="GVCS 입시결과 2026" class="admission-img pc-img">
-        <img src="https://i.imgur.com/bIOqDZ0.png" alt="GVCS 입시결과 2026" class="admission-img mobile-img">
+
+    <div class="content" id="content">
+        <div id="loading">불러오는 중...</div>
     </div>
-    <div class="side-overlay" id="overlay" onclick="closeSideMenu()"></div>
-<div class="side-menu" id="sideMenu">
-    <nav class="side-nav">
-        <div class="side-nav-item">
-            <a href="index.html">Home</a>
-        </div>
-        <div class="side-nav-item">
-            <div class="nav-label">입시결과</div>
-            <div class="nav-sub">
-                <a href="admission.html">2026</a>
-                <a href="admission2025.html">2025</a>
-            </div>
-        </div>
-    </nav>
-</div>
-<script>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAr97vLewEWGy3igiJIdfh9gtweDemd2co",
+        authDomain: "gvcs-admission.firebaseapp.com",
+        projectId: "gvcs-admission",
+        storageBucket: "gvcs-admission.firebasestorage.app",
+        messagingSenderId: "744629757874",
+        appId: "1:744629757874:web:23d91c55a14b1845d766ab"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const year = parseInt(params.get('year')) || 2026;
+    const isMobile = window.innerWidth <= 700;
+
+    document.title = `GVCS 입시결과 ${year}`;
+
+    async function load() {
+        try {
+            const docSnap = await getDoc(doc(db, 'config', 'siteData'));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const yearData = data.admissionYears?.find(y => y.year === year);
+
+                // 사이드바 채우기
+                const admNav = document.getElementById('admission-nav');
+                const schNav = document.getElementById('scholarship-nav');
+                data.admissionYears?.forEach(y => {
+                    const a = document.createElement('a');
+                    a.href = `admission.html?year=${y.year}`;
+                    a.textContent = String(y.year);
+                    admNav.appendChild(a);
+                });
+                data.scholarshipYears?.forEach(y => {
+                    const a = document.createElement('a');
+                    a.href = y.url || '#';
+                    a.textContent = String(y.year);
+                    schNav.appendChild(a);
+                });
+
+                // 이미지 표시
+                const content = document.getElementById('content');
+                if (yearData?.admissionUrl) {
+                    const pcUrl = yearData.admissionUrl;
+                    const mobileUrl = yearData.admissionMobileUrl || pcUrl;
+                    content.innerHTML = `
+                        <img src="${pcUrl}" alt="GVCS 입시결과 ${year}" class="admission-img pc-img">
+                        <img src="${mobileUrl}" alt="GVCS 입시결과 ${year}" class="admission-img mobile-img">`;
+                } else {
+                    content.innerHTML = `<div id="loading">이미지가 없습니다.</div>`;
+                }
+            }
+        } catch(e) {
+            document.getElementById('content').innerHTML = `<div id="loading">불러오기 실패</div>`;
+        }
+    }
+
     function toggleSideMenu() {
         document.getElementById('sideMenu').classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open');
@@ -68,7 +132,10 @@
         document.getElementById('sideMenu').classList.remove('open');
         document.getElementById('overlay').classList.remove('open');
     }
-    document.querySelector('.menu-btn').addEventListener('click', toggleSideMenu);
-</script>
+    window.toggleSideMenu = toggleSideMenu;
+    window.closeSideMenu = closeSideMenu;
+
+    load();
+    </script>
 </body>
 </html>

@@ -511,9 +511,15 @@ function renderAdminPanels() {
         div.innerHTML = `
             <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="adm-year-${i}" value="${y.year}" type="number">
             <input type="color" class="color-input" id="adm-color-${i}" value="${y.color}">
-            <div class="input-group">
-                <div class="input-label">이미지 링크 삽입</div>
-                <input class="url-input" id="adm-url-${i}" value="${y.admissionUrl || ''}" placeholder="이미지 링크 삽입">
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+                <div class="input-group">
+                    <div class="input-label">PC 이미지 링크</div>
+                    <input class="url-input" id="adm-url-${i}" value="${y.admissionUrl || ''}" placeholder="PC 이미지 링크">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">모바일 이미지 링크</div>
+                    <input class="url-input" id="adm-mobile-${i}" value="${y.admissionMobileUrl || ''}" placeholder="모바일 이미지 링크">
+                </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <button class="order-btn" onclick="moveAdmYear(${i},-1)">▲</button>
@@ -549,7 +555,8 @@ function collectAdmData() {
     siteData.admissionYears = siteData.admissionYears.map((y, i) => ({
         year: parseInt(document.getElementById(`adm-year-${i}`)?.value) || y.year,
         color: document.getElementById(`adm-color-${i}`)?.value || y.color,
-        admissionUrl: document.getElementById(`adm-url-${i}`)?.value || ''
+        admissionUrl: document.getElementById(`adm-url-${i}`)?.value || '',
+        admissionMobileUrl: document.getElementById(`adm-mobile-${i}`)?.value || ''
     }));
 }
 function collectSchData() {
