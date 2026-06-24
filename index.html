@@ -19,12 +19,14 @@
         .header-bar.scrolled { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
         .header-logo { height: 50px; display: flex; align-items: center; z-index: 10000; }
         .header-logo img { height: 50px; width: auto; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; z-index: 10000; }
         .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; transition: all 0.3s ease; }
 
+        /* 사이드 메뉴 */
         .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .side-overlay.open { opacity: 1; pointer-events: all; }
-        .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
+        .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; overflow-y: auto; }
         .side-menu.open { right: 0; }
         .side-nav { display: flex; flex-direction: column; gap: 0; }
         .side-nav-item { border-bottom: none; }
@@ -32,303 +34,634 @@
         .side-nav-item a:hover, .side-nav-item .nav-label:hover { color: rgba(255,255,255,0.5); }
         .nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
         .side-nav-item:hover .nav-sub { display: flex; }
-        .nav-sub a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; border-bottom: none; }
+        .nav-sub a { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.6); padding: 5px 0; border-bottom: none; text-decoration: none; display: block; }
         .nav-sub a:hover { color: white; }
         .nav-label-wrap { display: flex; align-items: center; justify-content: space-between; }
+
+        /* 관리자 모드 알림 */
+        #admin-toast {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.85); color: white; padding: 12px 28px;
+            font-size: 15px; z-index: 999999; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease; white-space: nowrap;
+        }
+        #admin-toast.show { opacity: 1; }
+
+        /* 관리 콘솔 모달 */
+        #admin-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 999990;
+            display: none; align-items: center; justify-content: center;
+        }
+        #admin-modal-overlay.open { display: flex; }
+        #admin-modal {
+            background: #1a1a1a; color: white; width: 800px; max-width: 95vw;
+            max-height: 85vh; border-radius: 0; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        #admin-modal-header {
+            padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        #admin-modal-header h2 { font-size: 20px; font-weight: 600; }
+        #admin-modal-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+        #admin-modal-body { display: flex; flex: 1; overflow: hidden; }
+        #admin-menu { width: 200px; border-right: 1px solid rgba(255,255,255,0.1); padding: 20px 0; flex-shrink: 0; }
+        .admin-menu-item { padding: 12px 24px; cursor: pointer; font-size: 15px; color: rgba(255,255,255,0.7); transition: all 0.2s; }
+        .admin-menu-item:hover, .admin-menu-item.active { background: rgba(255,255,255,0.08); color: white; }
+        #admin-content { flex: 1; padding: 24px; overflow-y: auto; }
+
+        /* 섹션 패널 */
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; }
+        .admin-panel h3 { font-size: 16px; margin-bottom: 20px; color: rgba(255,255,255,0.8); }
+
+        /* 연도 리스트 */
+        .year-list { display: flex; flex-direction: column; gap: 12px; }
+        .year-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; }
+        .year-item span { font-size: 15px; min-width: 50px; }
+        .color-input { width: 40px; height: 32px; border: none; cursor: pointer; background: none; padding: 0; }
+        .url-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 10px; font-size: 13px; }
+        .url-input::placeholder { color: rgba(255,255,255,0.3); }
+        .del-btn { background: none; border: none; color: rgba(255,80,80,0.7); cursor: pointer; font-size: 18px; }
+        .save-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 20px; cursor: pointer; font-size: 13px; margin-top: 16px; }
+        .save-btn:hover { background: rgba(255,255,255,0.2); }
+        .add-year-btn {
+            width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
+            background: none; color: white; font-size: 24px; cursor: pointer; margin-top: 12px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .add-year-btn:hover { border-color: white; }
+
+        /* 메인 이미지 관리 */
+        .slide-item { background: rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .slide-label { font-size: 13px; color: rgba(255,255,255,0.6); min-width: 60px; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
 
-        /* 히어로 슬라이드쇼 */
         #section-hero { z-index: 1; position: relative; overflow: hidden; }
-        .hero-slide {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            transition: opacity 2s ease;
-        }
+        .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: opacity 2s ease; }
         .hero-slide.pc-slide { opacity: 0; }
         .hero-slide.pc-slide.active { opacity: 1; }
 
-        #section-results { z-index: 2; background: var(--gvcs-red); transform: translateY(100vh); color: white; }
-        #section-results-2025 { z-index: 3; background: var(--gvcs-blue); transform: translateY(200vh); color: white; }
-
-        .hero-text-container {
-            position: absolute; bottom: 30px; left: 30px; z-index: 10;
-            display: flex; flex-direction: row; align-items: flex-end; gap: 15px;
-        }
+        .hero-text-container { position: absolute; bottom: 30px; left: 30px; z-index: 10; display: flex; flex-direction: row; align-items: flex-end; gap: 15px; }
         .img-gvcs { height: 175px; width: auto; flex-shrink: 0; }
         .img-sub { height: 150px; width: auto; flex-shrink: 0; align-self: flex-end; margin-bottom: 8px; }
 
+        @keyframes bounce {
+            0%   { transform: translateY(0); }
+            50%  { transform: translateY(-25px); }
+            100% { transform: translateY(0); }
+        }
+        .hero-text-container.bouncing { animation: bounce 2s ease-in-out infinite; }
+        @keyframes pulse {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+        #pc-scroll-hint { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); z-index: 10; color: white; font-size: 16px; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; white-space: nowrap; }
+        #pc-scroll-hint.visible { opacity: 1; animation: pulse 2s ease-in-out infinite; }
+
+        .results-section { z-index: 2; transform: translateY(100vh); color: white; }
         .results-content { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 110px 40px 40px; }
         .results-title h1 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
         .results-title h2 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
-        .results-btn { align-self: flex-end; border: 2px solid white; color: white; padding: 18px 40px; font-size: 18px; text-decoration: none; transition: all 0.3s ease; }
+        .results-btns { display: flex; gap: 16px; align-self: flex-end; }
+        .results-btn { border: 2px solid white; color: white; padding: 18px 40px; font-size: 18px; text-decoration: none; transition: all 0.3s ease; }
         .results-btn:hover { background: white; color: inherit; }
 
         .mobile-divider, .mobile-scroll-hint { display: none; }
 
-        /* 팝업 */
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99990; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
         #popup-overlay.open { opacity: 1; pointer-events: all; }
         #popup-wrap { position: fixed; top: 50%; left: calc(50% - 280px); transform: translateY(-50%); width: 0; max-height: 80vh; overflow: hidden; z-index: 99991; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
         #popup-wrap.open { width: 560px; }
         #popup { width: 560px; background: #000; border-radius: 0; padding: 0; overflow-y: auto; max-height: 80vh; position: relative; }
-#popup-img { width: 100%; display: block; }
-#popup-more { position: absolute; bottom: 20px; right: 20px; border: 1.5px solid white; color: white; background: none; padding: 10px 24px; font-size: 14px; cursor: pointer; }
-        #popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; }
+        #popup-img { width: 100%; display: block; }
+        #popup-more { position: absolute; bottom: 20px; right: 20px; border: 1.5px solid white; color: white; background: none; padding: 10px 24px; font-size: 14px; cursor: pointer; }
+        #popup-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: white; z-index: 10; }
 
         @media (max-width: 700px) {
             html, body { overflow: auto; height: auto; }
             .main-wrapper { height: auto; position: static; }
             .page-section { position: static; height: auto; transform: none !important; transition: none !important; }
-
-            #section-hero {
-                display: flex; flex-direction: column;
-                justify-content: flex-start; align-items: flex-start;
-                background: var(--gvcs-red);
-                padding-top: 90px; padding-bottom: 40px;
-                min-height: 100vh; overflow: hidden;
-            }
-
-            /* 모바일 슬라이드쇼 - 디졸브 */
-            .mobile-bg-wrap {
-                display: block;
-                width: 90%; margin: 0 auto;
-                aspect-ratio: 16 / 9;
-                position: relative;
-                flex-shrink: 0;
-                border: 1.5px solid #000;
-            }
-            .mobile-slide {
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                background-size: cover; background-position: center;
-                opacity: 0; transition: opacity 1.2s ease;
-            }
+            #section-hero { display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; background: var(--gvcs-red); padding-top: 90px; padding-bottom: 40px; min-height: 100vh; overflow: hidden; }
+            .mobile-bg-wrap { display: block; width: 90%; margin: 0 auto; aspect-ratio: 16 / 9; position: relative; flex-shrink: 0; border: 1.5px solid #000; }
+            .mobile-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.2s ease; }
             .mobile-slide.active { opacity: 1; }
-
-            /* PC 슬라이드 숨기기 */
             .hero-slide { display: none; }
-
-            .hero-text-container {
-                position: static; flex-direction: column; align-items: flex-start;
-                gap: 16px; margin-top: 24px; padding-left: 5%;
-            }
+            .hero-text-container { position: static; flex-direction: column; align-items: flex-start; gap: 16px; margin-top: 24px; padding-left: 5%; animation: none !important; }
             .img-gvcs { height: 70px; }
             .img-sub { height: 50px; margin-bottom: 0; }
-
             .mobile-divider { display: block; width: 90%; margin: 24px auto 14px; border: none; border-top: 1.5px solid white; }
             .mobile-scroll-hint { display: block; width: 90%; margin: 0 auto; color: white; font-size: 13px; }
+            #pc-scroll-hint { display: none !important; }
             .header-bar { background: rgba(0,0,0,0.7) !important; backdrop-filter: blur(10px); }
-
-            #section-results, #section-results-2025 { min-height: auto; padding: 0; }
+            .results-section { min-height: auto; padding: 0; }
             .results-content { padding: 40px 24px 40px; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; justify-content: flex-start; gap: 30px; }
             .results-title h1 { font-size: 36px; line-height: 1.1; margin-bottom: 4px; }
             .results-title h2 { font-size: 36px; line-height: 1.1; }
-            .results-btn { align-self: flex-start; font-size: 14px; padding: 14px 24px; }
-
+            .results-btns { flex-direction: column; align-self: flex-start; gap: 10px; }
+            .results-btn { font-size: 14px; padding: 14px 24px; }
             .side-menu { width: 65%; right: -65%; padding: 80px 30px 40px; }
             .side-nav-item a, .side-nav-item .nav-label { font-size: 20px; padding: 12px 0; }
-            .nav-sub-mobile a { font-size: 14px; }
             .nav-sub { display: none !important; }
-
-            /* 모바일 팝업 */
             #popup-wrap { left: 5%; transform: translateY(-50%); }
             #popup-wrap.open { width: 90vw; }
             #popup { width: 90vw; padding: 0; }
             #popup-more { font-size: 12px; padding: 8px 16px; bottom: 12px; right: 12px; }
             #popup-img { border: none; outline: none; }
             #popup-close { top: 10px; right: 10px; }
+            #admin-modal { width: 95vw; }
+            #admin-modal-body { flex-direction: column; }
+            #admin-menu { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0; display: flex; overflow-x: auto; }
+            .admin-menu-item { white-space: nowrap; }
         }
     </style>
 </head>
 <body>
-    <div class="side-overlay" id="overlay"></div>
-    <div class="side-menu" id="sideMenu">
-        <nav class="side-nav">
-            <div class="side-nav-item">
-                <a href="#" onclick="goHome(); closeSideMenu(); return false;">Home</a>
-            </div>
-            <div class="side-nav-item">
-                <div class="nav-label pc-only">입시결과</div>
-                <div class="nav-sub pc-only">
-                    <a href="#" onclick="goTo(1); closeSideMenu(); return false;">2026</a>
-                    <a href="#" onclick="goTo(2); closeSideMenu(); return false;">2025</a>
-                </div>
-            </div>
-            <div class="side-nav-item">
-                <div class="nav-label pc-only">장학금</div>
-                <div class="nav-sub pc-only">
-                    <a href="scholarship.html">2026</a>
-                    <a href="scholarship2025.html">2025</a>
-                </div>
-                <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('results'); closeSideMenu();">
-                    <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">장학금</span>
-                </div>
-                <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('results'); closeSideMenu();">
-                    <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">입시결과</span>
-                </div>
-            </div>
-        </nav>
-    </div>
 
-    <header class="header-bar" id="navbar">
-        <a href="#" class="header-logo" onclick="goHome(); return false;">
-            <img src="https://i.imgur.com/fgXI0Gf.png" alt="Logo">
-        </a>
+<div id="admin-toast">관리자 모드로 전환하셨습니다</div>
+
+<!-- 관리 콘솔 모달 -->
+<div id="admin-modal-overlay">
+    <div id="admin-modal">
+        <div id="admin-modal-header">
+            <h2>관리 콘솔</h2>
+            <button id="admin-modal-close" onclick="closeAdminModal()">✕</button>
+        </div>
+        <div id="admin-modal-body">
+            <div id="admin-menu">
+                <div class="admin-menu-item active" onclick="showPanel('home')">홈 이미지</div>
+                <div class="admin-menu-item" onclick="showPanel('admission')">입시결과</div>
+                <div class="admin-menu-item" onclick="showPanel('scholarship')">장학금</div>
+            </div>
+            <div id="admin-content">
+                <!-- 홈 이미지 패널 -->
+                <div class="admin-panel active" id="panel-home">
+                    <h3>홈페이지 메인 이미지 관리</h3>
+                    <div id="home-slides-list"></div>
+                    <button class="save-btn" onclick="saveHomeImages()">저장</button>
+                </div>
+                <!-- 입시결과 패널 -->
+                <div class="admin-panel" id="panel-admission">
+                    <h3>입시결과 관리</h3>
+                    <div class="year-list" id="admission-year-list"></div>
+                    <button class="add-year-btn" onclick="addAdmissionYear()" title="연도 추가">+</button>
+                    <br>
+                    <button class="save-btn" onclick="saveAdmission()">저장</button>
+                </div>
+                <!-- 장학금 패널 -->
+                <div class="admin-panel" id="panel-scholarship">
+                    <h3>장학금 관리</h3>
+                    <div class="year-list" id="scholarship-year-list"></div>
+                    <button class="add-year-btn" onclick="addScholarshipYear()" title="연도 추가">+</button>
+                    <br>
+                    <button class="save-btn" onclick="saveScholarship()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="side-overlay" id="overlay"></div>
+<div class="side-menu" id="sideMenu">
+    <nav class="side-nav" id="sideNav">
+        <div class="side-nav-item">
+            <a href="#" onclick="goHome(); closeSideMenu(); return false;">Home</a>
+        </div>
+        <div class="side-nav-item">
+            <div class="nav-label pc-only">입시결과</div>
+            <div class="nav-sub pc-only" id="admission-nav-sub"></div>
+            <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
+                <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">입시결과</span>
+            </div>
+        </div>
+        <div class="side-nav-item">
+            <div class="nav-label pc-only">장학금</div>
+            <div class="nav-sub pc-only" id="scholarship-nav-sub"></div>
+            <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
+                <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">장학금</span>
+            </div>
+        </div>
+        <div class="side-nav-item" id="admin-console-item" style="display:none;">
+            <a href="#" onclick="openAdminModal(); closeSideMenu(); return false;" style="color: rgba(255,200,0,0.8);">관리 콘솔</a>
+        </div>
+    </nav>
+</div>
+
+<header class="header-bar" id="navbar">
+    <a href="#" class="header-logo" onclick="goHome(); return false;">
+        <img src="https://i.imgur.com/fgXI0Gf.png" alt="Logo">
+    </a>
+    <div class="header-right">
+        <button id="muteBtn" onclick="toggleMute()" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path id="soundWaves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+        </button>
         <div class="menu-btn" id="menuBtn" onclick="toggleSideMenu()">
             <span></span><span></span><span></span>
         </div>
-    </header>
+    </div>
+</header>
 
-    <div class="main-wrapper">
-        <div id="section-hero" class="page-section">
-            <!-- PC 슬라이드 -->
-            <div class="hero-slide pc-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
-            <div class="hero-slide pc-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
-            <div class="hero-slide pc-slide" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
-
-            <!-- 모바일 슬라이드 -->
-            <div class="mobile-bg-wrap" id="mobileBgWrap">
-                <div class="mobile-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
-                <div class="mobile-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
-                <div class="mobile-slide" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
-            </div>
-
-            <div class="hero-text-container">
-                <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
-                <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" class="img-sub">
-            </div>
-            <hr class="mobile-divider">
-            <span class="mobile-scroll-hint">아래로 스크롤하여 대학 입시 결과 보러가기</span>
+<div class="main-wrapper" id="mainWrapper">
+    <div id="section-hero" class="page-section">
+        <div class="hero-slide pc-slide active" id="pc-slide-0" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
+        <div class="hero-slide pc-slide" id="pc-slide-1" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
+        <div class="hero-slide pc-slide" id="pc-slide-2" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
+        <div class="mobile-bg-wrap">
+            <div class="mobile-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
+            <div class="mobile-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
+            <div class="mobile-slide" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
         </div>
-        <div id="section-results" class="page-section">
+        <div class="hero-text-container" id="heroTextContainer">
+            <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
+            <img src="https://i.imgur.com/u7yzlre.png" alt="GLOBAL VISION CHRISTIAN SCHOOL" class="img-sub">
+        </div>
+        <span id="pc-scroll-hint" class="pc-only">아래로 스크롤하여 대학 입시결과 확인하기</span>
+        <hr class="mobile-divider">
+        <span class="mobile-scroll-hint">아래로 스크롤하여 대학 입시 결과 보러가기</span>
+    </div>
+    <div id="sections-container"></div>
+</div>
+
+<div id="popup-overlay" onclick="closePopup()"></div>
+<div id="popup-wrap">
+    <div id="popup">
+        <button id="popup-close" onclick="closePopup()">✕</button>
+        <img id="popup-img" src="https://i.imgur.com/21CdYDt.png" alt="팝업">
+        <button id="popup-more">자세히 알아보기</button>
+    </div>
+</div>
+
+<audio id="bgm">
+    <source src="Screen_Recording_20260526_001631_Spotify_[cut_110sec].mp3" type="audio/mpeg">
+</audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAr97vLewEWGy3igiJIdfh9gtweDemd2co",
+    authDomain: "gvcs-admission.firebaseapp.com",
+    projectId: "gvcs-admission",
+    storageBucket: "gvcs-admission.firebasestorage.app",
+    messagingSenderId: "744629757874",
+    appId: "1:744629757874:web:23d91c55a14b1845d766ab"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 기본 데이터
+let siteData = {
+    homeSlides: [
+        { url: 'https://i.imgur.com/BCMjATY.png' },
+        { url: 'https://i.imgur.com/3mBbuNJ.png' },
+        { url: 'https://i.imgur.com/q8fX4VO.png' }
+    ],
+    admissionYears: [
+        { year: 2026, color: '#9a1e23', admissionUrl: 'admission.html', scholarshipUrl: 'scholarship.html' },
+        { year: 2025, color: '#1a3a6b', admissionUrl: 'admission2025.html', scholarshipUrl: 'scholarship2025.html' }
+    ],
+    scholarshipYears: [
+        { year: 2026, color: '#9a1e23', url: 'scholarship.html' },
+        { year: 2025, color: '#1a3a6b', url: 'scholarship2025.html' }
+    ]
+};
+
+let isAdmin = false;
+let currentIdx = 0;
+const isMobile = window.innerWidth <= 700;
+
+// Firebase에서 데이터 불러오기
+async function loadData() {
+    try {
+        const docRef = doc(db, 'config', 'siteData');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            siteData = { ...siteData, ...docSnap.data() };
+        }
+    } catch(e) { console.log('데이터 불러오기 실패, 기본값 사용'); }
+    renderSections();
+    renderSideNav();
+}
+
+// 섹션 렌더링
+function renderSections() {
+    const container = document.getElementById('sections-container');
+    container.innerHTML = '';
+    const maxIdx = siteData.admissionYears.length;
+
+    siteData.admissionYears.forEach((y, i) => {
+        const div = document.createElement('div');
+        div.className = 'page-section results-section';
+        div.id = `section-results-${i}`;
+        div.style.background = y.color;
+        div.style.transform = `translateY(${(i+1) * 100}vh)`;
+        div.style.zIndex = i + 2;
+        div.innerHTML = `
             <div class="results-content">
                 <div class="results-title">
-                    <h1>CLASS OF 2026</h1>
+                    <h1>CLASS OF ${y.year}</h1>
                     <h2>대학 입시결과</h2>
                 </div>
-                <div style="display:flex;gap:16px;align-self:flex-end;">
-                    <a href="scholarship.html" class="results-btn">장학금 확인하러 가기</a>
-                    <a href="admission.html" class="results-btn">확인하러 가기</a>
+                <div class="results-btns">
+                    <a href="${y.scholarshipUrl || '#'}" class="results-btn">장학금 확인하러 가기</a>
+                    <a href="${y.admissionUrl || '#'}" class="results-btn">확인하러 가기</a>
                 </div>
-            </div>
-        </div>
-        <div id="section-results-2025" class="page-section">
-            <div class="results-content">
-                <div class="results-title">
-                    <h1>CLASS OF 2025</h1>
-                    <h2>대학 입시결과</h2>
-                </div>
-                <div style="display:flex;gap:16px;align-self:flex-end;">
-                    <a href="scholarship2025.html" class="results-btn">장학금 확인하러 가기</a>
-                    <a href="admission2025.html" class="results-btn">확인하러 가기</a>
-                </div>
-            </div>
-        </div>
-    </div>
+            </div>`;
+        container.appendChild(div);
+    });
 
-    <div id="popup-overlay" onclick="closePopup()"></div>
-    <div id="popup-wrap">
-        <div id="popup">
-            <button id="popup-close" onclick="closePopup()">✕</button>
-            <img id="popup-img" src="https://i.imgur.com/21CdYDt.png" alt="팝업">
-            <button id="popup-more">자세히 알아보기</button>
-        </div>
-    </div>
+    window._maxIdx = siteData.admissionYears.length;
+}
 
-    <script>
-        // 사이드메뉴
-        function toggleSideMenu() {
-            document.getElementById('sideMenu').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('open');
+// 사이드바 렌더링
+function renderSideNav() {
+    const admSub = document.getElementById('admission-nav-sub');
+    const schSub = document.getElementById('scholarship-nav-sub');
+    admSub.innerHTML = '';
+    schSub.innerHTML = '';
+
+    siteData.admissionYears.forEach((y, i) => {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = String(y.year);
+        a.onclick = (e) => { e.preventDefault(); goTo(i+1); closeSideMenu(); };
+        admSub.appendChild(a);
+    });
+
+    siteData.admissionYears.forEach((y) => {
+        const a = document.createElement('a');
+        a.href = y.scholarshipUrl || '#';
+        a.textContent = String(y.year);
+        schSub.appendChild(a);
+    });
+}
+
+// 스크롤
+function update() {
+    const sections = document.querySelectorAll('.results-section');
+    sections.forEach((s, i) => {
+        if (currentIdx === 0) s.style.transform = `translateY(${(i+1)*100}vh)`;
+        else if (currentIdx === i+1) {
+            sections.forEach((ss, j) => {
+                if (j < i) ss.style.transform = 'translateY(-100vh)';
+                else if (j === i) ss.style.transform = 'translateY(0)';
+                else ss.style.transform = `translateY(${(j-i)*100}vh)`;
+            });
         }
-        function closeSideMenu() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('overlay').classList.remove('open');
+    });
+    const navbar = document.getElementById('navbar');
+    navbar.classList.toggle('scrolled', currentIdx > 0);
+    if (currentIdx > 0) {
+        document.getElementById('pc-scroll-hint').classList.remove('visible');
+        document.getElementById('heroTextContainer').classList.remove('bouncing');
+    }
+}
+
+window.goHome = function() { currentIdx = 0; update(); };
+window.goTo = function(idx) { currentIdx = idx; update(); };
+window.mobileGoTo = function(id) {
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({ behavior: 'smooth' });
+};
+
+if (!isMobile) {
+    let scrolling = false, accumulated = 0;
+    window.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if(scrolling) return;
+        accumulated += Math.abs(e.deltaY);
+        if(accumulated > 20) {
+            scrolling = true; accumulated = 0;
+            const max = window._maxIdx || 2;
+            if(e.deltaY > 0 && currentIdx < max) currentIdx++;
+            else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
+            update();
+            setTimeout(() => { scrolling = false; accumulated = 0; }, 900);
         }
-        document.getElementById('overlay').addEventListener('click', closeSideMenu);
+    }, {passive: false});
+}
 
-        function mobileGoTo(id) {
-            const el = document.getElementById('section-' + id);
-            if(el) el.scrollIntoView({ behavior: 'smooth' });
-        }
+// 사이드메뉴
+window.toggleSideMenu = function() {
+    document.getElementById('sideMenu').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+};
+window.closeSideMenu = function() {
+    document.getElementById('sideMenu').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+};
+document.getElementById('overlay').addEventListener('click', closeSideMenu);
 
-        const isMobile = window.innerWidth <= 700;
+// pc-only / mobile-only
+const pcOnlyEls = document.querySelectorAll('.pc-only');
+const mobileOnlyEls = document.querySelectorAll('.mobile-only');
+if(isMobile) { pcOnlyEls.forEach(el => el.style.display = 'none'); }
+else { mobileOnlyEls.forEach(el => el.style.display = 'none'); }
 
-        // 슬라이드쇼
-        const pcSlides = document.querySelectorAll('.pc-slide');
-        const mobileSlides = document.querySelectorAll('.mobile-slide');
-        let slideIdx = 0;
-
-        function nextSlide() {
-            pcSlides[slideIdx].classList.remove('active');
-            mobileSlides[slideIdx].classList.remove('active');
-            slideIdx = (slideIdx + 1) % pcSlides.length;
-            pcSlides[slideIdx].classList.add('active');
-            mobileSlides[slideIdx].classList.add('active');
-        }
-        setInterval(nextSlide, 10000);
-
-        if (!isMobile) {
-            let currentIdx = 0;
-            const maxIdx = 2;
-            const navbar = document.getElementById('navbar');
-            const sec2026 = document.getElementById('section-results');
-            const sec2025 = document.getElementById('section-results-2025');
-
-            function goHome() { currentIdx = 0; update(); }
-            function goTo(idx) { currentIdx = idx; update(); }
-
-            let scrolling = false;
-            let accumulated = 0;
-            window.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                if(scrolling) return;
-                accumulated += Math.abs(e.deltaY);
-                if(accumulated > 20) {
-                    scrolling = true; accumulated = 0;
-                    if(e.deltaY > 0 && currentIdx < maxIdx) currentIdx++;
-                    else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
-                    update();
-                    setTimeout(() => { scrolling = false; accumulated = 0; }, 900);
-                }
-            }, {passive: false});
-
-            function update() {
-                if(currentIdx === 0) {
-                    sec2026.style.transform = 'translateY(100vh)';
-                    sec2025.style.transform = 'translateY(200vh)';
-                } else if(currentIdx === 1) {
-                    sec2026.style.transform = 'translateY(0)';
-                    sec2025.style.transform = 'translateY(100vh)';
-                } else if(currentIdx === 2) {
-                    sec2026.style.transform = 'translateY(-100vh)';
-                    sec2025.style.transform = 'translateY(0)';
-                }
-                navbar.classList.toggle('scrolled', currentIdx > 0);
-            }
-        } else {
-            function goHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-            function goTo(idx) {
-                const ids = ['section-hero', 'section-results', 'section-results-2025'];
-                document.getElementById(ids[idx]).scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        const pcOnlyEls = document.querySelectorAll('.pc-only');
-        const mobileOnlyEls = document.querySelectorAll('.mobile-only');
-        if(isMobile) { pcOnlyEls.forEach(el => el.style.display = 'none'); }
-        else { mobileOnlyEls.forEach(el => el.style.display = 'none'); }
-
-        // 팝업
-        function closePopup() {
-            document.getElementById('popup-wrap').classList.remove('open');
-            document.getElementById('popup-overlay').classList.remove('open');
-        }
+// 팝업
+window.closePopup = function() {
+    document.getElementById('popup-wrap').classList.remove('open');
+    document.getElementById('popup-overlay').classList.remove('open');
+    if(!isMobile) {
         setTimeout(() => {
-            document.getElementById('popup-wrap').classList.add('open');
-            document.getElementById('popup-overlay').classList.add('open');
-        }, 2800);
-    </script>
+            const container = document.getElementById('heroTextContainer');
+            const hint = document.getElementById('pc-scroll-hint');
+            container.classList.add('bouncing');
+            hint.classList.add('visible');
+        }, 2000);
+    }
+};
+setTimeout(() => {
+    document.getElementById('popup-wrap').classList.add('open');
+    document.getElementById('popup-overlay').classList.add('open');
+}, 2800);
+
+// 슬라이드쇼
+const pcSlides = document.querySelectorAll('.pc-slide');
+const mobileSlides = document.querySelectorAll('.mobile-slide');
+let slideIdx = 0;
+setInterval(() => {
+    pcSlides[slideIdx].classList.remove('active');
+    mobileSlides[slideIdx].classList.remove('active');
+    slideIdx = (slideIdx + 1) % pcSlides.length;
+    pcSlides[slideIdx].classList.add('active');
+    mobileSlides[slideIdx].classList.add('active');
+}, 10000);
+
+// 음악
+const bgm = document.getElementById('bgm');
+bgm.volume = 0;
+const MAX_VOL = 0.15;
+function fadeIn() {
+    let vol = 0;
+    const timer = setInterval(() => {
+        vol = Math.min(vol + MAX_VOL/30, MAX_VOL);
+        bgm.volume = vol;
+        if(vol >= MAX_VOL) clearInterval(timer);
+    }, 100);
+}
+function fadeOut(cb) {
+    let vol = bgm.volume;
+    const dec = vol/30;
+    const timer = setInterval(() => {
+        vol = Math.max(vol - dec, 0);
+        bgm.volume = vol;
+        if(vol <= 0) { clearInterval(timer); if(cb) cb(); }
+    }, 100);
+}
+bgm.addEventListener('ended', () => { bgm.currentTime = 0; bgm.play(); fadeIn(); });
+document.addEventListener('click', () => { bgm.play().then(() => fadeIn()).catch(() => {}); }, { once: true });
+window.addEventListener('beforeunload', () => fadeOut());
+
+let muted = false;
+window.toggleMute = function() {
+    muted = !muted;
+    bgm.volume = muted ? 0 : MAX_VOL;
+    document.getElementById('soundWaves').style.display = muted ? 'none' : 'block';
+};
+
+// 관리자 모드
+let typedBuffer = '';
+document.addEventListener('keydown', (e) => {
+    typedBuffer += e.key;
+    if (typedBuffer.length > 10) typedBuffer = typedBuffer.slice(-10);
+    if (typedBuffer.includes('관리자') || typedBuffer.includes('rhksflwk')) {
+        typedBuffer = '';
+        isAdmin = true;
+        document.getElementById('admin-console-item').style.display = 'block';
+        const toast = document.getElementById('admin-toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+});
+
+// 관리 콘솔
+window.openAdminModal = function() {
+    document.getElementById('admin-modal-overlay').classList.add('open');
+    renderAdminPanels();
+};
+window.closeAdminModal = function() {
+    document.getElementById('admin-modal-overlay').classList.remove('open');
+};
+window.showPanel = function(name) {
+    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.admin-menu-item').forEach(m => m.classList.remove('active'));
+    document.getElementById(`panel-${name}`).classList.add('active');
+    event.target.classList.add('active');
+};
+
+function renderAdminPanels() {
+    // 홈 이미지
+    const homeList = document.getElementById('home-slides-list');
+    homeList.innerHTML = '';
+    siteData.homeSlides.forEach((s, i) => {
+        homeList.innerHTML += `
+        <div class="slide-item">
+            <span class="slide-label">슬라이드 ${i+1}</span>
+            <input class="url-input" id="home-slide-${i}" value="${s.url}" placeholder="이미지 URL">
+            <button class="del-btn" onclick="removeHomeSlide(${i})">×</button>
+        </div>`;
+    });
+    homeList.innerHTML += `<button class="save-btn" onclick="addHomeSlide()" style="margin-top:8px;">+ 슬라이드 추가</button>`;
+
+    // 입시결과
+    const admList = document.getElementById('admission-year-list');
+    admList.innerHTML = '';
+    siteData.admissionYears.forEach((y, i) => {
+        admList.innerHTML += `
+        <div class="year-item">
+            <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="adm-year-${i}" value="${y.year}" type="number">
+            <input type="color" class="color-input" id="adm-color-${i}" value="${y.color}">
+            <input class="url-input" id="adm-url-${i}" value="${y.admissionUrl || ''}" placeholder="입시결과 페이지 URL">
+            <input class="url-input" id="adm-sch-${i}" value="${y.scholarshipUrl || ''}" placeholder="장학금 페이지 URL">
+            <button class="del-btn" onclick="removeAdmYear(${i})">×</button>
+        </div>`;
+    });
+
+    // 장학금
+    const schList = document.getElementById('scholarship-year-list');
+    schList.innerHTML = '';
+    siteData.scholarshipYears.forEach((y, i) => {
+        schList.innerHTML += `
+        <div class="year-item">
+            <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="sch-year-${i}" value="${y.year}" type="number">
+            <input type="color" class="color-input" id="sch-color-${i}" value="${y.color}">
+            <input class="url-input" id="sch-url-${i}" value="${y.url || ''}" placeholder="장학금 페이지 URL">
+            <button class="del-btn" onclick="removeSchYear(${i})">×</button>
+        </div>`;
+    });
+}
+
+window.addHomeSlide = function() {
+    siteData.homeSlides.push({ url: '' });
+    renderAdminPanels();
+};
+window.removeHomeSlide = function(i) {
+    siteData.homeSlides.splice(i, 1);
+    renderAdminPanels();
+};
+window.addAdmissionYear = function() {
+    siteData.admissionYears.unshift({ year: new Date().getFullYear(), color: '#333333', admissionUrl: '', scholarshipUrl: '' });
+    renderAdminPanels();
+};
+window.removeAdmYear = function(i) {
+    siteData.admissionYears.splice(i, 1);
+    renderAdminPanels();
+};
+window.addScholarshipYear = function() {
+    siteData.scholarshipYears.unshift({ year: new Date().getFullYear(), color: '#333333', url: '' });
+    renderAdminPanels();
+};
+window.removeSchYear = function(i) {
+    siteData.scholarshipYears.splice(i, 1);
+    renderAdminPanels();
+};
+
+window.saveHomeImages = async function() {
+    siteData.homeSlides = siteData.homeSlides.map((s, i) => ({
+        url: document.getElementById(`home-slide-${i}`)?.value || s.url
+    }));
+    await saveToFirebase();
+    alert('저장됐어!');
+};
+window.saveAdmission = async function() {
+    siteData.admissionYears = siteData.admissionYears.map((y, i) => ({
+        year: parseInt(document.getElementById(`adm-year-${i}`)?.value) || y.year,
+        color: document.getElementById(`adm-color-${i}`)?.value || y.color,
+        admissionUrl: document.getElementById(`adm-url-${i}`)?.value || '',
+        scholarshipUrl: document.getElementById(`adm-sch-${i}`)?.value || ''
+    }));
+    await saveToFirebase();
+    renderSections();
+    renderSideNav();
+    alert('저장됐습니다!');
+};
+window.saveScholarship = async function() {
+    siteData.scholarshipYears = siteData.scholarshipYears.map((y, i) => ({
+        year: parseInt(document.getElementById(`sch-year-${i}`)?.value) || y.year,
+        color: document.getElementById(`sch-color-${i}`)?.value || y.color,
+        url: document.getElementById(`sch-url-${i}`)?.value || ''
+    }));
+    await saveToFirebase();
+    alert('저장됐어!');
+};
+
+async function saveToFirebase() {
+    try {
+        await setDoc(doc(db, 'config', 'siteData'), siteData);
+    } catch(e) { alert('저장 실패: ' + e.message); }
+}
+
+loadData();
+</script>
 </body>
 </html>
