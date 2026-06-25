@@ -388,6 +388,7 @@ window.mobileGoTo = function(id) {
 if (!isMobile) {
     let scrolling = false, accumulated = 0;
     window.addEventListener('wheel', (e) => {
+        if(document.getElementById('admin-modal-overlay').classList.contains('open')) return;
         e.preventDefault();
         if(scrolling) return;
         accumulated += Math.abs(e.deltaY);
