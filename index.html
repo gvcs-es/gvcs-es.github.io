@@ -66,15 +66,16 @@
         .slide-label { font-size: 13px; color: rgba(255,255,255,0.6); min-width: 60px; }
         .sch-country-row { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; margin-bottom: 8px; }
         .notice-editor-wrap { background: rgba(255,255,255,0.05); padding: 16px; margin-bottom: 12px; }
-        .notice-toolbar { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
-        .toolbar-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; cursor: pointer; font-size: 13px; }
-        .toolbar-btn:hover { background: rgba(255,255,255,0.2); }
         .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.5; outline: none; font-family: 'Noto Sans KR', sans-serif; }
         .notice-content-editor p { margin-bottom: 0.8em; }
-        .color-pick-wrap { display: flex; align-items: center; gap: 4px; }
-        .color-pick-wrap label { font-size: 11px; color: rgba(255,255,255,0.5); }
-        .recent-colors { display: flex; gap: 4px; flex-wrap: wrap; }
+        .recent-colors { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
         .recent-color-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; flex-shrink: 0; }
+        #float-toolbar { position: fixed; background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: none; align-items: center; gap: 2px; padding: 5px 8px; z-index: 9999999; box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: all; }
+        #float-toolbar button { background: none; border: none; color: white; cursor: pointer; font-size: 13px; padding: 4px 8px; border-radius: 4px; line-height: 1; }
+        #float-toolbar button:hover { background: rgba(255,255,255,0.15); }
+        #float-toolbar .ft-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 3px; }
+        #float-toolbar input[type="color"] { width: 24px; height: 24px; border: none; cursor: pointer; background: none; padding: 0; border-radius: 3px; }
+        #ft-hl-btn.hl-on { background: rgba(255,220,0,0.3); }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
@@ -788,77 +789,112 @@ function renderNoticeList() {
                 </div>
             </div>
             <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
-            <div class="notice-toolbar">
-                <button class="toolbar-btn" onclick="noticeCmd(${i},'bold')"><b>B</b></button>
-                <div class="color-pick-wrap">
-                    <label>글자색</label>
-                    <input type="color" class="color-input" id="notice-fgcolor-${i}" value="#ffffff" onchange="applyFgColor(${i},this.value)">
-                    <div class="recent-colors" id="recent-fg-${i}"></div>
-                </div>
-                <div class="color-pick-wrap">
-                    <label>하이라이트</label>
-                    <input type="color" class="color-input" id="notice-bgcolor-${i}" value="#ffff00" onchange="applyHlColor(${i},this.value)">
-                    <button class="toolbar-btn" id="hl-toggle-${i}" onclick="toggleHl(${i})">H</button>
-                    <div class="recent-colors" id="recent-hl-${i}"></div>
-                </div>
-            </div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">최근 글자색</div>
+            <div class="recent-colors" id="recent-fg-${i}"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">최근 하이라이트</div>
+            <div class="recent-colors" id="recent-hl-${i}"></div>
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
         list.appendChild(div);
         renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
         renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
-
-        const editor = document.getElementById(`notice-body-${i}`);
-        const hlBtn = document.getElementById(`hl-toggle-${i}`);
-        const checkHl = () => {
-            const sel = window.getSelection();
-            if (!sel || sel.isCollapsed) { hlBtn.style.textDecoration = 'none'; return; }
-            const range = sel.getRangeAt(0);
-            const el = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentElement : range.commonAncestorContainer;
-            const bg = window.getComputedStyle(el).backgroundColor;
-            const isHl = bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent' && bg !== 'rgb(255, 255, 255)';
-            hlBtn.style.textDecoration = isHl ? 'line-through' : 'none';
-        };
-        editor.addEventListener('mouseup', checkHl);
-        editor.addEventListener('keyup', checkHl);
     });
 }
-window.noticeCmd = function(i, cmd, val) {
-    document.getElementById(`notice-body-${i}`).focus();
-    document.execCommand(cmd, false, val || null);
-};
-window.applyFgColor = function(i, color) {
-    document.getElementById(`notice-body-${i}`).focus();
-    document.execCommand('foreColor', false, color);
-    addRecentColor(recentFgColors, color, 'recentFgColors');
-    renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
-};
-window.applyHlColor = function(i, color) {
-    document.getElementById(`notice-body-${i}`).focus();
-    document.execCommand('hiliteColor', false, color);
-    addRecentColor(recentHlColors, color, 'recentHlColors');
-    renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
-};
-window.toggleHl = function(i) {
-    const editor = document.getElementById(`notice-body-${i}`);
-    editor.focus();
+let savedSel = null;
+
+function saveSelection() {
     const sel = window.getSelection();
-    if (!sel || sel.isCollapsed) return;
-    const range = sel.getRangeAt(0);
-    const container = range.commonAncestorContainer;
-    const el = container.nodeType === 3 ? container.parentElement : container;
+    if (sel && sel.rangeCount > 0) savedSel = sel.getRangeAt(0).cloneRange();
+}
+
+function restoreSelection() {
+    if (!savedSel) return;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedSel);
+}
+
+function checkHlState(range) {
+    if (!range) return false;
+    const el = range.commonAncestorContainer.nodeType === 3
+        ? range.commonAncestorContainer.parentElement
+        : range.commonAncestorContainer;
     const bg = window.getComputedStyle(el).backgroundColor;
-    const isHighlighted = bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent';
-    const btn = document.getElementById(`hl-toggle-${i}`);
-    if (isHighlighted) {
+    return bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent' && bg !== 'rgb(255, 255, 255)';
+}
+
+// 플로팅 툴바
+const ftBar = document.getElementById('float-toolbar');
+
+document.addEventListener('mouseup', (e) => {
+    if (e.target.closest('#float-toolbar')) return;
+    setTimeout(() => {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed || sel.rangeCount === 0) { ftBar.style.display = 'none'; return; }
+        const range = sel.getRangeAt(0);
+        const node = range.commonAncestorContainer;
+        const inEditor = (node.nodeType === 3 ? node.parentElement : node).closest('.notice-content-editor');
+        if (!inEditor) { ftBar.style.display = 'none'; return; }
+        saveSelection();
+        const rect = range.getBoundingClientRect();
+        const hlOn = checkHlState(range);
+        const hlBtn = document.getElementById('ft-hl-btn');
+        hlBtn.classList.toggle('hl-on', hlOn);
+        hlBtn.title = hlOn ? '하이라이트 제거' : '하이라이트 적용';
+        ftBar.style.display = 'flex';
+        ftBar.style.left = Math.max(4, rect.left + rect.width / 2 - 100) + 'px';
+        ftBar.style.top = (rect.top + window.scrollY - 48) + 'px';
+    }, 10);
+});
+
+document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest('#float-toolbar') && !e.target.closest('.notice-content-editor')) {
+        ftBar.style.display = 'none';
+    }
+});
+
+document.getElementById('ft-bold').onclick = () => { restoreSelection(); document.execCommand('bold'); saveSelection(); };
+document.getElementById('ft-italic').onclick = () => { restoreSelection(); document.execCommand('italic'); saveSelection(); };
+document.getElementById('ft-under').onclick = () => { restoreSelection(); document.execCommand('underline'); saveSelection(); };
+
+document.getElementById('ft-fg').oninput = (e) => {
+    restoreSelection();
+    document.execCommand('foreColor', false, e.target.value);
+    saveSelection();
+    addRecentColor(recentFgColors, e.target.value, 'recentFgColors');
+    document.querySelectorAll('[id^="recent-fg-"]').forEach(el => {
+        renderRecentColors(el.id, recentFgColors, 'foreColor');
+    });
+};
+
+document.getElementById('ft-hl-btn').onclick = () => {
+    restoreSelection();
+    const hlBtn = document.getElementById('ft-hl-btn');
+    if (hlBtn.classList.contains('hl-on')) {
         document.execCommand('hiliteColor', false, 'transparent');
-        if (btn) { btn.textContent = 'H'; btn.style.textDecoration = 'none'; }
+        hlBtn.classList.remove('hl-on');
+        hlBtn.title = '하이라이트 적용';
     } else {
-        const color = document.getElementById(`notice-bgcolor-${i}`)?.value || '#ffff00';
+        const color = document.getElementById('ft-hl').value;
         document.execCommand('hiliteColor', false, color);
         addRecentColor(recentHlColors, color, 'recentHlColors');
-        renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
-        if (btn) { btn.textContent = 'H'; btn.style.textDecoration = 'line-through'; }
+        document.querySelectorAll('[id^="recent-hl-"]').forEach(el => {
+            renderRecentColors(el.id, recentHlColors, 'hiliteColor');
+        });
+        hlBtn.classList.add('hl-on');
+        hlBtn.title = '하이라이트 제거';
     }
+    saveSelection();
+};
+
+document.getElementById('ft-hl').oninput = (e) => {
+    restoreSelection();
+    document.execCommand('hiliteColor', false, e.target.value);
+    saveSelection();
+    addRecentColor(recentHlColors, e.target.value, 'recentHlColors');
+    document.querySelectorAll('[id^="recent-hl-"]').forEach(el => {
+        renderRecentColors(el.id, recentHlColors, 'hiliteColor');
+    });
+    document.getElementById('ft-hl-btn').classList.add('hl-on');
 };
 function collectNoticeData() {
     siteData.notices = (siteData.notices || []).map((n, i) => ({
@@ -908,5 +944,15 @@ async function saveToFirebase() {
 
 loadData();
 </script>
+<div id="float-toolbar">
+    <button id="ft-bold"><b>B</b></button>
+    <button id="ft-italic"><i>I</i></button>
+    <button id="ft-under"><u>U</u></button>
+    <div class="ft-sep"></div>
+    <input type="color" id="ft-fg" title="글자색" value="#ffffff">
+    <div class="ft-sep"></div>
+    <button id="ft-hl-btn">H</button>
+    <input type="color" id="ft-hl" title="하이라이트색" value="#ffff00">
+</div>
 </body>
 </html>
