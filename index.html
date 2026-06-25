@@ -362,13 +362,11 @@ function renderSideNav() {
 function update() {
     const sections = document.querySelectorAll('.results-section');
     sections.forEach((s, i) => {
-        if (currentIdx === 0) s.style.transform = `translateY(${(i+1)*100}vh)`;
-        else if (currentIdx === i+1) {
-            sections.forEach((ss, j) => {
-                if (j < i) ss.style.transform = 'translateY(-100vh)';
-                else if (j === i) ss.style.transform = 'translateY(0)';
-                else ss.style.transform = `translateY(${(j-i)*100}vh)`;
-            });
+        if (currentIdx === 0) {
+            s.style.transform = `translateY(${(i+1)*100}vh)`;
+        } else {
+            const offset = i - (currentIdx - 1);
+            s.style.transform = `translateY(${offset * 100}vh)`;
         }
     });
     document.getElementById('navbar').classList.toggle('scrolled', currentIdx > 0);
