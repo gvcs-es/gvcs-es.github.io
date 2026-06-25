@@ -7,15 +7,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; min-height: 100%; background: #f0ede8; font-family: 'Noto Sans KR', sans-serif; color: #111; }
+        html, body { width: 100%; background: #f0ede8; font-family: 'Noto Sans KR', sans-serif; color: #111; }
 
-        .header-bar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 9999; background: rgba(240,237,232,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.08); }
+        /* 헤더 - 기존 사이트랑 통일 */
+        .header-bar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 9999; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
         .header-logo { height: 44px; display: flex; align-items: center; }
-        .header-logo img { height: 44px; width: auto; filter: invert(1); }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
-        .menu-btn span { display: block; width: 28px; height: 1.5px; background: #111; }
+        .header-logo img { height: 44px; width: auto; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+        .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; }
 
-        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .side-overlay.open { opacity: 1; pointer-events: all; }
         .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
         .side-menu.open { right: 0; }
@@ -27,52 +28,41 @@
         .nav-sub a:hover { color: white; }
         @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
 
-        .content { padding: 110px 40px 100px; max-width: 1100px; margin: 0 auto; }
-
-        /* 헤더 */
-        .page-header { padding: 60px 0 80px; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 60px; }
+        /* 페이지 헤더 */
+        .page-header { padding: 140px 60px 80px; border-bottom: 1px solid rgba(0,0,0,0.1); }
         .year-tabs { display: flex; gap: 8px; margin-bottom: 40px; }
-        .year-tab { padding: 8px 20px; font-size: 13px; font-weight: 500; border: 1.5px solid rgba(0,0,0,0.15); color: rgba(0,0,0,0.4); text-decoration: none; transition: all 0.2s; }
-        .year-tab.active { background: #111; color: white; border-color: #111; }
-        .year-tab:hover:not(.active) { border-color: #111; color: #111; }
-        .page-title { font-size: clamp(52px, 9vw, 120px); font-weight: 900; line-height: 0.9; letter-spacing: -3px; margin-bottom: 20px; }
-        .page-desc { font-size: 14px; color: rgba(0,0,0,0.4); letter-spacing: 1px; font-family: 'Space Mono', monospace; }
+        .year-tab { padding: 8px 20px; font-size: 13px; font-weight: 500; border: 1.5px solid rgba(0,0,0,0.2); color: rgba(0,0,0,0.4); text-decoration: none; transition: all 0.2s; }
+        .year-tab.active, .year-tab:hover { background: #111; color: white; border-color: #111; }
+        .page-title { font-size: clamp(60px, 12vw, 140px); font-weight: 900; line-height: 0.9; letter-spacing: -4px; margin-bottom: 28px; }
+        .page-desc { font-size: 13px; color: rgba(0,0,0,0.35); letter-spacing: 2px; font-family: 'Space Mono', monospace; text-transform: uppercase; }
 
-        /* 토탈 */
-        .total-section { background: #111; color: white; padding: 60px; margin-bottom: 60px; }
-        .total-tag { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 24px; }
-        .total-krw { font-size: clamp(40px, 7vw, 80px); font-weight: 900; letter-spacing: -2px; margin-bottom: 12px; font-family: 'Space Mono', monospace; }
-        .total-usd { font-size: clamp(20px, 3vw, 32px); color: rgba(255,255,255,0.35); font-family: 'Space Mono', monospace; }
+        /* 토탈 섹션 */
+        .total-section { background: #111; color: white; padding: 70px 60px; }
+        .total-tag { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 28px; }
+        .total-krw { font-size: clamp(44px, 7vw, 84px); font-weight: 900; letter-spacing: -3px; margin-bottom: 14px; }
+        .total-usd { font-size: clamp(22px, 3vw, 36px); color: rgba(255,255,255,0.3); font-family: 'Space Mono', monospace; }
 
-        /* 나라 그리드 */
-        .countries-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .country-card { padding: 36px 32px; position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; }
-        .country-card .top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .country-num { font-family: 'Space Mono', monospace; font-size: 11px; opacity: 0.4; }
-        .country-name { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 16px; }
-        .country-krw { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
-        .country-usd { font-family: 'Space Mono', monospace; font-size: 14px; opacity: 0.5; }
-
-        /* 나라별 색상 */
-        .card-0 { background: #c8e6c9; }
-        .card-1 { background: #ffccbc; }
-        .card-2 { background: #bbdefb; }
-        .card-3 { background: #f8bbd0; }
-        .card-4 { background: #fff9c4; }
-        .card-5 { background: #d7ccc8; }
-        .card-6 { background: #b2dfdb; }
+        /* 나라별 섹션 - 스크롤하면서 보기 */
+        .country-section { padding: 80px 60px; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 80px; opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .country-section.visible { opacity: 1; transform: translateY(0); }
+        .country-left { flex: 0 0 auto; }
+        .country-num { font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(0,0,0,0.25); letter-spacing: 2px; margin-bottom: 12px; }
+        .country-name-big { font-size: clamp(60px, 10vw, 120px); font-weight: 900; letter-spacing: -4px; line-height: 0.9; color: #111; }
+        .country-right { flex: 1; }
+        .country-krw-big { font-size: clamp(28px, 4vw, 52px); font-weight: 700; letter-spacing: -2px; margin-bottom: 10px; }
+        .country-usd-big { font-size: clamp(16px, 2vw, 24px); color: rgba(0,0,0,0.35); font-family: 'Space Mono', monospace; }
+        .country-bar { height: 4px; background: rgba(0,0,0,0.08); margin-top: 24px; border-radius: 2px; overflow: hidden; }
+        .country-bar-fill { height: 100%; background: #111; width: 0%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); border-radius: 2px; }
 
         #loading { text-align: center; padding: 200px 20px; color: rgba(0,0,0,0.3); font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 2px; }
 
-        @media (max-width: 900px) { .countries-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) {
-            .content { padding: 90px 16px 60px; }
-            .total-section { padding: 32px 24px; }
-            .countries-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .country-card { padding: 20px 16px; min-height: 140px; }
-            .country-name { font-size: 18px; }
-            .country-krw { font-size: 14px; }
+        @media (max-width: 700px) {
+            .page-header { padding: 110px 24px 50px; }
             .page-title { letter-spacing: -2px; }
+            .total-section { padding: 40px 24px; }
+            .country-section { padding: 50px 24px; flex-direction: column; align-items: flex-start; gap: 24px; }
+            .country-name-big { font-size: clamp(48px, 14vw, 80px); letter-spacing: -2px; }
+            .country-krw-big { font-size: clamp(22px, 6vw, 36px); }
         }
     </style>
 </head>
@@ -101,23 +91,21 @@
         </div>
     </header>
 
-    <div class="content">
-        <div id="loading">LOADING...</div>
-        <div id="main-content" style="display:none;">
-            <div class="page-header">
-                <div class="year-tabs" id="year-tabs"></div>
-                <h1 class="page-title" id="page-title">2026<br>장학금</h1>
-                <div class="page-desc">SCHOLARSHIP RESULTS / 장학금 현황</div>
-            </div>
-
-            <div class="total-section">
-                <div class="total-tag">Total Scholarship</div>
-                <div class="total-krw" id="total-krw">0원</div>
-                <div class="total-usd" id="total-usd">$0</div>
-            </div>
-
-            <div class="countries-grid" id="countries-grid"></div>
+    <div id="loading">LOADING...</div>
+    <div id="main-content" style="display:none;">
+        <div class="page-header">
+            <div class="year-tabs" id="year-tabs"></div>
+            <h1 class="page-title" id="page-title">2026<br>장학금</h1>
+            <div class="page-desc">Scholarship Results</div>
         </div>
+
+        <div class="total-section">
+            <div class="total-tag">Total Scholarship</div>
+            <div class="total-krw" id="total-krw">0원</div>
+            <div class="total-usd" id="total-usd">$0</div>
+        </div>
+
+        <div id="countries-container"></div>
     </div>
 
     <script type="module">
@@ -176,7 +164,6 @@
             let scholarshipData = {};
             if (docSnap.exists()) {
                 const data = docSnap.data();
-
                 data.admissionYears?.forEach(y => {
                     const a = document.createElement('a');
                     a.href = `admission.html?year=${y.year}`;
@@ -201,7 +188,7 @@
                 scholarshipData = data[`scholarship_${year}`] || {};
             }
 
-            const grid = document.getElementById('countries-grid');
+            const container = document.getElementById('countries-container');
             let totalKrw = 0, totalUsd = 0;
             const cardData = [];
 
@@ -211,30 +198,60 @@
                 totalUsd += d.usd || 0;
                 cardData.push({ country, d, idx });
 
-                const card = document.createElement('div');
-                card.className = `country-card card-${idx}`;
-                card.innerHTML = `
-                    <div class="top">
+                const section = document.createElement('div');
+                section.className = 'country-section';
+                section.innerHTML = `
+                    <div class="country-left">
                         <div class="country-num">${String(idx+1).padStart(2,'0')}</div>
+                        <div class="country-name-big">${country}</div>
                     </div>
-                    <div>
-                        <div class="country-name">${country}</div>
-                        <div class="country-krw" id="krw-${country}">0원</div>
-                        <div class="country-usd" id="usd-${country}">$0</div>
+                    <div class="country-right">
+                        <div class="country-krw-big" id="krw-${country}">0원</div>
+                        <div class="country-usd-big" id="usd-${country}">$0</div>
+                        <div class="country-bar"><div class="country-bar-fill" id="bar-${country}"></div></div>
                     </div>`;
-                grid.appendChild(card);
+                container.appendChild(section);
             });
 
+            // 토탈 카운트업
             setTimeout(() => {
-                cardData.forEach(({ country, d }, i) => {
-                    setTimeout(() => {
-                        countUp(document.getElementById(`krw-${country}`), d.krw || 0, '원');
-                        countUpUsd(document.getElementById(`usd-${country}`), d.usd || 0);
-                    }, i * 80);
-                });
-                countUp(document.getElementById('total-krw'), totalKrw, '원', 2200);
-                countUpUsd(document.getElementById('total-usd'), totalUsd, 2200);
+                countUp(document.getElementById('total-krw'), totalKrw, '원', 2000);
+                countUpUsd(document.getElementById('total-usd'), totalUsd, 2000);
             }, 200);
+
+            // 스크롤 인터섹션 옵저버
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        const country = entry.target.dataset.country;
+                        const d = entry.target.dataset;
+                        const krwEl = entry.target.querySelector('[id^="krw-"]');
+                        const usdEl = entry.target.querySelector('[id^="usd-"]');
+                        const barEl = entry.target.querySelector('.country-bar-fill');
+                        const krw = parseInt(d.krw) || 0;
+                        const usd = parseInt(d.usd) || 0;
+                        const pct = parseInt(d.pct) || 0;
+                        setTimeout(() => {
+                            countUp(krwEl, krw, '원');
+                            countUpUsd(usdEl, usd);
+                            if (barEl) barEl.style.width = pct + '%';
+                        }, 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            cardData.forEach(({ country, d }) => {
+                const el = document.getElementById(`krw-${country}`)?.closest('.country-section');
+                if (el) {
+                    const pct = totalKrw > 0 ? Math.round((d.krw / totalKrw) * 100) : 0;
+                    el.dataset.krw = d.krw || 0;
+                    el.dataset.usd = d.usd || 0;
+                    el.dataset.pct = pct;
+                    observer.observe(el);
+                }
+            });
 
         } catch(e) {
             document.getElementById('loading').textContent = 'ERROR';
