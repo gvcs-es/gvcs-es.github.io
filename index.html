@@ -545,6 +545,10 @@ function renderScholarshipInputs() {
                 <div class="input-label">달러 ($)</div>
                 <input class="url-input" id="sch-usd-${i}" value="${d.usd || 0}" type="number" placeholder="0">
             </div>
+            <div class="input-group">
+                <div class="input-label">국기 이미지 링크</div>
+                <input class="url-input" id="sch-flag-${i}" value="${d.flag || ''}" placeholder="이미지 링크">
+            </div>
             <div style="display:flex;flex-direction:column;gap:2px;">
                 <button class="order-btn" onclick="moveSchCountry(${i},-1)">▲</button>
                 <button class="order-btn" onclick="moveSchCountry(${i},1)">▼</button>
@@ -562,7 +566,8 @@ function collectSchCountryData() {
         const name = document.getElementById(`sch-name-${i}`)?.value;
         const krw = parseInt(document.getElementById(`sch-krw-${i}`)?.value) || 0;
         const usd = parseInt(document.getElementById(`sch-usd-${i}`)?.value) || 0;
-        if (name) newData[name] = { krw, usd };
+        const flag = document.getElementById(`sch-flag-${i}`)?.value || '';
+        if (name) newData[name] = { krw, usd, flag };
     });
     siteData[yearKey] = newData;
 }
