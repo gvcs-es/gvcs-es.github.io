@@ -167,10 +167,7 @@
                 </div>
                 <div class="admin-panel" id="panel-scholarship">
                     <h3>장학금 관리</h3>
-                    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-                        <button id="sch-tab-2026" class="save-btn" onclick="selectSchYear(2026)" style="opacity:1;margin-top:0;">2026</button>
-                        <button id="sch-tab-2025" class="save-btn" onclick="selectSchYear(2025)" style="opacity:0.4;margin-top:0;">2025</button>
-                    </div>
+                    <div id="sch-year-tabs" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;"></div>
                     <div id="scholarship-input-list"></div>
                     <button class="add-year-btn" onclick="addSchCountry()">+</button><br>
                     <button class="save-btn" onclick="saveScholarshipData()">저장</button>
@@ -525,6 +522,20 @@ function renderAdminPanels() {
 }
 
 function renderScholarshipInputs() {
+    const tabs = document.getElementById('sch-year-tabs');
+    if (tabs) {
+        tabs.innerHTML = '';
+        siteData.admissionYears.forEach(y => {
+            if (!siteData[`scholarship_${y.year}`]) siteData[`scholarship_${y.year}`] = {};
+            const btn = document.createElement('button');
+            btn.className = 'save-btn';
+            btn.id = `sch-tab-${y.year}`;
+            btn.style.cssText = `opacity:${y.year === currentSchYear ? '1' : '0.4'};margin-top:0;`;
+            btn.textContent = String(y.year);
+            btn.onclick = () => selectSchYear(y.year);
+            tabs.appendChild(btn);
+        });
+    }
     const yearKey = `scholarship_${currentSchYear}`;
     if (!siteData[yearKey]) siteData[yearKey] = {};
     const data = siteData[yearKey];
