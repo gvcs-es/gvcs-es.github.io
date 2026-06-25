@@ -45,14 +45,11 @@
         .admin-menu-item { padding: 12px 24px; cursor: pointer; font-size: 15px; color: rgba(255,255,255,0.7); transition: all 0.2s; }
         .admin-menu-item:hover, .admin-menu-item.active { background: rgba(255,255,255,0.08); color: white; }
         #admin-content { flex: 1; padding: 24px; overflow-y: auto; }
-
         .admin-panel { display: none; }
         .admin-panel.active { display: block; }
         .admin-panel h3 { font-size: 16px; margin-bottom: 20px; color: rgba(255,255,255,0.8); }
-
         .year-list { display: flex; flex-direction: column; gap: 12px; }
         .year-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 12px 16px; }
-        .year-item span { font-size: 15px; min-width: 50px; }
         .color-input { width: 40px; height: 32px; border: none; cursor: pointer; background: none; padding: 0; }
         .url-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 10px; font-size: 13px; }
         .url-input::placeholder { color: rgba(255,255,255,0.3); }
@@ -65,9 +62,9 @@
         .add-year-btn:hover { border-color: white; }
         .input-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
         .input-group { display: flex; flex-direction: column; flex: 1; }
-
         .slide-item { background: rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .slide-label { font-size: 13px; color: rgba(255,255,255,0.6); min-width: 60px; }
+        .sch-country-row { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; margin-bottom: 8px; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
@@ -78,21 +75,18 @@
         .hero-text-container { position: absolute; bottom: 30px; left: 30px; z-index: 10; display: flex; flex-direction: row; align-items: flex-end; gap: 15px; }
         .img-gvcs { height: 175px; width: auto; flex-shrink: 0; }
         .img-sub { height: 150px; width: auto; flex-shrink: 0; align-self: flex-end; margin-bottom: 8px; }
-
         @keyframes bounce { 0% { transform: translateY(0); } 50% { transform: translateY(-25px); } 100% { transform: translateY(0); } }
         .hero-text-container.bouncing { animation: bounce 2s ease-in-out infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
         #pc-scroll-hint { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); z-index: 10; color: white; font-size: 16px; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; white-space: nowrap; }
         #pc-scroll-hint.visible { opacity: 1; animation: pulse 2s ease-in-out infinite; }
-
-        .results-section { z-index: 2; transform: translateY(100vh); color: white; }
+        .results-section { color: white; }
         .results-content { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 110px 40px 40px; }
         .results-title h1 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
         .results-title h2 { font-size: 160px; font-weight: 700; color: white; line-height: 1; }
         .results-btns { display: flex; gap: 16px; align-self: flex-end; }
         .results-btn { border: 2px solid white; color: white; padding: 18px 40px; font-size: 18px; text-decoration: none; transition: all 0.3s ease; }
         .results-btn:hover { background: white; color: inherit; }
-
         .mobile-divider, .mobile-scroll-hint { display: none; }
 
         #popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99990; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
@@ -162,25 +156,23 @@
                 <div class="admin-panel active" id="panel-home">
                     <h3>홈페이지 메인 이미지 관리</h3>
                     <div id="home-slides-list"></div>
-                    <button class="save-btn" onclick="addHomeSlide()">+ 슬라이드 추가</button>
-                    <br>
+                    <button class="save-btn" onclick="addHomeSlide()">+ 슬라이드 추가</button><br>
                     <button class="save-btn" onclick="saveHomeImages()">저장</button>
                 </div>
                 <div class="admin-panel" id="panel-admission">
                     <h3>입시결과 관리</h3>
                     <div class="year-list" id="admission-year-list"></div>
-                    <button class="add-year-btn" onclick="addAdmissionYear()" title="연도 추가">+</button>
-                    <br>
+                    <button class="add-year-btn" onclick="addAdmissionYear()">+</button><br>
                     <button class="save-btn" onclick="saveAdmission()">저장</button>
                 </div>
                 <div class="admin-panel" id="panel-scholarship">
                     <h3>장학금 관리</h3>
                     <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-                        <button id="sch-year-2026" class="save-btn" onclick="selectSchYear(2026)" style="opacity:1;">2026</button>
-                        <button id="sch-year-2025" class="save-btn" onclick="selectSchYear(2025)" style="opacity:0.4;">2025</button>
+                        <button id="sch-tab-2026" class="save-btn" onclick="selectSchYear(2026)" style="opacity:1;margin-top:0;">2026</button>
+                        <button id="sch-tab-2025" class="save-btn" onclick="selectSchYear(2025)" style="opacity:0.4;margin-top:0;">2025</button>
                     </div>
                     <div id="scholarship-input-list"></div>
-                    <button class="save-btn" onclick="saveScholarshipData()" style="margin-top:20px;">저장</button>
+                    <button class="save-btn" onclick="saveScholarshipData()">저장</button>
                 </div>
             </div>
         </div>
@@ -197,18 +189,18 @@
             <div class="nav-label pc-only">입시결과</div>
             <div class="nav-sub pc-only" id="admission-nav-sub"></div>
             <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
-                <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">입시결과</span>
+                <span style="color:white;font-size:26px;font-weight:400;padding:16px 0;display:block;">입시결과</span>
             </div>
         </div>
         <div class="side-nav-item">
             <div class="nav-label pc-only">장학금</div>
             <div class="nav-sub pc-only" id="scholarship-nav-sub"></div>
             <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
-                <span style="color:white; font-size:26px; font-weight:400; padding: 16px 0; display:block;">장학금</span>
+                <span style="color:white;font-size:26px;font-weight:400;padding:16px 0;display:block;">장학금</span>
             </div>
         </div>
         <div class="side-nav-item" id="admin-console-item" style="display:none;">
-            <a href="#" onclick="openAdminModal(); closeSideMenu(); return false;" style="color: rgba(255,200,0,0.8);">관리 콘솔</a>
+            <a href="#" onclick="openAdminModal(); closeSideMenu(); return false;" style="color:rgba(255,200,0,0.8);">관리 콘솔</a>
         </div>
     </nav>
 </div>
@@ -232,13 +224,13 @@
 
 <div class="main-wrapper" id="mainWrapper">
     <div id="section-hero" class="page-section">
-        <div class="hero-slide pc-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
-        <div class="hero-slide pc-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
-        <div class="hero-slide pc-slide" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
+        <div class="hero-slide pc-slide active" style="background-image:url('https://i.imgur.com/BCMjATY.png');"></div>
+        <div class="hero-slide pc-slide" style="background-image:url('https://i.imgur.com/3mBbuNJ.png');"></div>
+        <div class="hero-slide pc-slide" style="background-image:url('https://i.imgur.com/q8fX4VO.png');"></div>
         <div class="mobile-bg-wrap">
-            <div class="mobile-slide active" style="background-image: url('https://i.imgur.com/BCMjATY.png');"></div>
-            <div class="mobile-slide" style="background-image: url('https://i.imgur.com/3mBbuNJ.png');"></div>
-            <div class="mobile-slide" style="background-image: url('https://i.imgur.com/q8fX4VO.png');"></div>
+            <div class="mobile-slide active" style="background-image:url('https://i.imgur.com/BCMjATY.png');"></div>
+            <div class="mobile-slide" style="background-image:url('https://i.imgur.com/3mBbuNJ.png');"></div>
+            <div class="mobile-slide" style="background-image:url('https://i.imgur.com/q8fX4VO.png');"></div>
         </div>
         <div class="hero-text-container" id="heroTextContainer">
             <img src="https://i.imgur.com/vJ66HlC.png" alt="GVCS" class="img-gvcs">
@@ -279,6 +271,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
 
 let siteData = {
     homeSlides: [
@@ -287,16 +280,19 @@ let siteData = {
         { url: 'https://i.imgur.com/q8fX4VO.png' }
     ],
     admissionYears: [
-        { year: 2026, color: '#9a1e23', admissionUrl: 'admission.html' },
-        { year: 2025, color: '#1a3a6b', admissionUrl: 'admission2025.html' }
+        { year: 2026, color: '#9a1e23', admissionUrl: 'admission.html?year=2026', admissionMobileUrl: '' },
+        { year: 2025, color: '#1a3a6b', admissionUrl: 'admission.html?year=2025', admissionMobileUrl: '' }
     ],
     scholarshipYears: [
-        { year: 2026, color: '#9a1e23', url: 'scholarship.html' },
-        { year: 2025, color: '#1a3a6b', url: 'scholarship2025.html' }
-    ]
+        { year: 2026, color: '#9a1e23', url: 'scholarship.html?year=2026' },
+        { year: 2025, color: '#1a3a6b', url: 'scholarship.html?year=2025' }
+    ],
+    scholarship_2026: {},
+    scholarship_2025: {}
 };
 
 let currentIdx = 0;
+let currentSchYear = 2026;
 const isMobile = window.innerWidth <= 700;
 
 async function loadData() {
@@ -315,9 +311,7 @@ function renderSections() {
         const div = document.createElement('div');
         div.className = 'page-section results-section';
         div.id = `section-results-${i}`;
-        div.style.background = y.color;
-        div.style.transform = `translateY(${(i+1)*100}vh)`;
-        div.style.zIndex = i + 2;
+        div.style.cssText = `background:${y.color};transform:translateY(${(i+1)*100}vh);z-index:${i+2};`;
         div.innerHTML = `
             <div class="results-content">
                 <div class="results-title">
@@ -325,18 +319,13 @@ function renderSections() {
                     <h2>대학 입시결과</h2>
                 </div>
                 <div class="results-btns">
-                    <a href="${getScholarshipUrl(y.year)}" class="results-btn">장학금 확인하러 가기</a>
-                    <a href="${y.admissionUrl || '#'}" class="results-btn">확인하러 가기</a>
+                    <a href="scholarship.html?year=${y.year}" class="results-btn">장학금 확인하러 가기</a>
+                    <a href="admission.html?year=${y.year}" class="results-btn">확인하러 가기</a>
                 </div>
             </div>`;
         container.appendChild(div);
     });
     window._maxIdx = siteData.admissionYears.length;
-}
-
-function getScholarshipUrl(year) {
-    const found = siteData.scholarshipYears.find(s => s.year === year);
-    return found ? found.url : '#';
 }
 
 function renderSideNav() {
@@ -353,7 +342,7 @@ function renderSideNav() {
     });
     siteData.scholarshipYears.forEach((y) => {
         const a = document.createElement('a');
-        a.href = y.url || '#';
+        a.href = `scholarship.html?year=${y.year}`;
         a.textContent = String(y.year);
         schSub.appendChild(a);
     });
@@ -362,10 +351,10 @@ function renderSideNav() {
 function update() {
     const sections = document.querySelectorAll('.results-section');
     sections.forEach((s, i) => {
+        const offset = i - (currentIdx - 1);
         if (currentIdx === 0) {
             s.style.transform = `translateY(${(i+1)*100}vh)`;
         } else {
-            const offset = i - (currentIdx - 1);
             s.style.transform = `translateY(${offset * 100}vh)`;
         }
     });
@@ -386,15 +375,15 @@ window.mobileGoTo = function(id) {
 if (!isMobile) {
     let scrolling = false, accumulated = 0;
     window.addEventListener('wheel', (e) => {
-        if(document.getElementById('admin-modal-overlay').classList.contains('open')) return;
+        if (document.getElementById('admin-modal-overlay').classList.contains('open')) return;
         e.preventDefault();
-        if(scrolling) return;
+        if (scrolling) return;
         accumulated += Math.abs(e.deltaY);
-        if(accumulated > 20) {
+        if (accumulated > 20) {
             scrolling = true; accumulated = 0;
             const max = window._maxIdx || 2;
-            if(e.deltaY > 0 && currentIdx < max) currentIdx++;
-            else if(e.deltaY < 0 && currentIdx > 0) currentIdx--;
+            if (e.deltaY > 0 && currentIdx < max) currentIdx++;
+            else if (e.deltaY < 0 && currentIdx > 0) currentIdx--;
             update();
             setTimeout(() => { scrolling = false; accumulated = 0; }, 900);
         }
@@ -417,7 +406,7 @@ document.querySelectorAll('.mobile-only').forEach(el => { if(!isMobile) el.style
 window.closePopup = function() {
     document.getElementById('popup-wrap').classList.remove('open');
     document.getElementById('popup-overlay').classList.remove('open');
-    if(!isMobile) {
+    if (!isMobile) {
         setTimeout(() => {
             document.getElementById('heroTextContainer').classList.add('bouncing');
             document.getElementById('pc-scroll-hint').classList.add('visible');
@@ -484,7 +473,7 @@ window.showPanel = function(name, el) {
     document.getElementById(`panel-${name}`).classList.add('active');
     el.classList.add('active');
 };
-renderScholarshipInputs();
+
 function renderAdminPanels() {
     // 홈 이미지
     const homeList = document.getElementById('home-slides-list');
@@ -530,27 +519,40 @@ function renderAdminPanels() {
         admList.appendChild(div);
     });
 
-    // 장학금
-    const schList = document.getElementById('scholarship-year-list');
-    schList.innerHTML = '';
-    siteData.scholarshipYears.forEach((y, i) => {
+    // 장학금 입력
+    renderScholarshipInputs();
+}
+
+function renderScholarshipInputs() {
+    const yearKey = `scholarship_${currentSchYear}`;
+    const data = siteData[yearKey] || {};
+    const list = document.getElementById('scholarship-input-list');
+    if (!list) return;
+    list.innerHTML = '';
+    COUNTRIES.forEach(country => {
+        const d = data[country] || { krw: 0, usd: 0 };
         const div = document.createElement('div');
-        div.className = 'year-item';
+        div.className = 'sch-country-row';
         div.innerHTML = `
-            <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="sch-year-${i}" value="${y.year}" type="number">
-            <input type="color" class="color-input" id="sch-color-${i}" value="${y.color}">
+            <span style="min-width:50px;font-size:14px;">${country}</span>
             <div class="input-group">
-                <div class="input-label">이미지 링크 삽입</div>
-                <input class="url-input" id="sch-url-${i}" value="${y.url || ''}" placeholder="이미지 링크 삽입">
+                <div class="input-label">원 (₩)</div>
+                <input class="url-input" id="sch-krw-${country}" value="${d.krw || 0}" type="number" placeholder="0">
             </div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-                <button class="order-btn" onclick="moveSchYear(${i},-1)">▲</button>
-                <button class="order-btn" onclick="moveSchYear(${i},1)">▼</button>
-            </div>
-            <button class="del-btn" onclick="removeSchYear(${i})">×</button>`;
-        schList.appendChild(div);
+            <div class="input-group">
+                <div class="input-label">달러 ($)</div>
+                <input class="url-input" id="sch-usd-${country}" value="${d.usd || 0}" type="number" placeholder="0">
+            </div>`;
+        list.appendChild(div);
     });
 }
+
+window.selectSchYear = function(year) {
+    currentSchYear = year;
+    document.querySelectorAll('[id^="sch-tab-"]').forEach(b => b.style.opacity = '0.4');
+    document.getElementById(`sch-tab-${year}`).style.opacity = '1';
+    renderScholarshipInputs();
+};
 
 function collectAdmData() {
     siteData.admissionYears = siteData.admissionYears.map((y, i) => ({
@@ -558,13 +560,6 @@ function collectAdmData() {
         color: document.getElementById(`adm-color-${i}`)?.value || y.color,
         admissionUrl: document.getElementById(`adm-url-${i}`)?.value || '',
         admissionMobileUrl: document.getElementById(`adm-mobile-${i}`)?.value || ''
-    }));
-}
-function collectSchData() {
-    siteData.scholarshipYears = siteData.scholarshipYears.map((y, i) => ({
-        year: parseInt(document.getElementById(`sch-year-${i}`)?.value) || y.year,
-        color: document.getElementById(`sch-color-${i}`)?.value || y.color,
-        url: document.getElementById(`sch-url-${i}`)?.value || ''
     }));
 }
 
@@ -581,20 +576,10 @@ window.moveAdmYear = function(i, dir) {
     [siteData.admissionYears[i], siteData.admissionYears[j]] = [siteData.admissionYears[j], siteData.admissionYears[i]];
     renderAdminPanels();
 };
-window.moveSchYear = function(i, dir) {
-    collectSchData();
-    const j = i + dir;
-    if (j < 0 || j >= siteData.scholarshipYears.length) return;
-    [siteData.scholarshipYears[i], siteData.scholarshipYears[j]] = [siteData.scholarshipYears[j], siteData.scholarshipYears[i]];
-    renderAdminPanels();
-};
-
 window.addHomeSlide = function() { siteData.homeSlides.push({ url: '' }); renderAdminPanels(); };
 window.removeHomeSlide = function(i) { siteData.homeSlides.splice(i, 1); renderAdminPanels(); };
-window.addAdmissionYear = function() { collectAdmData(); siteData.admissionYears.push({ year: new Date().getFullYear(), color: '#333333', admissionUrl: '' }); renderAdminPanels(); };
+window.addAdmissionYear = function() { collectAdmData(); siteData.admissionYears.push({ year: new Date().getFullYear(), color: '#333333', admissionUrl: '', admissionMobileUrl: '' }); renderAdminPanels(); };
 window.removeAdmYear = function(i) { collectAdmData(); siteData.admissionYears.splice(i, 1); renderAdminPanels(); };
-window.addScholarshipYear = function() { collectSchData(); siteData.scholarshipYears.push({ year: new Date().getFullYear(), color: '#333333', url: '' }); renderAdminPanels(); };
-window.removeSchYear = function(i) { collectSchData(); siteData.scholarshipYears.splice(i, 1); renderAdminPanels(); };
 
 window.saveHomeImages = async function() {
     siteData.homeSlides = siteData.homeSlides.map((s, i) => ({ url: document.getElementById(`home-slide-${i}`)?.value || s.url }));
@@ -603,47 +588,7 @@ window.saveHomeImages = async function() {
 window.saveAdmission = async function() {
     collectAdmData(); await saveToFirebase(); renderSections(); renderSideNav(); alert('저장됐어!');
 };
-window.saveScholarship = async function() {
-    collectSchData(); await saveToFirebase(); renderSideNav(); alert('저장됐어!');
-};
-
-async function saveToFirebase() {
-    try { await setDoc(doc(db, 'config', 'siteData'), siteData); }
-    catch(e) { alert('저장 실패: ' + e.message); }
-}
-let currentSchYear = 2026;
-window.selectSchYear = function(year) {
-    currentSchYear = year;
-    document.querySelectorAll('[id^="sch-year-"]').forEach(b => b.style.opacity = '0.4');
-    document.getElementById(`sch-year-${year}`).style.opacity = '1';
-    renderScholarshipInputs();
-};
-
-function renderScholarshipInputs() {
-    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
-    const yearKey = `scholarship_${currentSchYear}`;
-    const data = siteData[yearKey] || {};
-    const list = document.getElementById('scholarship-input-list');
-    list.innerHTML = '';
-    COUNTRIES.forEach(country => {
-        const d = data[country] || { krw: 0, usd: 0 };
-        list.innerHTML += `
-        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);padding:12px 16px;margin-bottom:8px;">
-            <span style="min-width:60px;font-size:14px;">${country}</span>
-            <div class="input-group">
-                <div class="input-label">원 (₩)</div>
-                <input class="url-input" id="sch-krw-${country}" value="${d.krw || 0}" type="number" placeholder="0">
-            </div>
-            <div class="input-group">
-                <div class="input-label">달러 ($)</div>
-                <input class="url-input" id="sch-usd-${country}" value="${d.usd || 0}" type="number" placeholder="0">
-            </div>
-        </div>`;
-    });
-}
-
 window.saveScholarshipData = async function() {
-    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
     const yearKey = `scholarship_${currentSchYear}`;
     siteData[yearKey] = {};
     COUNTRIES.forEach(country => {
@@ -655,6 +600,12 @@ window.saveScholarshipData = async function() {
     await saveToFirebase();
     alert('저장됐어!');
 };
+
+async function saveToFirebase() {
+    try { await setDoc(doc(db, 'config', 'siteData'), siteData); }
+    catch(e) { alert('저장 실패: ' + e.message); }
+}
+
 loadData();
 </script>
 </body>
