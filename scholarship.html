@@ -278,6 +278,12 @@
     };
 
     load();
+    if (sessionStorage.getItem('adminMode') === '1') {
+        const adminItem = document.createElement('div');
+        adminItem.className = 'side-nav-item';
+        adminItem.innerHTML = '<a href="index.html" style="color:rgba(255,200,0,0.8);">관리 콘솔</a>';
+        document.querySelector('.side-nav').appendChild(adminItem);
+    }
     </script>
 </body>
 </html>
