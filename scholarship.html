@@ -207,10 +207,9 @@
                 section.className = 'glass country-section';
                 const flagUrl = d.flag || '';
                 section.innerHTML = `
-                    ${flagUrl ? `<div style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:40%;height:70%;pointer-events:none;overflow:hidden;">
-                        <img src="${flagUrl}" style="width:100%;height:100%;object-fit:cover;object-position:20% center;opacity:0.4;"/>
-                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to right, rgba(255,255,255,0) 30%, rgba(255,255,255,0.95) 100%);"></div>
-                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.6) 100%);"></div>
+                    ${flagUrl ? `<div style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:40%;pointer-events:none;">
+                        <img src="${flagUrl}" style="width:100%;height:auto;opacity:0.4;display:block;"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to right, rgba(255,255,255,0) 20%, rgba(255,255,255,1) 85%);"></div>
                     </div>` : ''}
                     <div class="country-inner" style="position:relative;z-index:1;">
                         <div class="country-left">
