@@ -27,12 +27,13 @@
         .nav-sub a:hover { color: white; }
         @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
 
-        .content { padding: 120px 20px 100px; max-width: 1100px; margin: 0; }
+        .content { padding: 120px 0 100px; width: 100%; }
+        .content-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
 
         /* 페이지 타이틀 */
-        .page-header { margin-bottom: 70px; }
+        .page-header { margin-bottom: 70px; padding: 0 40px; }
         .class-label { font-family: 'Space Mono', monospace; font-size: clamp(14px, 2vw, 18px); letter-spacing: 4px; color: rgba(0,0,0,0.35); margin-bottom: 10px; }
-        .page-title { font-size: clamp(52px, 10vw, 120px); font-weight: 900; line-height: 1.05; letter-spacing: -3px; text-align: left; }
+        .page-title { font-size: clamp(52px, 10vw, 120px); font-weight: 900; line-height: 0.95; letter-spacing: -3px; text-align: left; }
 
         /* 유리 박스 */
         .glass {
@@ -45,13 +46,13 @@
         }
 
         /* 토탈 */
-        .total-glass { padding: 56px 60px; margin-bottom: 24px; }
-        .total-tag { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 4px; color: rgba(0,0,0,0.3); text-transform: uppercase; margin-bottom: 20px; }
-        .total-krw { font-size: clamp(48px, 8vw, 96px); font-weight: 900; letter-spacing: -3px; line-height: 1; margin-bottom: 14px; }
+        .total-glass { padding: 36px 50px; margin-bottom: 16px; }
+        .total-tag { display: none; }
+        .total-krw { font-size: clamp(48px, 8vw, 96px); font-weight: 900; letter-spacing: -3px; line-height: 1; margin-bottom: 10px; }
         .total-usd { font-size: clamp(22px, 3vw, 36px); color: rgba(0,0,0,0.3); font-family: 'Space Mono', monospace; }
 
         /* 나라별 */
-        .country-section { padding: 44px 50px; margin-bottom: 16px; opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .country-section { padding: 28px 50px; margin-bottom: 16px; opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .country-section.visible { opacity: 1; transform: translateY(0); }
         .country-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .country-left { flex: 0 0 auto; }
@@ -60,8 +61,7 @@
         .country-right { flex: 1; text-align: right; }
         .country-krw-big { font-size: clamp(24px, 3.5vw, 44px); font-weight: 700; letter-spacing: -1.5px; margin-bottom: 8px; }
         .country-usd-big { font-size: clamp(14px, 1.8vw, 20px); color: rgba(0,0,0,0.35); font-family: 'Space Mono', monospace; }
-        .country-bar { height: 3px; background: rgba(0,0,0,0.08); margin-top: 20px; border-radius: 2px; overflow: hidden; }
-        .country-bar-fill { height: 100%; background: rgba(0,0,0,0.5); width: 0%; transition: width 1.4s cubic-bezier(0.16,1,0.3,1); border-radius: 2px; }
+        .country-bar { display: none; }
 
         #loading { text-align: center; padding: 200px 20px; color: rgba(0,0,0,0.3); font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 2px; }
 
@@ -104,9 +104,10 @@
         <div id="loading">LOADING...</div>
         <div id="main-content" style="display:none;">
             <div class="page-header">
-                <h1 class="page-title"><span id="class-label" style="display:block;">CLASS OF 2026</span>국가별 장학금 수혜액</h1>
+                <div class="class-label" id="class-label">CLASS OF 2026</div>
+                <h1 class="page-title">국가별 장학금 수혜액</h1>
             </div>
-
+            <div class="content-inner">
             <div class="glass total-glass">
                 <div class="total-tag">Total Scholarship</div>
                 <div class="total-krw" id="total-krw">0원</div>
@@ -114,6 +115,7 @@
             </div>
 
             <div id="countries-container"></div>
+            </div>
         </div>
     </div>
 
@@ -203,7 +205,7 @@
                 section.innerHTML = `
                     <div class="country-inner">
                         <div class="country-left">
-                            <div class="country-num"></div>
+                            <div class="country-num">${String(idx+1).padStart(2,'0')}</div>
                             <div class="country-name-big">${country}</div>
                         </div>
                         <div class="country-right">
