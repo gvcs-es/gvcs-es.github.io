@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GVCS 장학금</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; min-height: 100%; background: #0a0a0a; font-family: 'Noto Sans KR', sans-serif; color: white; }
+        html, body { width: 100%; min-height: 100%; background: #0a0a0a; font-family: 'Space Grotesk', sans-serif; color: white; overflow-x: hidden; }
 
-        .header-bar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 9999; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-        .header-logo { height: 50px; display: flex; align-items: center; }
-        .header-logo img { height: 50px; width: auto; }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
-        .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; }
+        .header-bar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 9999; background: rgba(10,10,10,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .header-logo { height: 44px; display: flex; align-items: center; }
+        .header-logo img { height: 44px; width: auto; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .menu-btn span { display: block; width: 28px; height: 1.5px; background: white; }
 
         .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .side-overlay.open { opacity: 1; pointer-events: all; }
         .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
         .side-menu.open { right: 0; }
-        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
+        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s; }
         .side-nav-item a:hover { color: rgba(255,255,255,0.5); }
         .nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
         .side-nav-item:hover .nav-sub { display: flex; }
@@ -26,33 +27,53 @@
         .nav-sub a:hover { color: white; }
         @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
 
-        .content { padding: 120px 60px 80px; max-width: 1100px; margin: 0 auto; }
+        /* 메인 컨텐츠 */
+        .content { padding: 110px 40px 80px; max-width: 1200px; margin: 0 auto; }
 
-        .page-title { font-size: 14px; letter-spacing: 3px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 12px; }
-        .year-title { font-size: 60px; font-weight: 700; margin-bottom: 60px; }
+        /* 헤더 섹션 */
+        .page-header { margin-bottom: 80px; }
+        .year-badge { display: inline-block; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; margin-bottom: 24px; text-transform: uppercase; }
+        .page-title { font-size: clamp(48px, 8vw, 100px); font-weight: 700; line-height: 0.95; letter-spacing: -2px; margin-bottom: 24px; }
+        .page-title span { display: block; }
+        .page-title .accent { color: rgba(255,255,255,0.15); }
+        .page-subtitle { font-size: 14px; color: rgba(255,255,255,0.35); letter-spacing: 1px; font-family: 'Space Mono', monospace; }
 
-        .total-section { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 40px 50px; margin-bottom: 50px; }
-        .total-label { font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 16px; }
-        .total-krw { font-size: 52px; font-weight: 700; margin-bottom: 8px; }
-        .total-usd { font-size: 24px; color: rgba(255,255,255,0.5); }
+        /* 토탈 섹션 */
+        .total-block { border: 1px solid rgba(255,255,255,0.1); padding: 48px; margin-bottom: 60px; position: relative; overflow: hidden; background: rgba(255,255,255,0.02); }
+        .total-block::before { content: 'TOTAL'; position: absolute; right: 40px; top: 40px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.1); }
+        .total-label { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.3); font-family: 'Space Mono', monospace; text-transform: uppercase; margin-bottom: 20px; }
+        .total-krw { font-size: clamp(36px, 6vw, 72px); font-weight: 700; letter-spacing: -2px; margin-bottom: 10px; font-family: 'Space Mono', monospace; }
+        .total-usd { font-size: clamp(18px, 3vw, 28px); color: rgba(255,255,255,0.3); font-family: 'Space Mono', monospace; }
 
-        .countries-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .country-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 28px 32px; transition: border-color 0.2s; }
-        .country-card:hover { border-color: rgba(255,255,255,0.2); }
-        .country-name { font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 14px; }
-        .country-krw { font-size: 30px; font-weight: 600; margin-bottom: 6px; }
-        .country-usd { font-size: 15px; color: rgba(255,255,255,0.4); }
-        .country-empty { color: rgba(255,255,255,0.2); font-size: 20px; }
+        /* 국가 그리드 */
+        .section-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 4px; color: rgba(255,255,255,0.25); text-transform: uppercase; margin-bottom: 24px; }
+        .countries-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px; background: rgba(255,255,255,0.06); margin-bottom: 1px; }
+        .country-card { background: #0a0a0a; padding: 32px 28px; position: relative; transition: background 0.2s; cursor: default; }
+        .country-card:hover { background: rgba(255,255,255,0.03); }
+        .country-card::after { content: ''; position: absolute; bottom: 0; left: 28px; right: 28px; height: 1px; background: rgba(255,255,255,0.04); }
+        .country-index { font-family: 'Space Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); margin-bottom: 16px; letter-spacing: 2px; }
+        .country-name { font-size: 22px; font-weight: 600; margin-bottom: 24px; letter-spacing: -0.5px; }
+        .country-krw { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; margin-bottom: 8px; letter-spacing: -1px; }
+        .country-usd { font-family: 'Space Mono', monospace; font-size: 14px; color: rgba(255,255,255,0.3); }
+        .country-zero .country-krw { color: rgba(255,255,255,0.15); }
+        .country-zero .country-usd { color: rgba(255,255,255,0.1); }
 
-        #loading { text-align: center; padding: 200px 20px; color: rgba(255,255,255,0.3); font-size: 16px; }
+        /* 로딩 */
+        #loading { text-align: center; padding: 200px 20px; color: rgba(255,255,255,0.2); font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 2px; }
+
+        /* 연도 탭 */
+        .year-tabs { display: flex; gap: 0; margin-bottom: 60px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .year-tab { padding: 14px 28px; font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; text-decoration: none; }
+        .year-tab:hover { color: rgba(255,255,255,0.6); }
+        .year-tab.active { color: white; border-bottom-color: white; }
 
         @media (max-width: 700px) {
-            .content { padding: 100px 24px 60px; }
-            .year-title { font-size: 36px; margin-bottom: 36px; }
-            .total-section { padding: 28px 24px; }
-            .total-krw { font-size: 34px; }
-            .total-usd { font-size: 18px; }
-            .countries-grid { grid-template-columns: 1fr; }
+            .content { padding: 90px 20px 60px; }
+            .total-block { padding: 28px 24px; }
+            .countries-grid { grid-template-columns: 1fr 1fr; }
+            .country-card { padding: 20px 16px; }
+            .country-krw { font-size: 16px; }
+            .country-usd { font-size: 11px; }
         }
     </style>
 </head>
@@ -82,17 +103,26 @@
     </header>
 
     <div class="content">
-        <div id="loading">불러오는 중...</div>
+        <div id="loading">LOADING...</div>
         <div id="main-content" style="display:none;">
-            <div class="page-title">Scholarship</div>
-            <div class="year-title" id="year-title">2026 장학금 현황</div>
+            <div class="page-header">
+                <div class="year-badge" id="year-badge">CLASS OF 2026</div>
+                <h1 class="page-title">
+                    <span>SCHOLAR</span>
+                    <span class="accent">SHIP</span>
+                </h1>
+                <div class="page-subtitle">장학금 현황 / SCHOLARSHIP RESULTS</div>
+            </div>
 
-            <div class="total-section">
-                <div class="total-label">Total Scholarship</div>
+            <div id="year-tabs" class="year-tabs"></div>
+
+            <div class="total-block">
+                <div class="total-label">Total Scholarship Amount</div>
                 <div class="total-krw" id="total-krw">₩0</div>
                 <div class="total-usd" id="total-usd">$0</div>
             </div>
 
+            <div class="section-label">BY COUNTRY</div>
             <div class="countries-grid" id="countries-grid"></div>
         </div>
     </div>
@@ -112,22 +142,19 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
+    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
     const params = new URLSearchParams(window.location.search);
     const year = parseInt(params.get('year')) || 2026;
 
-    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
-
-    function countUp(el, target, prefix, suffix, duration = 2000) {
+    function countUp(el, target, prefix, duration = 1800) {
+        if (target === 0) { el.textContent = prefix + '0'; return; }
         const start = Date.now();
         const step = () => {
-            const elapsed = Date.now() - start;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = Math.floor(eased * target);
-            el.textContent = prefix + current.toLocaleString() + suffix;
-            if (progress < 1) requestAnimationFrame(step);
-            else el.textContent = prefix + target.toLocaleString() + suffix;
+            const p = Math.min((Date.now() - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 4);
+            el.textContent = prefix + Math.floor(eased * target).toLocaleString();
+            if (p < 1) requestAnimationFrame(step);
+            else el.textContent = prefix + target.toLocaleString();
         };
         requestAnimationFrame(step);
     }
@@ -137,68 +164,75 @@
             const docSnap = await getDoc(doc(db, 'config', 'siteData'));
             document.getElementById('loading').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            document.getElementById('year-title').textContent = `${year} 장학금 현황`;
+            document.getElementById('year-badge').textContent = `CLASS OF ${year}`;
+            document.title = `GVCS 장학금 ${year}`;
 
             let scholarshipData = {};
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
                 // 사이드바
-                const admNav = document.getElementById('admission-nav');
-                const schNav = document.getElementById('scholarship-nav');
                 data.admissionYears?.forEach(y => {
                     const a = document.createElement('a');
                     a.href = `admission.html?year=${y.year}`;
                     a.textContent = String(y.year);
-                    admNav.appendChild(a);
+                    document.getElementById('admission-nav').appendChild(a);
                 });
                 data.scholarshipYears?.forEach(y => {
                     const a = document.createElement('a');
                     a.href = `scholarship.html?year=${y.year}`;
                     a.textContent = String(y.year);
-                    schNav.appendChild(a);
+                    document.getElementById('scholarship-nav').appendChild(a);
                 });
 
-                // 장학금 데이터
-                const yearKey = `scholarship_${year}`;
-                scholarshipData = data[yearKey] || {};
+                // 연도 탭
+                const tabs = document.getElementById('year-tabs');
+                data.scholarshipYears?.forEach(y => {
+                    const a = document.createElement('a');
+                    a.href = `scholarship.html?year=${y.year}`;
+                    a.className = 'year-tab' + (y.year === year ? ' active' : '');
+                    a.textContent = String(y.year);
+                    tabs.appendChild(a);
+                });
+
+                scholarshipData = data[`scholarship_${year}`] || {};
             }
 
             // 나라별 카드
             const grid = document.getElementById('countries-grid');
             let totalKrw = 0, totalUsd = 0;
+            const cardData = [];
 
-            COUNTRIES.forEach(country => {
+            COUNTRIES.forEach((country, idx) => {
                 const d = scholarshipData[country] || { krw: 0, usd: 0 };
                 totalKrw += d.krw || 0;
                 totalUsd += d.usd || 0;
+                cardData.push({ country, d, idx });
 
                 const card = document.createElement('div');
-                card.className = 'country-card';
+                card.className = 'country-card' + (!d.krw && !d.usd ? ' country-zero' : '');
                 card.innerHTML = `
+                    <div class="country-index">${String(idx+1).padStart(2,'0')}</div>
                     <div class="country-name">${country}</div>
                     <div class="country-krw" id="krw-${country}">₩0</div>
                     <div class="country-usd" id="usd-${country}">$0</div>`;
                 grid.appendChild(card);
             });
 
-            // 카운트업 애니메이션
+            // 카운트업
             setTimeout(() => {
-                COUNTRIES.forEach((country, i) => {
-                    const d = scholarshipData[country] || { krw: 0, usd: 0 };
+                cardData.forEach(({ country, d }, i) => {
                     setTimeout(() => {
-                        countUp(document.getElementById(`krw-${country}`), d.krw || 0, '₩', '', 1500);
-                        countUp(document.getElementById(`usd-${country}`), d.usd || 0, '$', '', 1500);
-                    }, i * 100);
+                        countUp(document.getElementById(`krw-${country}`), d.krw || 0, '₩');
+                        countUp(document.getElementById(`usd-${country}`), d.usd || 0, '$');
+                    }, i * 80);
                 });
-                setTimeout(() => {
-                    countUp(document.getElementById('total-krw'), totalKrw, '₩', '', 2000);
-                    countUp(document.getElementById('total-usd'), totalUsd, '$', '', 2000);
-                }, 300);
-            }, 300);
+                countUp(document.getElementById('total-krw'), totalKrw, '₩', 2200);
+                countUp(document.getElementById('total-usd'), totalUsd, '$', 2200);
+            }, 200);
 
         } catch(e) {
-            document.getElementById('loading').textContent = '불러오기 실패';
+            document.getElementById('loading').textContent = 'ERROR LOADING DATA';
         }
     }
 
