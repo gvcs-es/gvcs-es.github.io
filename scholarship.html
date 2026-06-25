@@ -28,12 +28,14 @@
         @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
 
         .content { padding: 120px 0 100px; width: 100%; }
-        .content-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+        .content-inner { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
 
         /* 페이지 타이틀 */
-        .page-header { margin-bottom: 70px; padding: 0 40px; }
-        .class-label { font-family: 'Space Mono', monospace; font-size: clamp(14px, 2vw, 18px); letter-spacing: 4px; color: rgba(0,0,0,0.35); margin-bottom: 10px; }
-        .page-title { font-size: clamp(52px, 10vw, 120px); font-weight: 900; line-height: 0.95; letter-spacing: -3px; text-align: left; }
+        .page-header { margin-bottom: 100px; padding: 0 40px; }
+        .class-label { font-size: clamp(52px, 10vw, 120px); font-weight: 900; letter-spacing: -3px; color: #111; display: block; margin-bottom: 0; }
+        .page-title { font-size: clamp(52px, 10vw, 120px); font-weight: 900; line-height: 1.05; letter-spacing: -3px; text-align: left; }
+        .section-title { font-size: 20px; font-weight: 500; color: #111; margin-bottom: 16px; }
+        .section-divider { border: none; border-top: 1px solid rgba(0,0,0,0.12); margin: 24px 0; }
 
         /* 유리 박스 */
         .glass {
@@ -108,13 +110,14 @@
                 <h1 class="page-title">국가별 장학금 수혜액</h1>
             </div>
             <div class="content-inner">
-            <div class="glass total-glass">
-                <div class="total-tag">Total Scholarship</div>
-                <div class="total-krw" id="total-krw">0원</div>
-                <div class="total-usd" id="total-usd">$0</div>
-            </div>
-
-            <div id="countries-container"></div>
+                <div class="section-title">총 수혜액</div>
+                <div class="glass total-glass">
+                    <div class="total-krw" id="total-krw">0원</div>
+                    <div class="total-usd" id="total-usd">$0</div>
+                </div>
+                <hr class="section-divider">
+                <div class="section-title">국가별 장학금</div>
+                <div id="countries-container"></div>
             </div>
         </div>
     </div>
