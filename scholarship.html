@@ -55,7 +55,7 @@
         .country-section.visible { opacity: 1; transform: translateY(0); }
         .country-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .country-left { flex: 0 0 auto; }
-        .country-num { font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(0,0,0,0.25); letter-spacing: 2px; margin-bottom: 8px; }
+        .country-num { display: none; }
         .country-name-big { font-size: clamp(44px, 7vw, 80px); font-weight: 900; letter-spacing: -3px; line-height: 1; }
         .country-right { flex: 1; text-align: right; }
         .country-krw-big { font-size: clamp(24px, 3.5vw, 44px); font-weight: 700; letter-spacing: -1.5px; margin-bottom: 8px; }
@@ -104,8 +104,7 @@
         <div id="loading">LOADING...</div>
         <div id="main-content" style="display:none;">
             <div class="page-header">
-                <div class="class-label" id="class-label">CLASS OF 2026</div>
-                <h1 class="page-title">국가별<br>장학금<br>수혜액</h1>
+                <h1 class="page-title" id="class-label">CLASS OF 2026<br>국가별 장학금 수혜액</h1>
             </div>
 
             <div class="glass total-glass">
@@ -204,7 +203,7 @@
                 section.innerHTML = `
                     <div class="country-inner">
                         <div class="country-left">
-                            <div class="country-num">${String(idx+1).padStart(2,'0')}</div>
+                            <div class="country-num"></div>
                             <div class="country-name-big">${country}</div>
                         </div>
                         <div class="country-right">
