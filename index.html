@@ -175,10 +175,12 @@
                 </div>
                 <div class="admin-panel" id="panel-scholarship">
                     <h3>장학금 관리</h3>
-                    <div class="year-list" id="scholarship-year-list"></div>
-                    <button class="add-year-btn" onclick="addScholarshipYear()" title="연도 추가">+</button>
-                    <br>
-                    <button class="save-btn" onclick="saveScholarship()">저장</button>
+                    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+                        <button id="sch-year-2026" class="save-btn" onclick="selectSchYear(2026)" style="opacity:1;">2026</button>
+                        <button id="sch-year-2025" class="save-btn" onclick="selectSchYear(2025)" style="opacity:0.4;">2025</button>
+                    </div>
+                    <div id="scholarship-input-list"></div>
+                    <button class="save-btn" onclick="saveScholarshipData()" style="margin-top:20px;">저장</button>
                 </div>
             </div>
         </div>
@@ -483,7 +485,7 @@ window.showPanel = function(name, el) {
     document.getElementById(`panel-${name}`).classList.add('active');
     el.classList.add('active');
 };
-
+renderScholarshipInputs();
 function renderAdminPanels() {
     // 홈 이미지
     const homeList = document.getElementById('home-slides-list');
@@ -610,7 +612,50 @@ async function saveToFirebase() {
     try { await setDoc(doc(db, 'config', 'siteData'), siteData); }
     catch(e) { alert('저장 실패: ' + e.message); }
 }
+let currentSchYear = 2026;
+window.selectSchYear = function(year) {
+    currentSchYear = year;
+    document.querySelectorAll('[id^="sch-year-"]').forEach(b => b.style.opacity = '0.4');
+    document.getElementById(`sch-year-${year}`).style.opacity = '1';
+    renderScholarshipInputs();
+};
 
+function renderScholarshipInputs() {
+    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
+    const yearKey = `scholarship_${currentSchYear}`;
+    const data = siteData[yearKey] || {};
+    const list = document.getElementById('scholarship-input-list');
+    list.innerHTML = '';
+    COUNTRIES.forEach(country => {
+        const d = data[country] || { krw: 0, usd: 0 };
+        list.innerHTML += `
+        <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);padding:12px 16px;margin-bottom:8px;">
+            <span style="min-width:60px;font-size:14px;">${country}</span>
+            <div class="input-group">
+                <div class="input-label">원 (₩)</div>
+                <input class="url-input" id="sch-krw-${country}" value="${d.krw || 0}" type="number" placeholder="0">
+            </div>
+            <div class="input-group">
+                <div class="input-label">달러 ($)</div>
+                <input class="url-input" id="sch-usd-${country}" value="${d.usd || 0}" type="number" placeholder="0">
+            </div>
+        </div>`;
+    });
+}
+
+window.saveScholarshipData = async function() {
+    const COUNTRIES = ['미국', '일본', '한국', '스페인', '홍콩', '호주', '독일'];
+    const yearKey = `scholarship_${currentSchYear}`;
+    siteData[yearKey] = {};
+    COUNTRIES.forEach(country => {
+        siteData[yearKey][country] = {
+            krw: parseInt(document.getElementById(`sch-krw-${country}`)?.value) || 0,
+            usd: parseInt(document.getElementById(`sch-usd-${country}`)?.value) || 0
+        };
+    });
+    await saveToFirebase();
+    alert('저장됐어!');
+};
 loadData();
 </script>
 </body>
