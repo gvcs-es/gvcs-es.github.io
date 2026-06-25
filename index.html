@@ -69,9 +69,12 @@
         .notice-toolbar { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
         .toolbar-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; cursor: pointer; font-size: 13px; }
         .toolbar-btn:hover { background: rgba(255,255,255,0.2); }
-        .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+        .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.5; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+        .notice-content-editor p { margin-bottom: 0.8em; }
         .color-pick-wrap { display: flex; align-items: center; gap: 4px; }
         .color-pick-wrap label { font-size: 11px; color: rgba(255,255,255,0.5); }
+        .recent-colors { display: flex; gap: 4px; flex-wrap: wrap; }
+        .recent-color-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; flex-shrink: 0; }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
@@ -718,6 +721,35 @@ window.saveScholarshipData = async function() {
     alert('저장됐어!');
 };
 
+const recentFgColors = [];
+const recentHlColors = [];
+
+function addRecentColor(arr, color) {
+    const filtered = arr.filter(c => c !== color);
+    filtered.unshift(color);
+    if (filtered.length > 5) filtered.pop();
+    arr.length = 0;
+    arr.push(...filtered);
+}
+
+function renderRecentColors(containerId, arr, cmd) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    arr.forEach(c => {
+        const btn = document.createElement('div');
+        btn.className = 'recent-color-btn';
+        btn.style.background = c;
+        btn.title = c;
+        btn.onclick = () => {
+            const idx = containerId.split('-')[2];
+            document.getElementById(`notice-body-${idx}`).focus();
+            document.execCommand(cmd, false, c);
+        };
+        el.appendChild(btn);
+    });
+}
+
 function renderNoticeList() {
     const list = document.getElementById('notice-list');
     if (!list) return;
@@ -739,20 +771,41 @@ function renderNoticeList() {
                 <button class="toolbar-btn" onclick="noticeCmd(${i},'bold')"><b>B</b></button>
                 <div class="color-pick-wrap">
                     <label>글자색</label>
-                    <input type="color" class="color-input" id="notice-fgcolor-${i}" value="#111111" onchange="noticeCmd(${i},'foreColor',this.value)">
+                    <input type="color" class="color-input" id="notice-fgcolor-${i}" value="#ffffff" onchange="applyFgColor(${i},this.value)">
+                    <div class="recent-colors" id="recent-fg-${i}"></div>
                 </div>
                 <div class="color-pick-wrap">
                     <label>하이라이트</label>
-                    <input type="color" class="color-input" id="notice-bgcolor-${i}" value="#ffff00" onchange="noticeCmd(${i},'hiliteColor',this.value)">
+                    <input type="color" class="color-input" id="notice-bgcolor-${i}" value="#ffff00" onchange="applyHlColor(${i},this.value)">
+                    <button class="toolbar-btn" onclick="removeHl(${i})" title="하이라이트 제거">H✕</button>
+                    <div class="recent-colors" id="recent-hl-${i}"></div>
                 </div>
             </div>
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
         list.appendChild(div);
+        renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
+        renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
     });
 }
 window.noticeCmd = function(i, cmd, val) {
     document.getElementById(`notice-body-${i}`).focus();
     document.execCommand(cmd, false, val || null);
+};
+window.applyFgColor = function(i, color) {
+    document.getElementById(`notice-body-${i}`).focus();
+    document.execCommand('foreColor', false, color);
+    addRecentColor(recentFgColors, color);
+    renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
+};
+window.applyHlColor = function(i, color) {
+    document.getElementById(`notice-body-${i}`).focus();
+    document.execCommand('hiliteColor', false, color);
+    addRecentColor(recentHlColors, color);
+    renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
+};
+window.removeHl = function(i) {
+    document.getElementById(`notice-body-${i}`).focus();
+    document.execCommand('hiliteColor', false, 'transparent');
 };
 function collectNoticeData() {
     siteData.notices = (siteData.notices || []).map((n, i) => ({
