@@ -65,6 +65,13 @@
         .slide-item { background: rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .slide-label { font-size: 13px; color: rgba(255,255,255,0.6); min-width: 60px; }
         .sch-country-row { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; margin-bottom: 8px; }
+        .notice-editor-wrap { background: rgba(255,255,255,0.05); padding: 16px; margin-bottom: 12px; }
+        .notice-toolbar { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; align-items: center; }
+        .toolbar-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 10px; cursor: pointer; font-size: 13px; }
+        .toolbar-btn:hover { background: rgba(255,255,255,0.2); }
+        .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+        .color-pick-wrap { display: flex; align-items: center; gap: 4px; }
+        .color-pick-wrap label { font-size: 11px; color: rgba(255,255,255,0.5); }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
@@ -151,6 +158,8 @@
                 <div class="admin-menu-item active" onclick="showPanel('home', this)">홈 이미지</div>
                 <div class="admin-menu-item" onclick="showPanel('admission', this)">입시결과</div>
                 <div class="admin-menu-item" onclick="showPanel('scholarship', this)">장학금</div>
+                <div class="admin-menu-item" onclick="showPanel('popup', this)">팝업</div>
+                <div class="admin-menu-item" onclick="showPanel('notice', this)">공지사항</div>
             </div>
             <div id="admin-content">
                 <div class="admin-panel active" id="panel-home">
@@ -171,6 +180,37 @@
                     <div id="scholarship-input-list"></div>
                     <button class="add-year-btn" onclick="addSchCountry()">+</button><br>
                     <button class="save-btn" onclick="saveScholarshipData()">저장</button>
+                </div>
+            <div class="admin-panel" id="panel-popup">
+                    <h3>팝업 관리</h3>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div>
+                            <div class="input-label" style="margin-bottom:6px;">팝업 표시 여부</div>
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" id="popup-visible" style="width:16px;height:16px;">
+                                <span style="font-size:14px;color:rgba(255,255,255,0.7);">팝업 표시</span>
+                            </label>
+                        </div>
+                        <div>
+                            <div class="input-label" style="margin-bottom:6px;">팝업 이미지 URL</div>
+                            <input class="url-input" id="popup-img-url" placeholder="이미지 링크" style="width:100%;">
+                        </div>
+                        <div>
+                            <div class="input-label" style="margin-bottom:6px;">버튼 텍스트</div>
+                            <input class="url-input" id="popup-btn-text" placeholder="자세히 알아보기" style="width:100%;">
+                        </div>
+                        <div>
+                            <div class="input-label" style="margin-bottom:6px;">버튼 링크</div>
+                            <input class="url-input" id="popup-btn-link" placeholder="notice.html" style="width:100%;">
+                        </div>
+                    </div>
+                    <button class="save-btn" onclick="savePopup()">저장</button>
+                </div>
+                <div class="admin-panel" id="panel-notice">
+                    <h3>공지사항 관리</h3>
+                    <div id="notice-list"></div>
+                    <button class="add-year-btn" onclick="addNotice()">+</button><br>
+                    <button class="save-btn" onclick="saveNotices()">저장</button>
                 </div>
             </div>
         </div>
@@ -196,6 +236,9 @@
             <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
                 <span style="color:white;font-size:26px;font-weight:400;padding:16px 0;display:block;">장학금</span>
             </div>
+        </div>
+        <div class="side-nav-item">
+            <a href="notice.html">공지사항</a>
         </div>
         <div class="side-nav-item" id="admin-console-item" style="display:none;">
             <a href="#" onclick="openAdminModal(); closeSideMenu(); return false;" style="color:rgba(255,200,0,0.8);">관리 콘솔</a>
@@ -246,7 +289,7 @@
     <div id="popup">
         <button id="popup-close" onclick="closePopup()">✕</button>
         <img id="popup-img" src="https://i.imgur.com/21CdYDt.png" alt="팝업">
-        <button id="popup-more">자세히 알아보기</button>
+        <button id="popup-more" onclick="location.href='notice.html'">자세히 알아보기</button>
     </div>
 </div>
 
@@ -300,6 +343,14 @@ async function loadData() {
     } catch(e) {}
     renderSections();
     renderSideNav();
+    // 팝업 설정 반영
+    if (siteData.popupVisible === false) {
+        document.getElementById('popup-wrap').style.display = 'none';
+        document.getElementById('popup-overlay').style.display = 'none';
+    }
+    if (siteData.popupImageUrl) document.getElementById('popup-img').src = siteData.popupImageUrl;
+    if (siteData.popupBtnText) document.getElementById('popup-more').textContent = siteData.popupBtnText;
+    if (siteData.popupBtnLink) document.getElementById('popup-more').onclick = () => location.href = siteData.popupBtnLink;
 }
 
 function renderSections() {
@@ -519,6 +570,15 @@ function renderAdminPanels() {
 
     // 장학금 입력
     renderScholarshipInputs();
+
+    // 팝업
+    document.getElementById('popup-visible').checked = siteData.popupVisible !== false;
+    document.getElementById('popup-img-url').value = siteData.popupImageUrl || 'https://i.imgur.com/21CdYDt.png';
+    document.getElementById('popup-btn-text').value = siteData.popupBtnText || '자세히 알아보기';
+    document.getElementById('popup-btn-link').value = siteData.popupBtnLink || 'notice.html';
+
+    // 공지사항
+    renderNoticeList();
 }
 
 function renderScholarshipInputs() {
@@ -654,6 +714,83 @@ window.saveAdmission = async function() {
 };
 window.saveScholarshipData = async function() {
     collectSchCountryData();
+    await saveToFirebase();
+    alert('저장됐어!');
+};
+
+function renderNoticeList() {
+    const list = document.getElementById('notice-list');
+    if (!list) return;
+    list.innerHTML = '';
+    (siteData.notices || []).forEach((n, i) => {
+        const div = document.createElement('div');
+        div.className = 'notice-editor-wrap';
+        div.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.6);">공지사항 ${i+1}</span>
+                <div style="display:flex;gap:4px;">
+                    <button class="order-btn" onclick="moveNotice(${i},-1)">▲</button>
+                    <button class="order-btn" onclick="moveNotice(${i},1)">▼</button>
+                    <button class="del-btn" onclick="removeNotice(${i})">×</button>
+                </div>
+            </div>
+            <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
+            <div class="notice-toolbar">
+                <button class="toolbar-btn" onclick="noticeCmd(${i},'bold')"><b>B</b></button>
+                <div class="color-pick-wrap">
+                    <label>글자색</label>
+                    <input type="color" class="color-input" id="notice-fgcolor-${i}" value="#111111" onchange="noticeCmd(${i},'foreColor',this.value)">
+                </div>
+                <div class="color-pick-wrap">
+                    <label>하이라이트</label>
+                    <input type="color" class="color-input" id="notice-bgcolor-${i}" value="#ffff00" onchange="noticeCmd(${i},'hiliteColor',this.value)">
+                </div>
+            </div>
+            <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
+        list.appendChild(div);
+    });
+}
+window.noticeCmd = function(i, cmd, val) {
+    document.getElementById(`notice-body-${i}`).focus();
+    document.execCommand(cmd, false, val || null);
+};
+function collectNoticeData() {
+    siteData.notices = (siteData.notices || []).map((n, i) => ({
+        title: document.getElementById(`notice-title-${i}`)?.value || '',
+        content: document.getElementById(`notice-body-${i}`)?.innerHTML || ''
+    }));
+}
+window.addNotice = function() {
+    collectNoticeData();
+    if (!siteData.notices) siteData.notices = [];
+    siteData.notices.push({ title: '', content: '' });
+    renderNoticeList();
+};
+window.removeNotice = function(i) {
+    collectNoticeData();
+    siteData.notices.splice(i, 1);
+    renderNoticeList();
+};
+window.moveNotice = function(i, dir) {
+    collectNoticeData();
+    const j = i + dir;
+    if (j < 0 || j >= siteData.notices.length) return;
+    [siteData.notices[i], siteData.notices[j]] = [siteData.notices[j], siteData.notices[i]];
+    renderNoticeList();
+};
+window.savePopup = async function() {
+    siteData.popupVisible = document.getElementById('popup-visible').checked;
+    siteData.popupImageUrl = document.getElementById('popup-img-url').value;
+    siteData.popupBtnText = document.getElementById('popup-btn-text').value;
+    siteData.popupBtnLink = document.getElementById('popup-btn-link').value;
+    await saveToFirebase();
+    document.getElementById('popup-img').src = siteData.popupImageUrl;
+    document.getElementById('popup-more').textContent = siteData.popupBtnText;
+    document.getElementById('popup-more').onclick = () => location.href = siteData.popupBtnLink;
+    alert('저장됐어!');
+};
+window.saveNotices = async function() {
+    collectNoticeData();
     await saveToFirebase();
     alert('저장됐어!');
 };
