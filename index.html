@@ -68,14 +68,26 @@
         .notice-editor-wrap { background: rgba(255,255,255,0.05); padding: 16px; margin-bottom: 12px; }
         .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.5; outline: none; font-family: 'Noto Sans KR', sans-serif; }
         .notice-content-editor p { margin-bottom: 0.8em; }
-        .recent-colors { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
-        .recent-color-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; flex-shrink: 0; }
         #float-toolbar { position: fixed; background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: none; align-items: center; gap: 2px; padding: 5px 8px; z-index: 9999999; box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: all; }
         #float-toolbar button { background: none; border: none; color: white; cursor: pointer; font-size: 13px; padding: 4px 8px; border-radius: 4px; line-height: 1; }
         #float-toolbar button:hover { background: rgba(255,255,255,0.15); }
         #float-toolbar .ft-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 3px; }
-        #float-toolbar input[type="color"] { width: 24px; height: 24px; border: none; cursor: pointer; background: none; padding: 0; border-radius: 3px; }
         #ft-hl-btn.hl-on { background: rgba(255,220,0,0.3); }
+        #link-suggest-modal { display: none; }
+        .ft-color-wrap { position: relative; }
+        .ft-color-sub { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 6px; z-index: 10000000; box-shadow: 0 4px 20px rgba(0,0,0,0.6); min-width: 140px; }
+        .ft-color-wrap:hover .ft-color-sub { display: flex; }
+        .ft-color-sub:hover { display: flex; }
+        .ft-preset-colors { display: flex; gap: 4px; flex-wrap: wrap; }
+        .ft-preset-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; border-radius: 3px; flex-shrink: 0; }
+        .ft-preset-btn:hover { transform: scale(1.2); }
+        .ft-recent-colors { display: flex; gap: 4px; flex-wrap: wrap; }
+        .ft-recent-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.3); cursor: pointer; border-radius: 3px; flex-shrink: 0; }
+        .ft-recent-btn:hover { transform: scale(1.2); }
+        .ft-color-pick-row { display: flex; align-items: center; gap: 6px; }
+        .ft-color-pick-row label { font-size: 11px; color: rgba(255,255,255,0.5); }
+        .ft-color-pick-row input[type="color"] { width: 24px; height: 24px; border: none; cursor: pointer; background: none; padding: 0; border-radius: 3px; }
+        .ft-sub-label { font-size: 10px; color: rgba(255,255,255,0.4); }
 
         .main-wrapper { width: 100%; height: 100%; position: relative; }
         .page-section { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
@@ -296,6 +308,40 @@
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#000;">
             <button onclick="hidePopup1h()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:11px;cursor:pointer;padding:0;">1시간 동안 보지 않기</button>
             <button id="popup-more" onclick="location.href='notice.html'" style="border:1.5px solid white;color:white;background:none;padding:10px 24px;font-size:14px;cursor:pointer;">자세히 알아보기</button>
+        </div>
+    </div>
+</div>
+
+<div id="float-toolbar">
+    <button id="ft-bold"><b>B</b></button>
+    <button id="ft-italic"><i>I</i></button>
+    <button id="ft-under"><u>U</u></button>
+    <div class="ft-sep"></div>
+    <div class="ft-color-wrap">
+        <button id="ft-fg-btn" style="font-weight:700;text-decoration:underline;text-decoration-color:#ff4444;">A</button>
+        <div class="ft-color-sub" id="ft-fg-sub">
+            <div class="ft-sub-label">기본 색상</div>
+            <div class="ft-preset-colors" id="ft-fg-presets"></div>
+            <div class="ft-sub-label">최근 사용</div>
+            <div class="ft-recent-colors" id="ft-fg-recent"></div>
+            <div class="ft-color-pick-row">
+                <label>직접 선택</label>
+                <input type="color" id="ft-fg-pick" value="#ffffff">
+            </div>
+        </div>
+    </div>
+    <div class="ft-sep"></div>
+    <div class="ft-color-wrap">
+        <button id="ft-hl-btn">H</button>
+        <div class="ft-color-sub" id="ft-hl-sub">
+            <div class="ft-sub-label">기본 색상</div>
+            <div class="ft-preset-colors" id="ft-hl-presets"></div>
+            <div class="ft-sub-label">최근 사용</div>
+            <div class="ft-recent-colors" id="ft-hl-recent"></div>
+            <div class="ft-color-pick-row">
+                <label>직접 선택</label>
+                <input type="color" id="ft-hl-pick" value="#ffff00">
+            </div>
         </div>
     </div>
 </div>
@@ -789,10 +835,6 @@ function renderNoticeList() {
                 </div>
             </div>
             <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
-            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">최근 글자색</div>
-            <div class="recent-colors" id="recent-fg-${i}"></div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">최근 하이라이트</div>
-            <div class="recent-colors" id="recent-hl-${i}"></div>
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
         list.appendChild(div);
         renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
@@ -822,8 +864,52 @@ function checkHlState(range) {
     return bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent' && bg !== 'rgb(255, 255, 255)';
 }
 
+const PRESET_COLORS = ['#ff0000','#ff8800','#ffff00','#00cc00','#0066ff','#000080','#8800cc','#000000'];
+
+function renderFtPresets() {
+    const fgPre = document.getElementById('ft-fg-presets');
+    const hlPre = document.getElementById('ft-hl-presets');
+    if (!fgPre || !hlPre) return;
+    fgPre.innerHTML = ''; hlPre.innerHTML = '';
+    PRESET_COLORS.forEach(c => {
+        const b1 = document.createElement('div');
+        b1.className = 'ft-preset-btn';
+        b1.style.background = c;
+        b1.onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('foreColor', false, c); saveSelection(); addRecentColor(recentFgColors, c, 'recentFgColors'); renderFtRecent(); };
+        fgPre.appendChild(b1);
+        const b2 = document.createElement('div');
+        b2.className = 'ft-preset-btn';
+        b2.style.background = c;
+        b2.onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('hiliteColor', false, c); saveSelection(); addRecentColor(recentHlColors, c, 'recentHlColors'); renderFtRecent(); document.getElementById('ft-hl-btn').classList.add('hl-on'); };
+        hlPre.appendChild(b2);
+    });
+}
+
+function renderFtRecent() {
+    const fgRec = document.getElementById('ft-fg-recent');
+    const hlRec = document.getElementById('ft-hl-recent');
+    if (!fgRec || !hlRec) return;
+    fgRec.innerHTML = ''; hlRec.innerHTML = '';
+    recentFgColors.forEach(c => {
+        const b = document.createElement('div');
+        b.className = 'ft-recent-btn';
+        b.style.background = c;
+        b.onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('foreColor', false, c); saveSelection(); };
+        fgRec.appendChild(b);
+    });
+    recentHlColors.forEach(c => {
+        const b = document.createElement('div');
+        b.className = 'ft-recent-btn';
+        b.style.background = c;
+        b.onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('hiliteColor', false, c); saveSelection(); document.getElementById('ft-hl-btn').classList.add('hl-on'); };
+        hlRec.appendChild(b);
+    });
+}
+
 // 플로팅 툴바
 const ftBar = document.getElementById('float-toolbar');
+renderFtPresets();
+renderFtRecent();
 
 document.addEventListener('mouseup', (e) => {
     if (e.target.closest('#float-toolbar')) return;
@@ -835,11 +921,10 @@ document.addEventListener('mouseup', (e) => {
         const inEditor = (node.nodeType === 3 ? node.parentElement : node).closest('.notice-content-editor');
         if (!inEditor) { ftBar.style.display = 'none'; return; }
         saveSelection();
+        renderFtRecent();
         const rect = range.getBoundingClientRect();
         const hlOn = checkHlState(range);
-        const hlBtn = document.getElementById('ft-hl-btn');
-        hlBtn.classList.toggle('hl-on', hlOn);
-        hlBtn.title = hlOn ? '하이라이트 제거' : '하이라이트 적용';
+        document.getElementById('ft-hl-btn').classList.toggle('hl-on', hlOn);
         ftBar.style.display = 'flex';
         ftBar.style.left = Math.max(4, rect.left + rect.width / 2 - 100) + 'px';
         ftBar.style.top = (rect.top + window.scrollY - 48) + 'px';
@@ -852,50 +937,110 @@ document.addEventListener('mousedown', (e) => {
     }
 });
 
-document.getElementById('ft-bold').onclick = () => { restoreSelection(); document.execCommand('bold'); saveSelection(); };
-document.getElementById('ft-italic').onclick = () => { restoreSelection(); document.execCommand('italic'); saveSelection(); };
-document.getElementById('ft-under').onclick = () => { restoreSelection(); document.execCommand('underline'); saveSelection(); };
+document.getElementById('ft-bold').onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('bold'); saveSelection(); };
+document.getElementById('ft-italic').onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('italic'); saveSelection(); };
+document.getElementById('ft-under').onmousedown = (e) => { e.preventDefault(); restoreSelection(); document.execCommand('underline'); saveSelection(); };
 
-document.getElementById('ft-fg').oninput = (e) => {
-    restoreSelection();
-    document.execCommand('foreColor', false, e.target.value);
-    saveSelection();
-    addRecentColor(recentFgColors, e.target.value, 'recentFgColors');
-    document.querySelectorAll('[id^="recent-fg-"]').forEach(el => {
-        renderRecentColors(el.id, recentFgColors, 'foreColor');
-    });
-};
-
-document.getElementById('ft-hl-btn').onclick = () => {
+document.getElementById('ft-hl-btn').onmousedown = (e) => {
+    e.preventDefault();
     restoreSelection();
     const hlBtn = document.getElementById('ft-hl-btn');
     if (hlBtn.classList.contains('hl-on')) {
         document.execCommand('hiliteColor', false, 'transparent');
         hlBtn.classList.remove('hl-on');
-        hlBtn.title = '하이라이트 적용';
     } else {
-        const color = document.getElementById('ft-hl').value;
+        const color = recentHlColors[0] || '#ffff00';
         document.execCommand('hiliteColor', false, color);
         addRecentColor(recentHlColors, color, 'recentHlColors');
-        document.querySelectorAll('[id^="recent-hl-"]').forEach(el => {
-            renderRecentColors(el.id, recentHlColors, 'hiliteColor');
-        });
+        renderFtRecent();
         hlBtn.classList.add('hl-on');
-        hlBtn.title = '하이라이트 제거';
     }
     saveSelection();
 };
 
-document.getElementById('ft-hl').oninput = (e) => {
+document.getElementById('ft-fg-pick').oninput = (e) => {
+    restoreSelection();
+    document.execCommand('foreColor', false, e.target.value);
+    saveSelection();
+    addRecentColor(recentFgColors, e.target.value, 'recentFgColors');
+    renderFtRecent();
+};
+
+document.getElementById('ft-hl-pick').oninput = (e) => {
     restoreSelection();
     document.execCommand('hiliteColor', false, e.target.value);
     saveSelection();
     addRecentColor(recentHlColors, e.target.value, 'recentHlColors');
-    document.querySelectorAll('[id^="recent-hl-"]').forEach(el => {
-        renderRecentColors(el.id, recentHlColors, 'hiliteColor');
-    });
+    renderFtRecent();
     document.getElementById('ft-hl-btn').classList.add('hl-on');
 };
+// 링크 감지 모달
+let pendingLinkData = null;
+
+function showLinkModal(url, range, editor) {
+    pendingLinkData = { url, range, editor };
+    let modal = document.getElementById('link-suggest-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'link-suggest-modal';
+        modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2a2a2a;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:24px 28px;z-index:99999999;color:white;min-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.6);';
+        modal.innerHTML = `
+            <div style="font-size:14px;margin-bottom:8px;color:rgba(255,255,255,0.6);">링크가 감지되었습니다</div>
+            <div id="link-modal-url" style="font-size:13px;color:#66aaff;word-break:break-all;margin-bottom:20px;"></div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="dismissLink()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:8px 18px;cursor:pointer;border-radius:6px;font-size:13px;">적용 안함</button>
+                <button onclick="applyLink()" style="background:#0066ff;border:none;color:white;padding:8px 18px;cursor:pointer;border-radius:6px;font-size:13px;">링크로 연결</button>
+            </div>`;
+        document.body.appendChild(modal);
+    }
+    document.getElementById('link-modal-url').textContent = url;
+    modal.style.display = 'block';
+}
+
+window.applyLink = function() {
+    if (!pendingLinkData) return;
+    const { url, range, editor } = pendingLinkData;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('createLink', false, url);
+    // 새 탭에서 열리도록
+    editor.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+    pendingLinkData = null;
+    document.getElementById('link-suggest-modal').style.display = 'none';
+};
+
+window.dismissLink = function() {
+    pendingLinkData = null;
+    document.getElementById('link-suggest-modal').style.display = 'none';
+};
+
+// 에디터 링크 감지
+document.addEventListener('input', (e) => {
+    const editor = e.target.closest('.notice-content-editor');
+    if (!editor) return;
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    const node = range.startContainer;
+    if (node.nodeType !== 3) return;
+    const text = node.textContent;
+    const offset = range.startOffset;
+    // 커서 앞 텍스트에서 URL 찾기
+    const before = text.substring(0, offset);
+    const urlMatch = before.match(/(https?:\/\/[^\s]+)$/);
+    if (urlMatch) {
+        const url = urlMatch[1];
+        // 이미 링크 안에 있으면 스킵
+        if (node.parentElement.tagName === 'A') return;
+        // URL 범위 선택
+        const linkRange = document.createRange();
+        linkRange.setStart(node, offset - url.length);
+        linkRange.setEnd(node, offset);
+        showLinkModal(url, linkRange, editor);
+    }
+});
+
 function collectNoticeData() {
     siteData.notices = (siteData.notices || []).map((n, i) => ({
         title: document.getElementById(`notice-title-${i}`)?.value || '',
@@ -944,15 +1089,5 @@ async function saveToFirebase() {
 
 loadData();
 </script>
-<div id="float-toolbar">
-    <button id="ft-bold"><b>B</b></button>
-    <button id="ft-italic"><i>I</i></button>
-    <button id="ft-under"><u>U</u></button>
-    <div class="ft-sep"></div>
-    <input type="color" id="ft-fg" title="글자색" value="#ffffff">
-    <div class="ft-sep"></div>
-    <button id="ft-hl-btn">H</button>
-    <input type="color" id="ft-hl" title="하이라이트색" value="#ffff00">
-</div>
 </body>
 </html>
