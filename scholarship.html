@@ -211,8 +211,8 @@
                 section.className = 'glass country-section';
                 const flagUrl = d.flag || '';
                 section.innerHTML = `
-                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(to right, black 0%, transparent 40%);mask-image:linear-gradient(to right, black 0%, transparent 40%);">
-                        <img src="${flagUrl}" style="position:absolute;top:50%;left:0;transform:translateY(-50%);height:90%;width:auto;opacity:0.4;display:block;"/>
+                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                        <img src="${flagUrl}" style="position:absolute;top:50%;left:0;transform:translateY(-50%);height:100%;width:auto;opacity:0.4;display:block;-webkit-mask-image:linear-gradient(to right, black 30%, transparent 60%);mask-image:linear-gradient(to right, black 30%, transparent 60%);"/>
                     </div>` : ''}
                     <div class="country-inner" style="position:relative;z-index:1;">
                         <div class="country-left">
