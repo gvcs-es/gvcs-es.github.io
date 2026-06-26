@@ -76,8 +76,7 @@
         #link-suggest-modal { display: none; }
         .ft-color-wrap { position: relative; }
         .ft-color-sub { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 6px; z-index: 10000000; box-shadow: 0 4px 20px rgba(0,0,0,0.6); min-width: 140px; }
-        .ft-color-wrap:hover .ft-color-sub { display: flex; }
-        .ft-color-sub:hover { display: flex; }
+        .ft-color-sub.visible { display: flex; }x
         .ft-preset-colors { display: flex; gap: 4px; flex-wrap: wrap; }
         .ft-preset-btn { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; border-radius: 3px; flex-shrink: 0; }
         .ft-preset-btn:hover { transform: scale(1.2); }
@@ -865,6 +864,22 @@ function checkHlState(range) {
 }
 
 const PRESET_COLORS = ['#ff0000','#ff8800','#ffff00','#00cc00','#0066ff','#000080','#8800cc','#000000'];
+
+// 서브메뉴 호버 딜레이 처리
+function setupColorSubMenu(btnId, subId) {
+    const btn = document.getElementById(btnId);
+    const sub = document.getElementById(subId);
+    if (!btn || !sub) return;
+    let hideTimer = null;
+    const show = () => { clearTimeout(hideTimer); sub.classList.add('visible'); };
+    const hide = () => { hideTimer = setTimeout(() => sub.classList.remove('visible'), 150); };
+    btn.addEventListener('mouseenter', show);
+    btn.addEventListener('mouseleave', hide);
+    sub.addEventListener('mouseenter', show);
+    sub.addEventListener('mouseleave', hide);
+}
+setupColorSubMenu('ft-fg-btn', 'ft-fg-sub');
+setupColorSubMenu('ft-hl-btn', 'ft-hl-sub');
 
 function renderFtPresets() {
     const fgPre = document.getElementById('ft-fg-presets');
