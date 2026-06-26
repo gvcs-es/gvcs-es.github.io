@@ -158,10 +158,15 @@
             #popup-more { font-size: 12px; padding: 8px 16px; bottom: 12px; right: 12px; }
             #popup-img { border: none; outline: none; }
             #popup-close { top: 10px; right: 10px; }
-            #admin-modal { width: 95vw; }
+            #admin-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; }
             #admin-modal-body { flex-direction: column; }
-            #admin-menu { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0; display: flex; overflow-x: auto; }
-            .admin-menu-item { white-space: nowrap; }
+            #admin-menu { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0; display: flex; overflow-x: auto; flex-shrink: 0; }
+            .admin-menu-item { white-space: nowrap; font-size: 13px; padding: 10px 16px; }
+            #admin-content { padding: 16px; }
+            .year-item { flex-wrap: wrap; }
+            .sch-country-row { flex-wrap: wrap; }
+            .url-input { font-size: 12px; }
+            .input-label { font-size: 10px; }
         }
     </style>
 </head>
@@ -575,13 +580,48 @@ document.addEventListener('keydown', (e) => {
     if (typedBuffer.length > 10) typedBuffer = typedBuffer.slice(-10);
     if (typedBuffer.includes('관리자') || typedBuffer.includes('rhksflwk')) {
         typedBuffer = '';
-        sessionStorage.setItem('adminMode', '1');
-        document.getElementById('admin-console-item').style.display = 'block';
-        const toast = document.getElementById('admin-toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
+        activateAdminMode();
     }
 });
+
+// 모바일 관리자 탭 시퀀스: A->B->C->A->A->B->A
+const adminSeq = ['A','B','C','A','A','B','A'];
+let adminTapBuffer = [];
+let adminTapTimer = null;
+
+function activateAdminMode() {
+    sessionStorage.setItem('adminMode', '1');
+    document.getElementById('admin-console-item').style.display = 'block';
+    const toast = document.getElementById('admin-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function setupMobileAdminTap() {
+    const elA = document.getElementById('section-hero');
+    const elB = document.getElementById('heroTextContainer');
+    const elC = document.querySelector('.img-sub');
+
+    function tap(key) {
+        adminTapBuffer.push(key);
+        if (adminTapBuffer.length > adminSeq.length) adminTapBuffer.shift();
+        clearTimeout(adminTapTimer);
+        adminTapTimer = setTimeout(() => { adminTapBuffer = []; }, 3000);
+        if (adminTapBuffer.join('') === adminSeq.join('')) {
+            adminTapBuffer = [];
+            activateAdminMode();
+        }
+    }
+
+    elA?.addEventListener('touchstart', (e) => {
+        if (e.target.closest('#heroTextContainer')) return;
+        tap('A');
+    }, { passive: true });
+    elB?.addEventListener('touchstart', () => tap('B'), { passive: true });
+    elC?.addEventListener('touchstart', () => tap('C'), { passive: true });
+}
+
+setupMobileAdminTap();
 
 window.openAdminModal = function() {
     document.getElementById('admin-modal-overlay').classList.add('open');

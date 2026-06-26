@@ -54,10 +54,17 @@
         #loading { text-align: center; padding: 200px 20px; color: rgba(0,0,0,0.3); font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 2px; }
 
         @media (max-width: 700px) {
-            .content { padding: 100px 20px 60px; }
-            .notice-card { padding: 28px 24px; }
-            .page-title { letter-spacing: -2px; }
+            .content { padding: 90px 0 60px; }
+            .content-inner { padding: 0 16px; }
+            .page-header { padding: 0 16px; margin-bottom: 40px; }
+            .notice-card { padding: 24px 20px; cursor: pointer; }
+            .page-title { letter-spacing: -2px; font-size: clamp(40px, 12vw, 80px); }
         }
+        .notice-card-body-wrap { position: relative; }
+        .notice-card-body-wrap.collapsed .notice-body { max-height: 120px; overflow: hidden; }
+        .notice-card-body-wrap.collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9)); pointer-events: none; border-radius: 0 0 16px 16px; }
+        .notice-view-btn { display: none; margin-top: 12px; background: none; border: 1px solid rgba(0,0,0,0.15); color: #333; padding: 8px 20px; font-size: 13px; cursor: pointer; border-radius: 20px; width: 100%; }
+        @media (max-width: 700px) { .notice-view-btn { display: block; } }
     </style>
 </head>
 <body>
@@ -136,10 +143,12 @@
                 });
 
                 const notices = data.notices || [];
+                window._noticesData = notices;
                 const container = document.getElementById('notices-container');
                 if (notices.length === 0) {
                     container.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(0,0,0,0.3);font-family:Space Mono,monospace;font-size:13px;letter-spacing:2px;">공지사항이 없습니다.</div>';
                 } else {
+                    const isMobile = window.innerWidth <= 700;
                     notices.forEach((n, i) => {
                         const div = document.createElement('div');
                         div.className = 'glass notice-card';
@@ -147,7 +156,10 @@
                             <div class="notice-num">NOTICE ${String(i+1).padStart(2,'0')}</div>
                             <div class="notice-title">${n.title || ''}</div>
                             <hr class="notice-divider">
-                            <div class="notice-body">${n.content || ''}</div>`;
+                            <div class="notice-card-body-wrap${isMobile ? ' collapsed' : ''}">
+                                <div class="notice-body">${n.content || ''}</div>
+                            </div>
+                            <button class="notice-view-btn" onclick="openNoticeDetail(${i})">자세히 보기</button>`;
                         container.appendChild(div);
                     });
 
@@ -159,7 +171,18 @@
                             }
                         });
                     }, { threshold: 0.1 });
-                    document.querySelectorAll('.notice-card').forEach(el => observer.observe(el));
+                    document.querySelectorAll('.notice-card').forEach(el => {
+                        observer.observe(el);
+                        if (isMobile) {
+                            const body = el.querySelector('.notice-body');
+                            const wrap = el.querySelector('.notice-card-body-wrap');
+                            const btn = el.querySelector('.notice-view-btn');
+                            if (body && body.scrollHeight <= 120) {
+                                wrap?.classList.remove('collapsed');
+                                if (btn) btn.style.display = 'none';
+                            }
+                        }
+                    });
                 }
             }
         } catch(e) {
@@ -183,6 +206,26 @@
         adminItem.innerHTML = '<a href="index.html" style="color:rgba(255,200,0,0.8);">관리 콘솔</a>';
         document.querySelector('.side-nav').appendChild(adminItem);
     }
+    window._noticesData = [];
+
+    window.openNoticeDetail = function(i) {
+        const notices = window._noticesData;
+        const n = notices[i];
+        if (!n) return;
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999990;';
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#f0ede8;z-index:999991;overflow-y:auto;padding:80px 20px 60px;';
+        modal.innerHTML = `
+            <button onclick="this.closest('[style*=\"999991\"]').remove();document.querySelector('[style*=\"999990\"]').remove();" style="position:fixed;top:16px;left:16px;background:none;border:none;font-size:24px;cursor:pointer;z-index:999992;">←</button>
+            <div style="font-size:12px;color:rgba(0,0,0,0.3);letter-spacing:2px;margin-bottom:10px;font-family:Space Mono,monospace;">NOTICE ${String(i+1).padStart(2,'0')}</div>
+            <div style="font-size:clamp(22px,6vw,32px);font-weight:700;letter-spacing:-1px;margin-bottom:20px;">${n.title || ''}</div>
+            <hr style="border:none;border-top:1px solid rgba(0,0,0,0.1);margin-bottom:20px;">
+            <div style="font-size:15px;line-height:1.8;color:#333;word-break:keep-all;">${n.content || ''}</div>`;
+        document.body.appendChild(overlay);
+        document.body.appendChild(modal);
+        overlay.onclick = () => { overlay.remove(); modal.remove(); };
+    };
     </script>
 </body>
 </html>
