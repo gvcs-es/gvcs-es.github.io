@@ -874,17 +874,13 @@ function setupColorSubMenu(btnId, subId) {
     const btn = document.getElementById(btnId);
     const sub = document.getElementById(subId);
     if (!btn || !sub) return;
+    const wrap = btn.closest('.ft-color-wrap');
+    if (!wrap) return;
     let hideTimer = null;
     const show = () => { clearTimeout(hideTimer); sub.classList.add('visible'); };
-    const hide = () => { hideTimer = setTimeout(() => sub.classList.remove('visible'), 150); };
-    btn.addEventListener('mouseenter', show);
-    btn.addEventListener('mouseleave', hide);
-    sub.addEventListener('mouseenter', show);
-    sub.addEventListener('mouseleave', hide);
-    sub.querySelectorAll('.ft-pick-hover-guard').forEach(g => {
-        g.addEventListener('mouseenter', show);
-        g.addEventListener('mouseleave', hide);
-    });
+    const hide = () => { hideTimer = setTimeout(() => sub.classList.remove('visible'), 800); };
+    wrap.addEventListener('mouseenter', show);
+    wrap.addEventListener('mouseleave', hide);
 }
 setupColorSubMenu('ft-fg-btn', 'ft-fg-sub');
 setupColorSubMenu('ft-hl-btn', 'ft-hl-sub');
