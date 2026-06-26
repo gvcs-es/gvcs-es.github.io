@@ -5,39 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GVCS 입시결과</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; min-height: 100%; background: #fff; font-family: 'Noto Sans KR', sans-serif; }
+        html, body { width: 100%; min-height: 100%; background: #fff; font-family: 'Noto Sans KR', sans-serif; color: #111; }
+
         .header-bar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 9999; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
         .header-logo { height: 50px; display: flex; align-items: center; }
         .header-logo img { height: 50px; width: auto; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
         .menu-btn span { display: block; width: 30px; height: 2px; background: white; border-radius: 2px; }
-        .content { display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 100px 20px 60px; }
-        .admission-img { width: 100%; max-width: 1000px; height: auto; display: block; }
-        .mobile-img { display: none; }
-        @media (max-width: 700px) { .pc-img { display: none; } .mobile-img { display: block; max-width: 100%; } }
-        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+
+        .side-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99998; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .side-overlay.open { opacity: 1; pointer-events: all; }
         .side-menu { position: fixed; top: 0; right: -320px; width: 320px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(20px); z-index: 99999; transition: right 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; padding: 100px 50px 50px; }
         .side-menu.open { right: 0; }
-        .side-nav { display: flex; flex-direction: column; gap: 0; }
-        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s ease; }
+        .side-nav-item a, .side-nav-item .nav-label { display: block; color: white; text-decoration: none; font-size: 26px; font-weight: 400; padding: 16px 0; cursor: pointer; transition: color 0.2s; }
         .side-nav-item a:hover { color: rgba(255,255,255,0.5); }
         .nav-sub { display: none; flex-direction: column; gap: 4px; padding: 0 0 14px 12px; }
         .side-nav-item:hover .nav-sub { display: flex; }
         .nav-sub a { font-size: 17px; color: rgba(255,255,255,0.6); padding: 5px 0; text-decoration: none; display: block; }
         .nav-sub a:hover { color: white; }
-        @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
-        #loading { text-align: center; padding: 200px 20px; color: #666; font-size: 16px; }
+
+        .content { padding: 90px 0 80px; max-width: 900px; margin: 0 auto; }
+
+        .admission-header { padding: 40px 40px 20px; }
+        .admission-header img { max-width: 600px; width: 100%; }
+
+        .desc-bubble { border: 1.5px solid #111; border-radius: 50px; padding: 16px 28px; text-align: center; font-size: 13px; line-height: 1.8; color: #111; margin: 10px 40px 40px; display: inline-block; }
+
+        .center-line-wrap { display: flex; gap: 0; padding: 0 40px; position: relative; }
+        .col-left { flex: 1; padding-right: 30px; border-right: 1.5px solid #111; }
+        .col-right { flex: 1; padding-left: 30px; }
+
+        .country-block { margin-bottom: 32px; }
+        .country-bar { display: flex; align-items: center; gap: 12px; background: #111; padding: 8px 14px; margin-bottom: 12px; }
+        .country-flag { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid #fff; }
+        .country-name { color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+        .univ-list { padding: 0 4px; }
+        .univ-list li { list-style: none; font-size: 13px; line-height: 2; color: #111; }
+        .univ-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+
+        #loading { text-align: center; padding: 200px 20px; color: #999; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="side-overlay" id="overlay" onclick="closeSideMenu()"></div>
     <div class="side-menu" id="sideMenu">
         <nav class="side-nav">
-            <div class="side-nav-item">
-                <a href="index.html">Home</a>
-            </div>
+            <div class="side-nav-item"><a href="index.html">Home</a></div>
             <div class="side-nav-item">
                 <div class="nav-label">입시결과</div>
                 <div class="nav-sub" id="admission-nav"></div>
@@ -59,8 +74,18 @@
         </div>
     </header>
 
-    <div class="content" id="content">
+    <div class="content">
         <div id="loading">불러오는 중...</div>
+        <div id="main-content" style="display:none;">
+            <div class="admission-header">
+                <img src="https://i.imgur.com/ADMISSION.png" alt="ADMISSION" id="admission-title-img">
+                <div class="desc-bubble" id="desc-bubble"></div>
+            </div>
+            <div class="center-line-wrap">
+                <div class="col-left" id="col-left"></div>
+                <div class="col-right" id="col-right"></div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -78,65 +103,77 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
     const params = new URLSearchParams(window.location.search);
     const year = parseInt(params.get('year')) || 2026;
-    const isMobile = window.innerWidth <= 700;
-
-    document.title = `GVCS 입시결과 ${year}`;
 
     async function load() {
         try {
             const docSnap = await getDoc(doc(db, 'config', 'siteData'));
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.title = `GVCS 입시결과 ${year}`;
+
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                const yearData = data.admissionYears?.find(y => y.year === year);
 
-                // 사이드바 채우기
-                const admNav = document.getElementById('admission-nav');
-                const schNav = document.getElementById('scholarship-nav');
                 data.admissionYears?.forEach(y => {
                     const a = document.createElement('a');
                     a.href = `admission.html?year=${y.year}`;
                     a.textContent = String(y.year);
-                    admNav.appendChild(a);
+                    document.getElementById('admission-nav').appendChild(a);
                 });
                 data.scholarshipYears?.forEach(y => {
-                    const a = document.createElement('a');
-                    a.href = y.url || '#';
-                    a.textContent = String(y.year);
-                    schNav.appendChild(a);
+                    const b = document.createElement('a');
+                    b.href = `scholarship.html?year=${y.year}`;
+                    b.textContent = String(y.year);
+                    document.getElementById('scholarship-nav').appendChild(b);
                 });
 
-                // 이미지 표시
-                const content = document.getElementById('content');
-                if (yearData?.admissionUrl) {
-                    const pcUrl = yearData.admissionUrl;
-                    const mobileUrl = yearData.admissionMobileUrl || pcUrl;
-                    content.innerHTML = `
-                        <img src="${pcUrl}" alt="GVCS 입시결과 ${year}" class="admission-img pc-img">
-                        <img src="${mobileUrl}" alt="GVCS 입시결과 ${year}" class="admission-img mobile-img">`;
-                } else {
-                    content.innerHTML = `<div id="loading">이미지가 없습니다.</div>`;
-                }
+                const admData = data[`admissionData_${year}`] || {};
+                const titleImg = admData.titleImg || 'https://i.imgur.com/ADMISSION.png';
+                const desc = admData.desc || '';
+                const countries = admData.countries || [];
+
+                document.getElementById('admission-title-img').src = titleImg;
+                document.getElementById('desc-bubble').innerHTML = desc;
+
+                const left = document.getElementById('col-left');
+                const right = document.getElementById('col-right');
+                left.innerHTML = ''; right.innerHTML = '';
+
+                countries.forEach((c, i) => {
+                    const block = document.createElement('div');
+                    block.className = 'country-block';
+                    const isGrid = c.grid || false;
+                    const univHtml = isGrid
+                        ? `<ul class="univ-list univ-grid">${(c.univs||[]).map(u=>`<li>${u}</li>`).join('')}</ul>`
+                        : `<ul class="univ-list">${(c.univs||[]).map(u=>`<li>${u}</li>`).join('')}</ul>`;
+                    block.innerHTML = `
+                        <div class="country-bar">
+                            ${c.flag ? `<img src="${c.flag}" class="country-flag" alt="${c.name}">` : ''}
+                            <span class="country-name">${c.name}</span>
+                        </div>
+                        ${univHtml}`;
+                    if (i % 2 === 0) left.appendChild(block);
+                    else right.appendChild(block);
+                });
             }
         } catch(e) {
-            document.getElementById('content').innerHTML = `<div id="loading">불러오기 실패</div>`;
+            document.getElementById('loading').textContent = '불러오기 실패';
         }
     }
 
-    function toggleSideMenu() {
+    window.toggleSideMenu = function() {
         document.getElementById('sideMenu').classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open');
-    }
-    function closeSideMenu() {
+    };
+    window.closeSideMenu = function() {
         document.getElementById('sideMenu').classList.remove('open');
         document.getElementById('overlay').classList.remove('open');
-    }
-    window.toggleSideMenu = toggleSideMenu;
-    window.closeSideMenu = closeSideMenu;
+    };
 
     load();
+
     if (sessionStorage.getItem('adminMode') === '1') {
         const adminItem = document.createElement('div');
         adminItem.className = 'side-nav-item';
