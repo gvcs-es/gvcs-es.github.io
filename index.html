@@ -49,9 +49,9 @@
         .admin-panel.active { display: block; }
         .admin-panel h3 { font-size: 16px; margin-bottom: 20px; color: rgba(255,255,255,0.8); }
         .year-list { display: flex; flex-direction: column; gap: 12px; }
-        .year-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 12px 16px; }
+        .year-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 10px; }
         .color-input { width: 40px; height: 32px; border: none; cursor: pointer; background: none; padding: 0; }
-        .url-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 10px; font-size: 13px; }
+        .url-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 10px; font-size: 13px; border-radius: 6px; }
         .url-input::placeholder { color: rgba(255,255,255,0.3); }
         .del-btn { background: none; border: none; color: rgba(255,80,80,0.7); cursor: pointer; font-size: 18px; }
         .order-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 14px; padding: 4px 8px; line-height: 1; }
@@ -70,11 +70,11 @@
         .add-year-btn:hover { border-color: white; }
         .input-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
         .input-group { display: flex; flex-direction: column; flex: 1; }
-        .slide-item { background: rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .slide-item { background: rgba(255,255,255,0.05); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; border-radius: 10px; }
         .slide-label { font-size: 13px; color: rgba(255,255,255,0.6); min-width: 60px; }
-        .sch-country-row { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; margin-bottom: 8px; }
-        .notice-editor-wrap { background: rgba(255,255,255,0.05); padding: 16px; margin-bottom: 12px; }
-        .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.5; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+        .sch-country-row { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 12px 16px; margin-bottom: 8px; border-radius: 10px; }
+        .notice-editor-wrap { background: rgba(255,255,255,0.05); padding: 16px; margin-bottom: 12px; border-radius: 10px; }
+        .notice-content-editor { width: 100%; min-height: 120px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px; font-size: 14px; line-height: 1.5; outline: none; font-family: 'Noto Sans KR', sans-serif; border-radius: 6px; }
         .notice-content-editor p { margin-bottom: 0.8em; }
         #float-toolbar { position: fixed; background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; display: none; align-items: center; gap: 2px; padding: 5px 8px; z-index: 9999999; box-shadow: 0 4px 20px rgba(0,0,0,0.6); pointer-events: all; }
         #float-toolbar button { background: none; border: none; color: white; cursor: pointer; font-size: 13px; padding: 4px 8px; border-radius: 4px; line-height: 1; }
@@ -808,11 +808,12 @@ function renderAdminPanels() {
         const div = document.createElement('div');
         div.className = 'drag-item slide-item';
         div.style.position = 'relative';
+        div.style.cssText = 'position:relative;padding:14px 40px 14px 56px;gap:10px;';
         div.innerHTML = `
-            <span class="drag-handle">☰</span>
+            <span class="drag-handle" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:24px;">☰</span>
             <span class="slide-label">슬라이드 ${i+1}</span>
             <input class="url-input" id="home-slide-${i}" value="${s.url}" placeholder="이미지 링크 삽입">
-            <button class="drag-del-btn" onclick="removeHomeSlide(${i})">×</button>`;
+            <button class="drag-del-btn" style="right:8px;top:50%;transform:translateY(-50%);font-size:20px;" onclick="removeHomeSlide(${i})">×</button>`;
         homeList.appendChild(div);
     });
     setupDrag(homeList, (from, to) => {
@@ -831,13 +832,15 @@ function renderAdminPanels() {
     siteData.admissionYears.forEach((y, i) => {
         const div = document.createElement('div');
         div.className = 'drag-item year-item';
-        div.style.cssText = 'position:relative;flex-wrap:wrap;align-items:flex-start;padding-top:32px;';
+        div.style.cssText = 'position:relative;flex-wrap:wrap;align-items:center;padding:16px 16px 16px 70px;gap:10px;';
         div.innerHTML = `
-            <button class="drag-del-btn" onclick="removeAdmYear(${i})">×</button>
-            <span class="drag-handle" style="position:absolute;top:8px;left:8px;">☰</span>
-            <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="adm-year-${i}" value="${y.year}" type="number">
-            <input type="color" class="color-input" id="adm-color-${i}" value="${y.color}">
-            <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <button class="drag-del-btn" style="top:50%;transform:translateY(-50%);font-size:20px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">×</button>
+            <span class="drag-handle" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:24px;">☰</span>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <input style="width:70px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;border-radius:6px;" id="adm-year-${i}" value="${y.year}" type="number">
+                <input type="color" class="color-input" id="adm-color-${i}" value="${y.color}">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1;max-width:400px;">
                 <div class="input-group">
                     <div class="input-label">PC 이미지 링크</div>
                     <input class="url-input" id="adm-url-${i}" value="${y.admissionUrl || ''}" placeholder="PC 이미지 링크">
@@ -895,10 +898,10 @@ function renderScholarshipInputs() {
     entries.forEach(([country, d], i) => {
         const div = document.createElement('div');
         div.className = 'drag-item sch-country-row';
-        div.style.position = 'relative';
+        div.style.cssText = 'position:relative;padding:14px 40px 14px 56px;gap:10px;';
         div.innerHTML = `
-            <span class="drag-handle">☰</span>
-            <input style="width:80px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="sch-name-${i}" value="${country}" placeholder="나라명">
+            <span class="drag-handle" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:24px;">☰</span>
+            <input style="width:80px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;border-radius:6px;" id="sch-name-${i}" value="${country}" placeholder="나라명">
             <div class="input-group">
                 <div class="input-label">원 (₩)</div>
                 <input class="url-input" id="sch-krw-${i}" value="${d.krw || 0}" type="number" placeholder="0">
@@ -907,7 +910,7 @@ function renderScholarshipInputs() {
                 <div class="input-label">달러 ($)</div>
                 <input class="url-input" id="sch-usd-${i}" value="${d.usd || 0}" type="number" placeholder="0">
             </div>
-            <button class="drag-del-btn" onclick="removeSchCountry(${i})">×</button>`;
+            <button class="drag-del-btn" style="right:8px;top:50%;transform:translateY(-50%);font-size:20px;" onclick="removeSchCountry(${i})">×</button>`;
         list.appendChild(div);
     });
     setupDrag(list, (from, to) => {
@@ -1058,10 +1061,10 @@ function renderNoticeList() {
         const div = document.createElement('div');
         div.className = 'drag-item notice-editor-wrap';
         div.style.position = 'relative';
-        div.style.paddingTop = '36px';
+        div.style.paddingTop = '52px';
         div.innerHTML = `
-            <span class="drag-handle" style="position:absolute;top:10px;left:10px;">☰</span>
-            <button class="drag-del-btn" onclick="removeNotice(${i})">×</button>
+            <span class="drag-handle" style="position:absolute;top:14px;left:14px;font-size:24px;">☰</span>
+            <button class="drag-del-btn" style="font-size:20px;top:12px;right:12px;">×</button>
             <span style="font-size:13px;color:rgba(255,255,255,0.6);display:block;margin-bottom:8px;">공지사항 ${i+1}</span>
             <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
