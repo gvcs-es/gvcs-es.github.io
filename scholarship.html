@@ -198,7 +198,8 @@
             let totalKrw = 0, totalUsd = 0;
             const cardData = [];
 
-            COUNTRIES.forEach((country, idx) => {
+            const countryList = Object.keys(scholarshipData).length > 0 ? Object.keys(scholarshipData) : COUNTRIES;
+            countryList.forEach((country, idx) => {
                 const d = scholarshipData[country] || { krw: 0, usd: 0 };
                 totalKrw += d.krw || 0;
                 totalUsd += d.usd || 0;
@@ -208,7 +209,7 @@
                 section.className = 'glass country-section';
                 const flagUrl = d.flag || '';
                 section.innerHTML = `
-                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:40%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(to right, black 0%, black 20%, transparent 60%);mask-image:linear-gradient(to right, black 0%, black 20%, transparent 60%);">
+                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:40%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(to right, black 0%, black 30%, transparent 70%);mask-image:linear-gradient(to right, black 0%, black 30%, transparent 70%);">
                         <img src="${flagUrl}" style="width:100%;height:100%;object-fit:contain;object-position:left center;opacity:0.4;display:block;"/>
                     </div>` : ''}
                     <div class="country-inner" style="position:relative;z-index:1;">
