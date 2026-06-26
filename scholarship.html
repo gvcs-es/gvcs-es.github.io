@@ -94,12 +94,12 @@
         <nav class="side-nav">
             <div class="side-nav-item"><a href="index.html">Home</a></div>
             <div class="side-nav-item">
-                <div class="nav-label">입시결과</div>
-                <div class="nav-sub" id="admission-nav"></div>
+                <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('admission-nav')">입시결과</div>
+                <div class="nav-sub" id="admission-nav" style="display:none;"></div>
             </div>
             <div class="side-nav-item">
-                <div class="nav-label">장학금</div>
-                <div class="nav-sub" id="scholarship-nav"></div>
+                <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('scholarship-nav')">장학금</div>
+                <div class="nav-sub" id="scholarship-nav" style="display:none;"></div>
             </div>
             <div class="side-nav-item"><a href="notice.html">공지사항</a></div>
         </nav>
@@ -290,6 +290,12 @@
     window.closeSideMenu = function() {
         document.getElementById('sideMenu').classList.remove('open');
         document.getElementById('overlay').classList.remove('open');
+    };
+
+    window.toggleSubNav = function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = el.style.display === 'none' ? 'flex' : 'none';
     };
 
     load();

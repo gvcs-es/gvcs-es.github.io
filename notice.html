@@ -63,8 +63,9 @@
         }
         .notice-card-body-wrap { position: relative; }
         .notice-card-body-wrap.collapsed .notice-body { max-height: 120px; overflow: hidden; }
-        .notice-card-body-wrap.collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9)); pointer-events: none; border-radius: 0 0 16px 16px; }
-        .notice-view-btn { display: none; margin-top: 12px; background: none; border: 1px solid rgba(0,0,0,0.15); color: #333; padding: 8px 20px; font-size: 13px; cursor: pointer; border-radius: 20px; width: 100%; }
+        .notice-card-body-wrap.collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(240,237,232,0.7) 50%, rgba(240,237,232,0.97) 100%); pointer-events: none; border-radius: 0 0 16px 16px; }
+        .notice-view-btn { display: none; margin-top: 12px; background: none; border: 1px solid rgba(0,0,0,0.15); color: #333; padding: 8px 20px; font-size: 13px; cursor: pointer; border-radius: 20px; width: 100%; -webkit-tap-highlight-color: transparent; }
+        #notice-detail-back { -webkit-tap-highlight-color: transparent; outline: none; }
         @media (max-width: 700px) { .notice-view-btn { display: block; } }
     </style>
 </head>
@@ -74,12 +75,12 @@
         <nav class="side-nav">
             <div class="side-nav-item"><a href="index.html">Home</a></div>
             <div class="side-nav-item">
-                <div class="nav-label">입시결과</div>
-                <div class="nav-sub" id="admission-nav"></div>
+                <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('admission-nav')">입시결과</div>
+                <div class="nav-sub" id="admission-nav" style="display:none;"></div>
             </div>
             <div class="side-nav-item">
-                <div class="nav-label">장학금</div>
-                <div class="nav-sub" id="scholarship-nav"></div>
+                <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('scholarship-nav')">장학금</div>
+                <div class="nav-sub" id="scholarship-nav" style="display:none;"></div>
             </div>
             <div class="side-nav-item"><a href="notice.html">공지사항</a></div>
         </nav>
@@ -200,6 +201,12 @@
         document.getElementById('overlay').classList.remove('open');
     };
 
+    window.toggleSubNav = function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+    };
+
     load();
     if (sessionStorage.getItem('adminMode') === '1') {
         const adminItem = document.createElement('div');
@@ -218,14 +225,17 @@
         const modal = document.createElement('div');
         modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#f0ede8;z-index:999991;overflow-y:auto;padding:80px 20px 60px;';
         modal.innerHTML = `
-            <button onclick="this.closest('[style*=\"999991\"]').remove();document.querySelector('[style*=\"999990\"]').remove();" style="position:fixed;top:16px;left:16px;background:none;border:none;font-size:24px;cursor:pointer;z-index:999992;">←</button>
+            <button id="notice-detail-back" style="position:fixed;top:16px;left:16px;background:none;border:none;font-size:24px;cursor:pointer;z-index:999992;-webkit-tap-highlight-color:transparent;outline:none;">←</button>
             <div style="font-size:12px;color:rgba(0,0,0,0.3);letter-spacing:2px;margin-bottom:10px;font-family:Space Mono,monospace;">NOTICE ${String(i+1).padStart(2,'0')}</div>
             <div style="font-size:clamp(22px,6vw,32px);font-weight:700;letter-spacing:-1px;margin-bottom:20px;">${n.title || ''}</div>
             <hr style="border:none;border-top:1px solid rgba(0,0,0,0.1);margin-bottom:20px;">
             <div style="font-size:15px;line-height:1.8;color:#333;word-break:keep-all;">${n.content || ''}</div>`;
         document.body.appendChild(overlay);
         document.body.appendChild(modal);
-        overlay.onclick = () => { overlay.remove(); modal.remove(); };
+        const backBtn = document.getElementById('notice-detail-back');
+        const close = () => { overlay.remove(); modal.remove(); };
+        if (backBtn) backBtn.onclick = close;
+        overlay.onclick = close;
     };
     </script>
 </body>
