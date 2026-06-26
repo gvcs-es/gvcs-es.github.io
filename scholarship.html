@@ -201,6 +201,10 @@
             const orderKey = `scholarshipOrder_${year}`;
             const savedOrder = docSnap.exists() ? docSnap.data()[orderKey] : null;
             const countryList = savedOrder && savedOrder.length > 0 ? savedOrder : Object.keys(scholarshipData);
+            if (countryList.length === 0) {
+                document.getElementById('countries-container').innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(0,0,0,0.3);font-size:18px;">준비중입니다.</div>';
+                return;
+            }
             countryList.forEach((country, idx) => {
                 const d = scholarshipData[country] || { krw: 0, usd: 0 };
                 totalKrw += d.krw || 0;
