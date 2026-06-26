@@ -198,7 +198,9 @@
             let totalKrw = 0, totalUsd = 0;
             const cardData = [];
 
-            const countryList = Object.keys(scholarshipData).length > 0 ? Object.keys(scholarshipData) : COUNTRIES;
+            const orderKey = `scholarshipOrder_${year}`;
+            const savedOrder = data[orderKey];
+            const countryList = savedOrder && savedOrder.length > 0 ? savedOrder : Object.keys(scholarshipData);
             countryList.forEach((country, idx) => {
                 const d = scholarshipData[country] || { krw: 0, usd: 0 };
                 totalKrw += d.krw || 0;

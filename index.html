@@ -780,6 +780,9 @@ window.saveAdmission = async function() {
 };
 window.saveScholarshipData = async function() {
     collectSchCountryData();
+    // 현재 순서 배열 저장
+    const yearKey = `scholarship_${currentSchYear}`;
+    siteData[`scholarshipOrder_${currentSchYear}`] = Object.keys(siteData[yearKey] || {});
     await saveToFirebase();
     alert('저장됐어!');
 };
