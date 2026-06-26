@@ -56,6 +56,14 @@
         .del-btn { background: none; border: none; color: rgba(255,80,80,0.7); cursor: pointer; font-size: 18px; }
         .order-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; font-size: 14px; padding: 4px 8px; line-height: 1; }
         .order-btn:hover { background: rgba(255,255,255,0.1); }
+        .drag-handle { cursor: grab; color: rgba(255,255,255,0.4); font-size: 16px; padding: 4px 6px; user-select: none; flex-shrink: 0; }
+        .drag-handle:active { cursor: grabbing; }
+        .drag-item { position: relative; transition: opacity 0.15s; }
+        .drag-item.dragging { opacity: 0.3; }
+        .drag-indicator { height: 2px; background: #4488ff; margin: 2px 0; display: none; border-radius: 2px; }
+        .drag-indicator.visible { display: block; }
+        .drag-del-btn { position: absolute; top: 6px; right: 6px; background: none; border: none; color: rgba(255,80,80,0.7); cursor: pointer; font-size: 16px; z-index: 10; }
+        .drag-del-btn:hover { color: rgba(255,80,80,1); }
         .save-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 20px; cursor: pointer; font-size: 13px; margin-top: 16px; }
         .save-btn:hover { background: rgba(255,255,255,0.2); }
         .add-year-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); background: none; color: white; font-size: 24px; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; }
@@ -657,22 +665,164 @@ window.showPanel = function(name, el) {
     el.classList.add('active');
 };
 
+// 드래그 공통 함수
+function setupDrag(container, onReorder) {
+    let dragSrc = null;
+    container.querySelectorAll('.drag-item').forEach(item => {
+        const handle = item.querySelector('.drag-handle');
+        if (!handle) return;
+
+        // PC 드래그
+        handle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            dragSrc = item;
+            item.classList.add('dragging');
+            const indicator = document.createElement('div');
+            indicator.className = 'drag-indicator';
+            indicator.id = 'drag-line';
+
+            const onMove = (e) => {
+                const existing = document.getElementById('drag-line');
+                if (existing) existing.remove();
+                const items = [...container.querySelectorAll('.drag-item:not(.dragging)')];
+                let inserted = false;
+                for (const it of items) {
+                    const rect = it.getBoundingClientRect();
+                    if (e.clientY < rect.top + rect.height / 2) {
+                        const ind = document.createElement('div');
+                        ind.className = 'drag-indicator visible';
+                        ind.id = 'drag-line';
+                        container.insertBefore(ind, it);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    const ind = document.createElement('div');
+                    ind.className = 'drag-indicator visible';
+                    ind.id = 'drag-line';
+                    container.appendChild(ind);
+                }
+            };
+
+            const onUp = () => {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+                item.classList.remove('dragging');
+                const line = document.getElementById('drag-line');
+                if (line) {
+                    const items = [...container.querySelectorAll('.drag-item')];
+                    const fromIdx = items.indexOf(dragSrc);
+                    let toIdx = [...container.children].indexOf(line);
+                    // line 이후 실제 인덱스 계산
+                    const allItems = [...container.querySelectorAll('.drag-item')];
+                    let insertBefore = null;
+                    const lineIdx = [...container.children].indexOf(line);
+                    for (let i = lineIdx + 1; i < container.children.length; i++) {
+                        if (container.children[i].classList.contains('drag-item')) {
+                            insertBefore = container.children[i];
+                            break;
+                        }
+                    }
+                    const toRealIdx = insertBefore ? allItems.indexOf(insertBefore) : allItems.length;
+                    line.remove();
+                    if (fromIdx !== -1 && fromIdx !== toRealIdx && fromIdx !== toRealIdx - 1) {
+                        onReorder(fromIdx, toRealIdx > fromIdx ? toRealIdx - 1 : toRealIdx);
+                    } else {
+                        onReorder(null);
+                    }
+                }
+                dragSrc = null;
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        // 모바일 터치
+        handle.addEventListener('touchstart', (e) => {
+            dragSrc = item;
+            item.classList.add('dragging');
+        }, { passive: true });
+
+        handle.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const existing = document.getElementById('drag-line');
+            if (existing) existing.remove();
+            const items = [...container.querySelectorAll('.drag-item:not(.dragging)')];
+            let inserted = false;
+            for (const it of items) {
+                const rect = it.getBoundingClientRect();
+                if (touch.clientY < rect.top + rect.height / 2) {
+                    const ind = document.createElement('div');
+                    ind.className = 'drag-indicator visible';
+                    ind.id = 'drag-line';
+                    container.insertBefore(ind, it);
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted) {
+                const ind = document.createElement('div');
+                ind.className = 'drag-indicator visible';
+                ind.id = 'drag-line';
+                container.appendChild(ind);
+            }
+        }, { passive: false });
+
+        handle.addEventListener('touchend', () => {
+            item.classList.remove('dragging');
+            const line = document.getElementById('drag-line');
+            if (line && dragSrc) {
+                const allItems = [...container.querySelectorAll('.drag-item')];
+                const fromIdx = allItems.indexOf(dragSrc);
+                let insertBefore = null;
+                const lineIdx = [...container.children].indexOf(line);
+                for (let i = lineIdx + 1; i < container.children.length; i++) {
+                    if (container.children[i].classList.contains('drag-item')) {
+                        insertBefore = container.children[i];
+                        break;
+                    }
+                }
+                const toRealIdx = insertBefore ? allItems.indexOf(insertBefore) : allItems.length;
+                line.remove();
+                if (fromIdx !== -1 && fromIdx !== toRealIdx && fromIdx !== toRealIdx - 1) {
+                    onReorder(fromIdx, toRealIdx > fromIdx ? toRealIdx - 1 : toRealIdx);
+                } else {
+                    onReorder(null);
+                }
+            }
+            dragSrc = null;
+        });
+    });
+}
+
 function renderAdminPanels() {
     // 홈 이미지
     const homeList = document.getElementById('home-slides-list');
     homeList.innerHTML = '';
     siteData.homeSlides.forEach((s, i) => {
+        const ind = document.createElement('div');
+        ind.className = 'drag-indicator';
+        homeList.appendChild(ind);
         const div = document.createElement('div');
-        div.className = 'slide-item';
+        div.className = 'drag-item slide-item';
+        div.style.position = 'relative';
         div.innerHTML = `
+            <span class="drag-handle">☰</span>
             <span class="slide-label">슬라이드 ${i+1}</span>
             <input class="url-input" id="home-slide-${i}" value="${s.url}" placeholder="이미지 링크 삽입">
-            <div style="display:flex;flex-direction:column;gap:2px;">
-                <button class="order-btn" onclick="moveHomeSlide(${i},-1)">▲</button>
-                <button class="order-btn" onclick="moveHomeSlide(${i},1)">▼</button>
-            </div>
-            <button class="del-btn" onclick="removeHomeSlide(${i})">×</button>`;
+            <button class="drag-del-btn" onclick="removeHomeSlide(${i})">×</button>`;
         homeList.appendChild(div);
+    });
+    setupDrag(homeList, (from, to) => {
+        if (from === null) return;
+        const items = [...homeList.querySelectorAll('.drag-item')];
+        const urls = items.map((_, idx) => document.getElementById(`home-slide-${idx}`)?.value || siteData.homeSlides[idx]?.url || '');
+        const moved = urls.splice(from, 1)[0];
+        urls.splice(to, 0, moved);
+        siteData.homeSlides = urls.map(url => ({ url }));
+        renderAdminPanels();
     });
 
     // 입시결과
@@ -680,8 +830,11 @@ function renderAdminPanels() {
     admList.innerHTML = '';
     siteData.admissionYears.forEach((y, i) => {
         const div = document.createElement('div');
-        div.className = 'year-item';
+        div.className = 'drag-item year-item';
+        div.style.cssText = 'position:relative;flex-wrap:wrap;align-items:flex-start;padding-top:32px;';
         div.innerHTML = `
+            <button class="drag-del-btn" onclick="removeAdmYear(${i})">×</button>
+            <span class="drag-handle" style="position:absolute;top:8px;left:8px;">☰</span>
             <input style="width:60px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="adm-year-${i}" value="${y.year}" type="number">
             <input type="color" class="color-input" id="adm-color-${i}" value="${y.color}">
             <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
@@ -693,16 +846,18 @@ function renderAdminPanels() {
                     <div class="input-label">모바일 이미지 링크</div>
                     <input class="url-input" id="adm-mobile-${i}" value="${y.admissionMobileUrl || ''}" placeholder="모바일 이미지 링크">
                 </div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-                <button class="order-btn" onclick="moveAdmYear(${i},-1)">▲</button>
-                <button class="order-btn" onclick="moveAdmYear(${i},1)">▼</button>
-            </div>
-            <button class="del-btn" onclick="removeAdmYear(${i})">×</button>`;
+            </div>`;
         admList.appendChild(div);
     });
+    setupDrag(admList, (from, to) => {
+        if (from === null) return;
+        collectAdmData();
+        const moved = siteData.admissionYears.splice(from, 1)[0];
+        siteData.admissionYears.splice(to, 0, moved);
+        renderAdminPanels();
+    });
 
-    // 장학금 입력
+    // 장학금
     renderScholarshipInputs();
 
     // 팝업
@@ -739,8 +894,10 @@ function renderScholarshipInputs() {
     list.innerHTML = '';
     entries.forEach(([country, d], i) => {
         const div = document.createElement('div');
-        div.className = 'sch-country-row';
+        div.className = 'drag-item sch-country-row';
+        div.style.position = 'relative';
         div.innerHTML = `
+            <span class="drag-handle">☰</span>
             <input style="width:80px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;" id="sch-name-${i}" value="${country}" placeholder="나라명">
             <div class="input-group">
                 <div class="input-label">원 (₩)</div>
@@ -750,12 +907,18 @@ function renderScholarshipInputs() {
                 <div class="input-label">달러 ($)</div>
                 <input class="url-input" id="sch-usd-${i}" value="${d.usd || 0}" type="number" placeholder="0">
             </div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-                <button class="order-btn" onclick="moveSchCountry(${i},-1)">▲</button>
-                <button class="order-btn" onclick="moveSchCountry(${i},1)">▼</button>
-            </div>
-            <button class="del-btn" onclick="removeSchCountry(${i})">×</button>`;
+            <button class="drag-del-btn" onclick="removeSchCountry(${i})">×</button>`;
         list.appendChild(div);
+    });
+    setupDrag(list, (from, to) => {
+        if (from === null) return;
+        collectSchCountryData();
+        const yearKey = `scholarship_${currentSchYear}`;
+        const ents = Object.entries(siteData[yearKey]);
+        const moved = ents.splice(from, 1)[0];
+        ents.splice(to, 0, moved);
+        siteData[yearKey] = Object.fromEntries(ents);
+        renderScholarshipInputs();
     });
 }
 
@@ -893,21 +1056,25 @@ function renderNoticeList() {
     list.innerHTML = '';
     (siteData.notices || []).forEach((n, i) => {
         const div = document.createElement('div');
-        div.className = 'notice-editor-wrap';
+        div.className = 'drag-item notice-editor-wrap';
+        div.style.position = 'relative';
+        div.style.paddingTop = '36px';
         div.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                <span style="font-size:13px;color:rgba(255,255,255,0.6);">공지사항 ${i+1}</span>
-                <div style="display:flex;gap:4px;">
-                    <button class="order-btn" onclick="moveNotice(${i},-1)">▲</button>
-                    <button class="order-btn" onclick="moveNotice(${i},1)">▼</button>
-                    <button class="del-btn" onclick="removeNotice(${i})">×</button>
-                </div>
-            </div>
+            <span class="drag-handle" style="position:absolute;top:10px;left:10px;">☰</span>
+            <button class="drag-del-btn" onclick="removeNotice(${i})">×</button>
+            <span style="font-size:13px;color:rgba(255,255,255,0.6);display:block;margin-bottom:8px;">공지사항 ${i+1}</span>
             <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
         list.appendChild(div);
         renderRecentColors(`recent-fg-${i}`, recentFgColors, 'foreColor');
         renderRecentColors(`recent-hl-${i}`, recentHlColors, 'hiliteColor');
+    });
+    setupDrag(list, (from, to) => {
+        if (from === null) return;
+        collectNoticeData();
+        const moved = siteData.notices.splice(from, 1)[0];
+        siteData.notices.splice(to, 0, moved);
+        renderNoticeList();
     });
 }
 let savedSel = null;
