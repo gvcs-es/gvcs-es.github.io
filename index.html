@@ -150,7 +150,7 @@
             .results-btns { flex-direction: row; align-self: flex-start; gap: 8px; flex-wrap: wrap; }
             .results-btn { font-size: 12px; padding: 10px 14px; white-space: nowrap; }
             .side-menu { width: 65%; right: -65%; padding: 80px 30px 40px; }
-            .side-nav-item a, .side-nav-item .nav-label { font-size: 20px; padding: 12px 0; }
+            .side-nav-item a, .side-nav-item .nav-label { font-size: 24px; padding: 14px 0; }
             .nav-sub { display: none !important; }
             #popup-wrap { left: 5%; transform: translateY(-50%); }
             #popup-wrap.open { width: 90vw; }
@@ -253,15 +253,16 @@
         <div class="side-nav-item">
             <div class="nav-label pc-only">입시결과</div>
             <div class="nav-sub pc-only" id="admission-nav-sub"></div>
-            <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
-                <span style="color:white;font-size:26px;font-weight:400;padding:16px 0;display:block;">입시결과</span>
+            <div class="mobile-only">
+                <div style="color:white;font-size:24px;font-weight:400;padding:14px 0;cursor:pointer;" onclick="mobileScrollToResults(); closeSideMenu();">입시결과</div>
             </div>
         </div>
         <div class="side-nav-item">
             <div class="nav-label pc-only">장학금</div>
             <div class="nav-sub pc-only" id="scholarship-nav-sub"></div>
-            <div class="nav-label-wrap mobile-only" onclick="mobileGoTo('section-results-0'); closeSideMenu();">
-                <span style="color:white;font-size:26px;font-weight:400;padding:16px 0;display:block;">장학금</span>
+            <div class="mobile-only">
+                <div style="color:white;font-size:24px;font-weight:400;padding:14px 0;cursor:pointer;" onclick="toggleMobileSchSub()">장학금</div>
+                <div id="mobile-sch-sub" style="display:none;flex-direction:column;gap:4px;padding:0 0 10px 12px;"></div>
             </div>
         </div>
         <div class="side-nav-item">
@@ -448,22 +449,43 @@ function renderSections() {
 function renderSideNav() {
     const admSub = document.getElementById('admission-nav-sub');
     const schSub = document.getElementById('scholarship-nav-sub');
-    admSub.innerHTML = '';
-    schSub.innerHTML = '';
+    const mobileSchSub = document.getElementById('mobile-sch-sub');
+    admSub.innerHTML = ''; schSub.innerHTML = '';
+    if (mobileSchSub) mobileSchSub.innerHTML = '';
+
     siteData.admissionYears.forEach((y, i) => {
         const a = document.createElement('a');
-        a.href = '#';
-        a.textContent = String(y.year);
+        a.href = '#'; a.textContent = String(y.year);
         a.onclick = (e) => { e.preventDefault(); goTo(i+1); closeSideMenu(); };
         admSub.appendChild(a);
     });
+
     siteData.scholarshipYears.forEach((y) => {
         const a = document.createElement('a');
         a.href = `scholarship.html?year=${y.year}`;
         a.textContent = String(y.year);
         schSub.appendChild(a);
+
+        if (mobileSchSub) {
+            const b = document.createElement('a');
+            b.href = `scholarship.html?year=${y.year}`;
+            b.textContent = String(y.year);
+            b.style.cssText = 'font-size:18px;color:rgba(255,255,255,0.6);padding:6px 0;text-decoration:none;display:block;';
+            mobileSchSub.appendChild(b);
+        }
     });
 }
+
+window.mobileScrollToResults = function() {
+    const el = document.getElementById('section-results-0');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+window.toggleMobileSchSub = function() {
+    const el = document.getElementById('mobile-sch-sub');
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+};
 
 function update() {
     const sections = document.querySelectorAll('.results-section');
@@ -598,8 +620,8 @@ function activateAdminMode() {
 }
 
 function setupMobileAdminTap() {
-    const elA = document.getElementById('section-hero');
-    const elB = document.getElementById('heroTextContainer');
+    const elA = document.querySelector('.mobile-bg-wrap');
+    const elB = document.querySelector('.img-gvcs');
     const elC = document.querySelector('.img-sub');
 
     function tap(key) {
@@ -613,10 +635,7 @@ function setupMobileAdminTap() {
         }
     }
 
-    elA?.addEventListener('touchstart', (e) => {
-        if (e.target.closest('#heroTextContainer')) return;
-        tap('A');
-    }, { passive: true });
+    elA?.addEventListener('touchstart', () => tap('A'), { passive: true });
     elB?.addEventListener('touchstart', () => tap('B'), { passive: true });
     elC?.addEventListener('touchstart', () => tap('C'), { passive: true });
 }
