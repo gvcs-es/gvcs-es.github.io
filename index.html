@@ -74,9 +74,13 @@
         #float-toolbar .ft-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 3px; }
         #ft-hl-btn.hl-on { background: rgba(255,220,0,0.3); }
         #link-suggest-modal { display: none; }
-        .ft-color-wrap { position: relative; padding-bottom: 6px; margin-bottom: -6px; }
+        .ft-color-wrap { position: relative; }
         .ft-color-sub { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #2a2a2a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 6px; z-index: 10000000; box-shadow: 0 4px 20px rgba(0,0,0,0.6); min-width: 140px; margin-bottom: 4px; }
         .ft-color-sub.visible { display: flex; }
+        .ft-color-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999998; display: none; }
+        .ft-color-overlay.visible { display: block; }
+        .ft-sub-close { position: absolute; top: 4px; right: 6px; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 14px; line-height: 1; padding: 0; }
+        .ft-sub-close:hover { color: white; }
         .ft-preset-colors { display: flex; flex-direction: row; gap: 4px; flex-wrap: wrap; }
         .ft-recent-colors { display: flex; flex-direction: row; gap: 4px; flex-wrap: wrap; }
         .ft-preset-colors { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -307,13 +311,14 @@
     <div id="popup">
         <button id="popup-close" onclick="closePopup()">✕</button>
         <img id="popup-img" src="https://i.imgur.com/21CdYDt.png" alt="팝업">
-        <div style="background:#000;padding:8px 16px;text-align:center;">
+        <div style="background:#000;padding:4px 16px;">
             <button onclick="hidePopup1h()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:11px;cursor:pointer;padding:0;">1시간 동안 보지 않기</button>
         </div>
         <button id="popup-more" onclick="location.href='notice.html'" style="position:absolute;bottom:52px;right:16px;border:1.5px solid white;color:white;background:none;padding:10px 24px;font-size:14px;cursor:pointer;">자세히 알아보기</button>
     </div>
 </div>
 
+<div class="ft-color-overlay" id="ft-color-overlay" onclick="closeAllColorSubs()"></div>
 <div id="float-toolbar">
     <button id="ft-bold"><b>B</b></button>
     <button id="ft-italic"><i>I</i></button>
@@ -321,7 +326,8 @@
     <div class="ft-sep"></div>
     <div class="ft-color-wrap">
         <button id="ft-fg-btn" style="font-weight:700;text-decoration:underline;text-decoration-color:#ff4444;">A</button>
-        <div class="ft-color-sub" id="ft-fg-sub">
+        <div class="ft-color-sub" id="ft-hl-sub">
+            <button class="ft-sub-close" onclick="closeColorSub('ft-hl-sub')">✕</button>
             <div class="ft-sub-label">기본 색상</div>
             <div class="ft-preset-colors" id="ft-fg-presets"></div>
             <div class="ft-sub-label">최근 사용</div>
@@ -870,17 +876,29 @@ function checkHlState(range) {
 const PRESET_COLORS = ['#ff0000','#ff8800','#ffff00','#00cc00','#0066ff','#000080','#8800cc','#000000'];
 
 // 서브메뉴 호버 딜레이 처리
+window.closeColorSub = function(subId) {
+    document.getElementById(subId)?.classList.remove('visible');
+    document.getElementById('ft-color-overlay').classList.remove('visible');
+};
+window.closeAllColorSubs = function() {
+    document.getElementById('ft-fg-sub')?.classList.remove('visible');
+    document.getElementById('ft-hl-sub')?.classList.remove('visible');
+    document.getElementById('ft-color-overlay').classList.remove('visible');
+};
+
 function setupColorSubMenu(btnId, subId) {
     const btn = document.getElementById(btnId);
     const sub = document.getElementById(subId);
     if (!btn || !sub) return;
-    const wrap = btn.closest('.ft-color-wrap');
-    if (!wrap) return;
-    let hideTimer = null;
-    const show = () => { clearTimeout(hideTimer); sub.classList.add('visible'); };
-    const hide = () => { hideTimer = setTimeout(() => sub.classList.remove('visible'), 800); };
-    wrap.addEventListener('mouseenter', show);
-    wrap.addEventListener('mouseleave', hide);
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = sub.classList.contains('visible');
+        closeAllColorSubs();
+        if (!isOpen) {
+            sub.classList.add('visible');
+            document.getElementById('ft-color-overlay').classList.add('visible');
+        }
+    });
 }
 setupColorSubMenu('ft-fg-btn', 'ft-fg-sub');
 setupColorSubMenu('ft-hl-btn', 'ft-hl-sub');
