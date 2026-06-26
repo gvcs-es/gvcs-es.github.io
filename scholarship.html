@@ -199,7 +199,7 @@
             const cardData = [];
 
             const orderKey = `scholarshipOrder_${year}`;
-            const savedOrder = data[orderKey];
+            const savedOrder = docSnap.exists() ? docSnap.data()[orderKey] : null;
             const countryList = savedOrder && savedOrder.length > 0 ? savedOrder : Object.keys(scholarshipData);
             countryList.forEach((country, idx) => {
                 const d = scholarshipData[country] || { krw: 0, usd: 0 };
@@ -211,7 +211,7 @@
                 section.className = 'glass country-section';
                 const flagUrl = d.flag || '';
                 section.innerHTML = `
-                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:40%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(to right, black 0%, black 30%, transparent 20%);mask-image:linear-gradient(to right, black 0%, black 30%, transparent 20%);">
+                    ${flagUrl ? `<div style="position:absolute;top:0;left:0;width:40%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(to right, black 0%, black 30%, transparent 70%);mask-image:linear-gradient(to right, black 0%, black 30%, transparent 70%);1">
                         <img src="${flagUrl}" style="width:100%;height:100%;object-fit:contain;object-position:left center;opacity:0.4;display:block;"/>
                     </div>` : ''}
                     <div class="country-inner" style="position:relative;z-index:1;">
