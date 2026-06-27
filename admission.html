@@ -37,11 +37,11 @@
             <div class="side-nav-item"><a href="index.html">Home</a></div>
             <div class="side-nav-item">
                 <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('admission-nav')">입시결과</div>
-                <div class="nav-sub" id="admission-nav" style="display:none;"></div>
+                <div id="admission-nav" style="display:none;flex-direction:column;gap:4px;padding:0 0 14px 12px;"></div>
             </div>
             <div class="side-nav-item">
                 <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('scholarship-nav')">장학금</div>
-                <div class="nav-sub" id="scholarship-nav" style="display:none;"></div>
+                <div id="scholarship-nav" style="display:none;flex-direction:column;gap:4px;padding:0 0 14px 12px;"></div>
             </div>
             <div class="side-nav-item"><a href="notice.html">공지사항</a></div>
         </nav>
@@ -128,7 +128,8 @@
     window.toggleSubNav = function(id) {
         const el = document.getElementById(id);
         if (!el) return;
-        el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+        const isHidden = el.style.display === 'none' || el.style.display === '';
+        el.style.display = isHidden ? 'flex' : 'none';
     };
 
     load();
