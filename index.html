@@ -813,7 +813,7 @@ function renderAdminPanels() {
             <span class="drag-handle" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:24px;">☰</span>
             <span class="slide-label">슬라이드 ${i+1}</span>
             <input class="url-input" id="home-slide-${i}" value="${s.url}" placeholder="이미지 링크 삽입">
-            <button class="drag-del-btn" style="right:8px;top:50%;transform:translateY(-50%);font-size:20px;" onclick="removeHomeSlide(${i})">×</button>`;
+            <button class="drag-del-btn" style="right:16px;top:50%;transform:translateY(-50%);font-size:20px;" onclick="removeHomeSlide(${i})">×</button>`;
         homeList.appendChild(div);
     });
     setupDrag(homeList, (from, to) => {
@@ -834,7 +834,7 @@ function renderAdminPanels() {
         div.className = 'drag-item year-item';
         div.style.cssText = 'position:relative;flex-wrap:wrap;align-items:flex-start;padding:16px 40px 16px 56px;gap:10px;';
         div.innerHTML = `
-            <button class="drag-del-btn" style="top:12px;right:10px;font-size:20px;">×</button>
+            <button class="drag-del-btn" style="top:12px;right:16px;font-size:20px;" onclick="removeAdmYear(${i})">×</button>
             <span class="drag-handle" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:24px;">☰</span>
             <div style="display:flex;flex-direction:row;align-items:center;gap:8px;width:100%;">
                 <input style="width:70px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:6px;font-size:14px;border-radius:6px;" id="adm-year-${i}" value="${y.year}" type="number">
@@ -1064,7 +1064,7 @@ function renderNoticeList() {
         div.style.paddingTop = '52px';
         div.innerHTML = `
             <span class="drag-handle" style="position:absolute;top:14px;left:14px;font-size:24px;">☰</span>
-            <button class="drag-del-btn" style="font-size:20px;top:12px;right:12px;">×</button>
+            <button class="drag-del-btn" style="font-size:20px;top:12px;right:16px;" onclick="removeNotice(${i})">×</button>
             <span style="font-size:13px;color:rgba(255,255,255,0.6);display:block;margin-bottom:8px;">공지사항 ${i+1}</span>
             <input class="url-input" id="notice-title-${i}" value="${n.title || ''}" placeholder="제목" style="width:100%;margin-bottom:8px;">
             <div class="notice-content-editor" id="notice-body-${i}" contenteditable="true">${n.content || ''}</div>`;
