@@ -196,6 +196,7 @@
                 <div class="admin-menu-item" onclick="showPanel('scholarship', this)">장학금</div>
                 <div class="admin-menu-item" onclick="showPanel('popup', this)">팝업</div>
                 <div class="admin-menu-item" onclick="showPanel('notice', this)">공지사항</div>
+                <div class="admin-menu-item" onclick="showPanel('tools', this)">도구</div>
             </div>
             <div id="admin-content">
                 <div class="admin-panel active" id="panel-home">
@@ -241,6 +242,19 @@
                         </div>
                     </div>
                     <button class="save-btn" onclick="savePopup()">저장</button>
+                </div>
+                <div class="admin-panel" id="panel-tools">
+                    <h3>도구</h3>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div>
+                            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">입시결과 이미지 편집 툴</div>
+                            <a href="https://www.figma.com/design/0cXKSfFeiHlS8BrLQwIJij/ADMISSION-%ED%91%9C-%ED%85%9C%ED%94%8C%EB%A6%BF?node-id=0-1&t=Gl7fNt7JXmYWIhmS-1" target="_blank" style="display:block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:10px 16px;text-decoration:none;font-size:14px;border-radius:6px;">피그마 편집기 열기 →</a>
+                        </div>
+                        <div>
+                            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">이미지 변환기</div>
+                            <a href="https://www.image2url.com/" target="_blank" style="display:block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:10px 16px;text-decoration:none;font-size:14px;border-radius:6px;">image2url 열기 →</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="admin-panel" id="panel-notice">
                     <h3>공지사항 관리</h3>
