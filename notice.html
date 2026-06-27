@@ -25,7 +25,7 @@
         .side-nav-item:hover .nav-sub { display: flex; }
         .nav-sub a { font-size: 17px; color: rgba(255,255,255,0.6); padding: 5px 0; text-decoration: none; display: block; }
         .nav-sub a:hover { color: white; }
-        @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } .nav-sub { display: none !important; } }
+        @media (max-width: 700px) { .side-menu { width: 65%; right: -65%; } }
 
         .content { padding: 120px 0 100px; width: 100%; }
         .content-inner { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
@@ -77,11 +77,11 @@
             <div class="side-nav-item"><a href="index.html">Home</a></div>
             <div class="side-nav-item">
                 <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('admission-nav')">입시결과</div>
-                <div class="nav-sub" id="admission-nav" style="display:none;"></div>
+                <div id="admission-nav" style="display:none;flex-direction:column;gap:4px;padding:0 0 14px 12px;"></div>
             </div>
             <div class="side-nav-item">
                 <div class="nav-label" style="cursor:pointer;" onclick="toggleSubNav('scholarship-nav')">장학금</div>
-                <div class="nav-sub" id="scholarship-nav" style="display:none;"></div>
+                <div id="scholarship-nav" style="display:none;flex-direction:column;gap:4px;padding:0 0 14px 12px;"></div>
             </div>
             <div class="side-nav-item"><a href="notice.html">공지사항</a></div>
         </nav>
