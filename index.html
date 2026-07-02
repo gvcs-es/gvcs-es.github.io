@@ -665,7 +665,10 @@ function setupMobileAdminTap() {
         }
     }
 
-    elA?.addEventListener('touchstart', () => tap('A'), { passive: true });
+    elA?.addEventListener('touchstart', (e) => {
+        if (document.getElementById('popup-overlay').classList.contains('open')) return;
+        tap('A');
+    }, { passive: true });
     elB?.addEventListener('touchstart', () => tap('B'), { passive: true });
     elC?.addEventListener('touchstart', () => tap('C'), { passive: true });
 }
