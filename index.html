@@ -649,6 +649,19 @@ function activateAdminMode() {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// 모바일 비상 관리자 진입: 음소거 버튼 10번 탭
+let muteTapCount = 0;
+let muteTapTimer = null;
+document.getElementById('muteBtn')?.addEventListener('touchstart', () => {
+    muteTapCount++;
+    clearTimeout(muteTapTimer);
+    muteTapTimer = setTimeout(() => { muteTapCount = 0; }, 2000);
+    if (muteTapCount >= 10) {
+        muteTapCount = 0;
+        activateAdminMode();
+    }
+}, { passive: true });
+
 function setupMobileAdminTap() {
     const elA = document.querySelector('.mobile-bg-wrap');
     const elB = document.querySelector('.img-gvcs');
